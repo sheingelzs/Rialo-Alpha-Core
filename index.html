@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Prediction</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Arial, sans-serif;
+}
+
+body{
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+.container{
+  position:relative;
+  width:100%;
+  max-width:1400px;
+}
+
+.container img{
+  width:100%;
+  height:auto;
+  display:block;
+}
+
+.title{
+  position:absolute;
+  bottom:22%;
+  left:50%;
+  transform:translateX(-50%);
+  color:white;
+  font-size:clamp(18px, 3vw, 42px);
+  font-weight:bold;
+  text-align:center;
+  text-shadow:0 0 20px rgba(255,0,255,0.8),
+               0 0 40px rgba(0,255,255,0.6);
+  padding:10px 20px;
+  border-radius:10px;
+}
+
+@media(max-width:768px){
+  .title{
+    bottom:25%;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <img src="market.jpg" alt="Market Image">
+  <div class="title">
+    Wellcome to the Market Prediction
+  </div>
+</div>
+
+</body>
+</html>
