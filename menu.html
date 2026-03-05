@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pink Flower Menu</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Arial, sans-serif;
+}
+
+body{
+  background: linear-gradient(to bottom, #ffb6d9, #ff69b4);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  overflow:hidden;
+  position:relative;
+}
+
+/* 🌸 Flower animation */
+.flower{
+  position:absolute;
+  top:-50px;
+  font-size:24px;
+  animation: fall linear infinite;
+  opacity:0.8;
+}
+
+@keyframes fall{
+  0%{
+    transform: translateY(-50px) translateX(0);
+  }
+  100%{
+    transform: translateY(110vh) translateX(30px);
+  }
+}
+
+/* Menu Layout */
+.menu-container{
+  width:85%;
+  max-width:1100px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:120px;
+  z-index:2;
+}
+
+.menu-item{
+  text-align:center;
+}
+
+.menu-item img{
+  width:230px;
+  max-width:42vw;
+  cursor:pointer;
+  transition:0.4s;
+  filter: drop-shadow(0 0 20px rgba(255,255,255,0.6));
+}
+
+.menu-item img:hover{
+  transform:scale(1.15);
+  filter: drop-shadow(0 0 40px #fff);
+}
+
+.menu-title{
+  margin-top:25px;
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:3px;
+  color:white;
+  text-shadow:0 0 15px rgba(255,255,255,0.9);
+}
+
+/* Responsive */
+@media(max-width:768px){
+  .menu-container{
+    flex-direction:column;
+    gap:70px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🌸 Flowers -->
+<div class="flower" style="left:10%; animation-duration:10s;">🌸</div>
+<div class="flower" style="left:25%; animation-duration:12s;">🌸</div>
+<div class="flower" style="left:40%; animation-duration:8s;">🌸</div>
+<div class="flower" style="left:55%; animation-duration:14s;">🌸</div>
+<div class="flower" style="left:70%; animation-duration:9s;">🌸</div>
+<div class="flower" style="left:85%; animation-duration:11s;">🌸</div>
+
+<div class="menu-container">
+
+  <!-- PARLAY KIRI -->
+  <div class="menu-item">
+    <a href="parlay.html">
+      <img src="images/parlay.png" alt="Parlay">
+    </a>
+    <div class="menu-title">PARLAY 🌸</div>
+  </div>
+
+  <!-- MARKET KANAN -->
+  <div class="menu-item">
+    <a href="market.html">
+      <img src="images/market.png" alt="Market">
+    </a>
+    <div class="menu-title">MARKET 🌸</div>
+  </div>
+
+</div>
+
+</body>
+</html>
