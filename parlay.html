@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PARLAY MARKET</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#111;
+color:white;
+margin:0;
+padding:20px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.wallet{
+background:#ff2e9f;
+padding:10px 20px;
+border-radius:10px;
+font-weight:bold;
+}
+
+.market-container{
+display:flex;
+justify-content:space-around;
+margin-bottom:30px;
+}
+
+.card{
+background:#1c1c1c;
+padding:20px;
+border-radius:10px;
+text-align:center;
+width:30%;
+}
+
+.price{
+font-size:22px;
+margin:10px 0;
+}
+
+button{
+padding:8px 14px;
+margin:4px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.up{
+background:#00c853;
+color:white;
+}
+
+.down{
+background:#d50000;
+color:white;
+}
+
+.placebet{
+background:#ff2e9f;
+padding:12px 25px;
+border-radius:8px;
+font-size:16px;
+}
+
+.history{
+margin-top:40px;
+}
+
+.betbox{
+background:#1c1c1c;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
+line-height:1.6;
+}
+
+.live{color:yellow}
+.win{color:#00e676}
+.lose{color:#ff5252}
+
+.timer{
+font-size:14px;
+color:#ccc;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h2>PARLAY UP / DOWN 5 MIN</h2>
+
+<div class="wallet">
+RIALO : <span id="saldo"></span>
+</div>
+
+</div>
+
+<div class="market-container">
+
+<div class="card">
+<h3>BTC</h3>
+<div class="price">$<span id="btcPrice">...</span></div>
+
+<button class="up" onclick="pick('btc','UP')">UP</button>
+<button class="down" onclick="pick('btc','DOWN')">DOWN</button>
+
+</div>
+
+<div class="card">
+<h3>ETH</h3>
+<div class="price">$<span id="ethPrice">...</span></div>
+
+<button class="up" onclick="pick('eth','UP')">UP</button>
+<button class="down" onclick="pick('eth','DOWN')">DOWN</button>
+
+</div>
+
+<div class="card">
+<h3>SOL</h3>
+<div class="price">$<span id="solPrice">...</span></div>
+
+<button class="up" onclick="pick('sol','UP')">UP</button>
+<button class="down" onclick="pick('sol','DOWN')">DOWN</button>
+
+</div>
+
+</div>
+
+<center>
+
+Bet Amount :
+
+<select id="amount">
+<option value="10">10</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+
+RIALO
+
+<br><br>
+
+<button class="placebet" onclick="placeBet()">PLACE PARLAY</button>
+
+</center>
+
+<div class="history">
+
+<h3>History Bet</h3>
+
+<div id="history"></div>
+
+</div>
+
+<script>
+
+let saldo = localStorage.getItem("rialoBalance")
+
+if(!saldo){
+
+saldo=500
+
+localStorage.setItem("rialoBalance",saldo)
+
+}
+
+document.getElementById("saldo").innerText=saldo
+
+let btc,eth,sol
+let picks={}
+
+async function getPrice(){
+
+let r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd")
+
+let d = await r.json()
+
+btc = d.bitcoin.usd
+eth = d.ethereum.usd
+sol = d.solana.usd
+
+document.getElementById("btcPrice").innerText=btc
+document.getElementById("ethPrice").innerText=eth
+document.getElementById("solPrice").innerText=sol
+
+}
+
+getPrice()
+
+setInterval(getPrice,10000)
+
+function pick(m,d){
+
+picks[m]=d
+
+}
+
+function placeBet(){
+
+let bet = parseInt(document.getElementById("amount").value)
+
+let saldo = parseInt(localStorage.getItem("rialoBalance"))
+
+if(!picks.btc || !picks.eth || !picks.sol){
+
+alert("Pilih semua market")
+
+return
+
+}
+
+if(saldo<bet){
+
+alert("Saldo tidak cukup")
+
+return
+
+}
+
+saldo-=bet
+
+localStorage.setItem("rialoBalance",saldo)
+
+document.getElementById("saldo").innerText=saldo
+
+let data={
+
+btc:picks.btc,
+eth:picks.eth,
+sol:picks.sol,
+
+btcEntry:btc,
+ethEntry:eth,
+solEntry:sol,
+
+amount:bet,
+status:"LIVE",
+time:Date.now()
+
+}
+
+let history = JSON.parse(localStorage.getItem("parlayHistory"))||[]
+
+history.push(data)
+
+localStorage.setItem("parlayHistory",JSON.stringify(history))
+
+renderHistory()
+
+setTimeout(()=>checkResult(history.length-1),300000)
+
+}
+
+function checkResult(index){
+
+let history = JSON.parse(localStorage.getItem("parlayHistory"))
+
+let bet = history[index]
+
+fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd")
+
+.then(r=>r.json())
+
+.then(d=>{
+
+let win=true
+
+let btcNow=d.bitcoin.usd
+let ethNow=d.ethereum.usd
+let solNow=d.solana.usd
+
+if((btcNow>bet.btcEntry?"UP":"DOWN")!=bet.btc)win=false
+if((ethNow>bet.ethEntry?"UP":"DOWN")!=bet.eth)win=false
+if((solNow>bet.solEntry?"UP":"DOWN")!=bet.sol)win=false
+
+bet.status = win?"WIN":"LOSE"
+
+if(win){
+
+let saldo=parseInt(localStorage.getItem("rialoBalance"))
+
+saldo += bet.amount*2
+
+localStorage.setItem("rialoBalance",saldo)
+
+document.getElementById("saldo").innerText=saldo
+
+}
+
+localStorage.setItem("parlayHistory",JSON.stringify(history))
+
+renderHistory()
+
+})
+
+}
+
+function renderHistory(){
+
+let history = JSON.parse(localStorage.getItem("parlayHistory"))||[]
+
+let html=""
+
+history.reverse().forEach(b=>{
+
+html+=`
+
+<div class="betbox">
+
+YOUR BET <br>
+
+BTC ${b.btc} ENTRY ${b.btcEntry} <br>
+ETH ${b.eth} ENTRY ${b.ethEntry} <br>
+SOL ${b.sol} ENTRY ${b.solEntry} <br>
+
+AMOUNT : ${b.amount} RIALO <br>
+
+STATUS : <span class="${b.status.toLowerCase()}">${b.status}</span>
+
+</div>
+
+`
+
+})
+
+document.getElementById("history").innerHTML=html
+
+}
+
+renderHistory()
+
+</script>
+
+</body>
+</html>
