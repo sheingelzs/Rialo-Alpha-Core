@@ -17,6 +17,8 @@ h2{
 text-align:center;
 }
 
+/* MARKET */
+
 .market{
 background:white;
 padding:15px;
@@ -48,6 +50,8 @@ background:#ff4d4f;
 color:white;
 }
 
+/* BET BOX */
+
 .betbox{
 margin-top:20px;
 background:white;
@@ -73,6 +77,57 @@ width:100%;
 padding:10px;
 }
 
+/* VERSUS */
+
+.versus-section{
+margin-top:40px;
+background:white;
+padding:25px;
+border-radius:10px;
+text-align:center;
+}
+
+.vs-grid{
+display:flex;
+justify-content:center;
+gap:30px;
+margin-top:20px;
+flex-wrap:wrap;
+}
+
+.vs-item{
+width:130px;
+height:130px;
+border-radius:50%;
+background:#ffd1ea;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+}
+
+.vs-item:hover{
+background:#ffb6e0;
+}
+
+/* HISTORY */
+
+.history{
+margin-top:30px;
+background:white;
+padding:20px;
+border-radius:8px;
+}
+
+.history-list{
+margin-top:10px;
+font-size:14px;
+}
+
+/* POPUP */
+
 .popup{
 position:fixed;
 top:0;
@@ -93,52 +148,34 @@ text-align:center;
 width:250px;
 }
 
-/* HISTORY */
+/* VS POPUP */
 
-.history{
-margin-top:30px;
-background:white;
-padding:20px;
-border-radius:8px;
-}
-
-.history-list{
-margin-top:10px;
-font-size:14px;
-}
-
-/* VERSUS */
-
-.versus-section{
-margin-top:30px;
-background:white;
-padding:20px;
-border-radius:8px;
-}
-
-.vs-grid{
-display:flex;
-gap:20px;
-margin-top:15px;
-flex-wrap:wrap;
-}
-
-.vs-item{
-width:120px;
-height:120px;
-border-radius:50%;
-background:#ffc0e6;
-display:flex;
+.vs-popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
 align-items:center;
 justify-content:center;
-text-align:center;
-font-weight:bold;
-cursor:pointer;
-transition:0.2s;
 }
 
-.vs-item:hover{
-background:#ff9fd8;
+.vs-box{
+background:white;
+padding:25px;
+border-radius:10px;
+text-align:center;
+}
+
+.vs-box button{
+margin:10px;
+padding:10px 20px;
+background:#ff6fb5;
+color:white;
+border:none;
+border-radius:6px;
 }
 
 </style>
@@ -150,6 +187,32 @@ background:#ff9fd8;
 <h2>Crypto Prediction</h2>
 
 <div id="markets"></div>
+
+<!-- VERSUS MARKET -->
+
+<div class="versus-section">
+
+<h3>Versus Market</h3>
+
+<div class="vs-grid">
+
+<div class="vs-item" onclick="openVs('BTC','ETH')">
+BTC<br>VS<br>ETH
+</div>
+
+<div class="vs-item" onclick="openVs('BTC','SOL')">
+BTC<br>VS<br>SOL
+</div>
+
+<div class="vs-item" onclick="openVs('ETH','SOL')">
+ETH<br>VS<br>SOL
+</div>
+
+</div>
+
+</div>
+
+<!-- BET BOX -->
 
 <div class="betbox">
 
@@ -177,30 +240,6 @@ Belum ada history
 
 </div>
 
-<!-- VERSUS -->
-
-<div class="versus-section">
-
-<h3>Versus Market</h3>
-
-<div class="vs-grid">
-
-<div class="vs-item" onclick="pickVs('BTC vs ETH')">
-BTC<br>VS<br>ETH
-</div>
-
-<div class="vs-item" onclick="pickVs('BTC vs SOL')">
-BTC<br>VS<br>SOL
-</div>
-
-<div class="vs-item" onclick="pickVs('ETH vs SOL')">
-ETH<br>VS<br>SOL
-</div>
-
-</div>
-
-</div>
-
 <!-- POPUP -->
 
 <div class="popup" id="popup">
@@ -211,6 +250,26 @@ ETH<br>VS<br>SOL
 </div>
 </div>
 
+<!-- VS POPUP -->
+
+<div class="vs-popup" id="vsPopup">
+
+<div class="vs-box">
+
+<h3>Pilih Koin</h3>
+
+<button id="coinA"></button>
+
+<button id="coinB"></button>
+
+<br>
+
+<button onclick="closeVs()">Cancel</button>
+
+</div>
+
+</div>
+
 <script>
 
 const markets=["bitcoin","ethereum","solana"]
@@ -218,6 +277,7 @@ const markets=["bitcoin","ethereum","solana"]
 let picks={}
 let prices={}
 let history=[]
+let vsPair=[]
 
 function showPopup(text){
 document.getElementById("popupText").innerText=text
@@ -234,7 +294,7 @@ let list=document.getElementById("betList")
 let html=""
 
 for(let m in picks){
-html+=m.toUpperCase()+" - "+picks[m]+"<br>"
+html+=m+" - "+picks[m]+"<br>"
 }
 
 if(html==="") html="Belum ada pilihan"
@@ -254,24 +314,55 @@ showPopup("Maksimal 3 market")
 return
 }
 
-picks[m]=d
+picks[m.toUpperCase()]=d
 
 updateBetList()
 
 }
 
-function pickVs(pair){
+/* VERSUS */
+
+function openVs(a,b){
+
+vsPair=[a,b]
+
+document.getElementById("coinA").innerText=a
+document.getElementById("coinB").innerText=b
+
+document.getElementById("coinA").onclick=()=>pickVs(a,b)
+document.getElementById("coinB").onclick=()=>pickVs(b,a)
+
+document.getElementById("vsPopup").style.display="flex"
+
+}
+
+function closeVs(){
+
+document.getElementById("vsPopup").style.display="none"
+
+}
+
+function pickVs(winner,loser){
 
 if(Object.keys(picks).length>=3){
+
 showPopup("Maksimal 3 pilihan")
+
 return
+
 }
+
+let pair=winner+" vs "+loser
 
 picks[pair]="VS"
 
 updateBetList()
 
+closeVs()
+
 }
+
+/* HISTORY */
 
 function addHistory(text){
 
@@ -304,6 +395,8 @@ el.innerHTML=html
 
 }
 
+/* PLACE BET */
+
 function placeBet(){
 
 if(Object.keys(picks).length<3){
@@ -331,6 +424,8 @@ document.getElementById("betAmount").value=""
 document.getElementById("betAmount").disabled=true
 
 }
+
+/* PRICE API */
 
 async function loadPrices(){
 
