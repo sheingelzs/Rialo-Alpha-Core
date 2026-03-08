@@ -24,17 +24,16 @@ input{width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid
 .history-item{border-bottom:1px solid #eee;padding:10px 0;}
 .activeBet{border-top:1px solid #ddd;margin-top:10px;padding-top:10px;}
 .vs{
-  width:auto; 
-  height:auto;
-  background:transparent;
+  width:28px;
+  height:28px;
   cursor:pointer;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:18px;
 }
 .vs::before{
   content:"⚔";
+  font-size:18px;
   color:white;
 }
 .popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;}
@@ -266,7 +265,14 @@ function renderActive(){
     let div=document.createElement("div")
     div.className="activeBet"
     let html=""
-    b.picks.forEach(p=>{html+=p.text+"<br>"}) // entry price dihapus
+    b.picks.forEach(p=>{
+      if(p.type==="predict"){
+        html+=p.text+" ENTRY $"+p.entry.toFixed(2)+"<br>"
+      }
+      if(p.type==="versus"){
+        html+=p.text+" ENTRY "+p.coinA+" $"+p.entryA.toFixed(2)+" | "+p.coinB+" $"+p.entryB.toFixed(2)+"<br>"
+      }
+    })
     let left=b.end-Date.now()
     let s=Math.floor(left/1000)
     let m=Math.floor(s/60)
@@ -295,7 +301,14 @@ function renderHistory(){
     let div=document.createElement("div")
     div.className="history-item"
     let html=""
-    b.picks.forEach(p=>{html+=p.text+"<br>"})
+    b.picks.forEach(p=>{
+      if(p.type==="predict"){
+        html+=p.text+" ENTRY $"+p.entry.toFixed(2)+"<br>"
+      }
+      if(p.type==="versus"){
+        html+=p.text+" ENTRY "+p.coinA+" $"+p.entryA.toFixed(2)+" | "+p.coinB+" $"+p.entryB.toFixed(2)+"<br>"
+      }
+    })
     html+="<b>"+b.result+"</b>"
     div.innerHTML=html
     h.appendChild(div)
