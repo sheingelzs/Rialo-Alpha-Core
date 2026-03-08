@@ -118,6 +118,36 @@ margin-top:10px;
 padding-top:10px;
 }
 
+.vs{
+width:28px;
+height:28px;
+border-radius:50%;
+background:#ff3ea5;
+cursor:pointer;
+}
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.4);
+display:none;
+align-items:center;
+justify-content:center;
+}
+
+.popup-box{
+background:white;
+padding:20px;
+border-radius:10px;
+}
+
+.popup-box button{
+margin:5px;
+}
+
 </style>
 
 </head>
@@ -170,6 +200,28 @@ SOL <span id="solPrice"></span>
 </div>
 
 
+<div class="market">
+
+<h3>Versus Market</h3>
+
+<div class="row">
+BTC vs ETH
+<div class="vs" onclick="openVersus('BTC','ETH')"></div>
+</div>
+
+<div class="row">
+BTC vs SOL
+<div class="vs" onclick="openVersus('BTC','SOL')"></div>
+</div>
+
+<div class="row">
+ETH vs SOL
+<div class="vs" onclick="openVersus('ETH','SOL')"></div>
+</div>
+
+</div>
+
+
 <div class="history">
 
 <h3>Bet History</h3>
@@ -202,12 +254,27 @@ SOL <span id="solPrice"></span>
 </div>
 
 
+<div id="popup" class="popup">
+
+<div class="popup-box">
+
+<h4>Select Winner</h4>
+
+<div id="popupOptions"></div>
+
+</div>
+
+</div>
+
+
 <script>
 
 let wallet = Number(localStorage.getItem("wallet")) || 500
 let history = JSON.parse(localStorage.getItem("history")||"[]")
 let picks = []
 let activeBets = JSON.parse(localStorage.getItem("activeBets")||"[]")
+
+let versusData=null
 
 updateWallet()
 renderHistory()
@@ -265,6 +332,49 @@ renderPicks()
 
 }
 
+function openVersus(a,b){
+
+versusData=[a,b]
+
+let box=document.getElementById("popupOptions")
+
+box.innerHTML=""
+
+versusData.forEach(c=>{
+
+let btn=document.createElement("button")
+
+btn.innerText=c
+
+btn.onclick=function(){
+selectVersus(c)
+}
+
+box.appendChild(btn)
+
+})
+
+popup.style.display="flex"
+
+}
+
+function selectVersus(choice){
+
+let coin=choice
+let price=getPrice(coin)
+
+picks.push({
+coin:coin,
+text:"VERSUS "+versusData[0]+" vs "+versusData[1]+" → "+choice,
+entry:price
+})
+
+popup.style.display="none"
+
+renderPicks()
+
+}
+
 function renderPicks(){
 
 let list=document.getElementById("betList")
@@ -298,7 +408,7 @@ function placeBet(){
 
 let amt=Number(amount.value)
 
-if(picks.length<1){alert("Pick first");return}
+if(picks.length<3){alert("Minimal 3 picks");return}
 if(!amt||amt>wallet){alert("Invalid amount");return}
 
 wallet-=amt
@@ -436,7 +546,6 @@ h.appendChild(div)
 }
 
 </script>
-
 
 </body>
 </html>
