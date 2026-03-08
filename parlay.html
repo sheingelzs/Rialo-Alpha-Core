@@ -194,3 +194,80 @@ return
 let bet=document.getElementById("betAmount").value
 
 if(!bet || bet<=0){
+
+showPopup("Masukan nominal bet")
+
+return
+
+}
+
+showPopup("Bet berhasil dipasang!")
+
+}
+
+async function loadPrices(){
+
+try{
+
+let res=await fetch(
+"https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd"
+)
+
+let data=await res.json()
+
+prices=data
+
+}catch(e){
+
+}
+
+renderMarkets()
+
+}
+
+function renderMarkets(){
+
+let html=""
+
+markets.forEach(m=>{
+
+let price=prices[m]?prices[m].usd:"--"
+
+html+=`
+
+<div class="market">
+
+<div>
+
+<b>${m.toUpperCase()}</b><br>
+
+<span class="price">$${price}</span>
+
+</div>
+
+<div>
+
+<button class="up" onclick="pick('${m}','UP')">UP</button>
+
+<button class="down" onclick="pick('${m}','DOWN')">DOWN</button>
+
+</div>
+
+</div>
+
+`
+
+})
+
+document.getElementById("markets").innerHTML=html
+
+}
+
+loadPrices()
+
+setInterval(loadPrices,10000)
+
+</script>
+
+</body>
+</html>
