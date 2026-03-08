@@ -64,7 +64,6 @@ cursor:pointer;
 
 .up{background:#c8ffd9}
 .down{background:#ffd0d0}
-.vs{background:#dbe5ff}
 
 .betpanel{
 background:white;
@@ -99,11 +98,6 @@ width:100%;
 margin-top:10px;
 background:black;
 color:white;
-}
-
-.timer{
-margin-top:10px;
-font-weight:700;
 }
 
 .history{
@@ -312,7 +306,8 @@ updateWallet()
 
 let bet={
 picks:[...picks],
-amount:amt
+amount:amt,
+end:Date.now()+300000
 }
 
 activeBets.push(bet)
@@ -343,13 +338,72 @@ b.picks.forEach(p=>{
 html+=p.text+" ENTRY "+p.entry+"<br>"
 })
 
+let left=b.end-Date.now()
+
+let s=Math.floor(left/1000)
+let m=Math.floor(s/60)
+let sec=s%60
+
 html+="<br>Amount : "+b.amount+" RIALO"
+html+="<br>Timer : "+m+":"+(sec<10?"0":"")+sec
 
 div.innerHTML=html
 
 box.appendChild(div)
 
 })
+
+}
+
+setInterval(()=>{
+
+let now=Date.now()
+
+activeBets=activeBets.filter(b=>{
+
+if(now>=b.end){
+
+finishBet(b)
+return false
+
+}
+
+return true
+
+})
+
+localStorage.setItem("activeBets",JSON.stringify(activeBets))
+
+renderActive()
+
+},1000)
+
+function finishBet(bet){
+
+let win=Math.random()>0.5
+
+let result=""
+
+if(win){
+
+let profit=bet.picks.length*bet.amount
+
+wallet+=profit+bet.amount
+updateWallet()
+
+result="WIN +"+profit+" RIALO"
+
+}else{
+
+result="LOSE -"+bet.amount+" RIALO"
+
+}
+
+history.unshift({picks:bet.picks,result:result})
+
+localStorage.setItem("history",JSON.stringify(history))
+
+renderHistory()
 
 }
 
