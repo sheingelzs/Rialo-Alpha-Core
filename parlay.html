@@ -7,7 +7,7 @@
 <style>
 
 body{
-font-family: 'Segoe UI',sans-serif;
+font-family:'Segoe UI',sans-serif;
 background:#f5f7fb;
 margin:0;
 padding:20px;
@@ -93,6 +93,54 @@ text-align:center;
 width:250px;
 }
 
+/* HISTORY */
+
+.history{
+margin-top:30px;
+background:white;
+padding:20px;
+border-radius:8px;
+}
+
+.history-list{
+margin-top:10px;
+font-size:14px;
+}
+
+/* VERSUS */
+
+.versus-section{
+margin-top:30px;
+background:white;
+padding:20px;
+border-radius:8px;
+}
+
+.vs-grid{
+display:flex;
+gap:20px;
+margin-top:15px;
+flex-wrap:wrap;
+}
+
+.vs-item{
+width:120px;
+height:120px;
+border-radius:50%;
+background:#ffc0e6;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+}
+
+.vs-item:hover{
+background:#ff9fd8;
+}
+
 </style>
 
 </head>
@@ -117,6 +165,44 @@ Belum ada pilihan
 
 </div>
 
+<!-- HISTORY -->
+
+<div class="history">
+
+<h3>History Parlay</h3>
+
+<div id="historyList" class="history-list">
+Belum ada history
+</div>
+
+</div>
+
+<!-- VERSUS -->
+
+<div class="versus-section">
+
+<h3>Versus Market</h3>
+
+<div class="vs-grid">
+
+<div class="vs-item" onclick="pickVs('BTC vs ETH')">
+BTC<br>VS<br>ETH
+</div>
+
+<div class="vs-item" onclick="pickVs('BTC vs SOL')">
+BTC<br>VS<br>SOL
+</div>
+
+<div class="vs-item" onclick="pickVs('ETH vs SOL')">
+ETH<br>VS<br>SOL
+</div>
+
+</div>
+
+</div>
+
+<!-- POPUP -->
+
 <div class="popup" id="popup">
 <div class="popup-box">
 <div id="popupText"></div>
@@ -131,6 +217,7 @@ const markets=["bitcoin","ethereum","solana"]
 
 let picks={}
 let prices={}
+let history=[]
 
 function showPopup(text){
 document.getElementById("popupText").innerText=text
@@ -144,13 +231,10 @@ document.getElementById("popup").style.display="none"
 function updateBetList(){
 
 let list=document.getElementById("betList")
-
 let html=""
 
 for(let m in picks){
-
 html+=m.toUpperCase()+" - "+picks[m]+"<br>"
-
 }
 
 if(html==="") html="Belum ada pilihan"
@@ -158,9 +242,7 @@ if(html==="") html="Belum ada pilihan"
 list.innerHTML=html
 
 if(Object.keys(picks).length===3){
-
 document.getElementById("betAmount").disabled=false
-
 }
 
 }
@@ -168,11 +250,8 @@ document.getElementById("betAmount").disabled=false
 function pick(m,d){
 
 if(Object.keys(picks).length>=3 && !picks[m]){
-
 showPopup("Maksimal 3 market")
-
 return
-
 }
 
 picks[m]=d
@@ -181,27 +260,75 @@ updateBetList()
 
 }
 
+function pickVs(pair){
+
+if(Object.keys(picks).length>=3){
+showPopup("Maksimal 3 pilihan")
+return
+}
+
+picks[pair]="VS"
+
+updateBetList()
+
+}
+
+function addHistory(text){
+
+history.unshift(text)
+
+if(history.length>10){
+history.pop()
+}
+
+renderHistory()
+
+}
+
+function renderHistory(){
+
+let el=document.getElementById("historyList")
+
+if(history.length===0){
+el.innerHTML="Belum ada history"
+return
+}
+
+let html=""
+
+history.forEach(h=>{
+html+=h+"<br>"
+})
+
+el.innerHTML=html
+
+}
+
 function placeBet(){
 
 if(Object.keys(picks).length<3){
-
 showPopup("Pilih 3 market")
-
 return
-
 }
 
 let bet=document.getElementById("betAmount").value
 
 if(!bet || bet<=0){
-
 showPopup("Masukan nominal bet")
-
 return
-
 }
 
 showPopup("Bet berhasil dipasang!")
+
+addHistory("Parlay bet "+bet+" USD")
+
+picks={}
+
+updateBetList()
+
+document.getElementById("betAmount").value=""
+
+document.getElementById("betAmount").disabled=true
 
 }
 
