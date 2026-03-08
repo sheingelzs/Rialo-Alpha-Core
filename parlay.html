@@ -1,97 +1,77 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>PARLAY MARKET</title>
+<title>Crypto Prediction</title>
 
 <style>
 
 body{
-font-family:Arial;
-background:#111;
-color:white;
+font-family: 'Segoe UI',sans-serif;
+background:#f5f7fb;
 margin:0;
 padding:20px;
 }
 
-.header{
+h2{
+text-align:center;
+}
+
+.market{
+background:white;
+padding:15px;
+margin-bottom:10px;
+border-radius:8px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:30px;
-}
-
-.wallet{
-background:#ff2e9f;
-padding:10px 20px;
-border-radius:10px;
-font-weight:bold;
-}
-
-.market-container{
-display:flex;
-justify-content:space-around;
-margin-bottom:30px;
-}
-
-.card{
-background:#1c1c1c;
-padding:20px;
-border-radius:10px;
-text-align:center;
-width:30%;
 }
 
 .price{
-font-size:22px;
-margin:10px 0;
+font-weight:bold;
 }
 
 button{
-padding:8px 14px;
-margin:4px;
+padding:6px 12px;
 border:none;
 border-radius:6px;
 cursor:pointer;
 }
 
 .up{
-background:#00c853;
+background:#00c087;
 color:white;
 }
 
 .down{
-background:#d50000;
+background:#ff4d4f;
 color:white;
 }
 
-.placebet{
-background:#ff2e9f;
-padding:12px 25px;
-border-radius:8px;
-font-size:16px;
-}
-
-.history{
-margin-top:40px;
-}
-
 .betbox{
-background:#1c1c1c;
+margin-top:20px;
+background:white;
 padding:15px;
-border-radius:10px;
-margin-bottom:10px;
-line-height:1.6;
+border-radius:8px;
 }
 
-.live{color:yellow}
-.win{color:#00e676}
-.lose{color:#ff5252}
+#betList{
+margin-bottom:10px;
+}
 
-/* POPUP */
+input{
+padding:8px;
+width:100%;
+margin-top:10px;
+}
+
+.place{
+background:#2962ff;
+color:white;
+margin-top:10px;
+width:100%;
+padding:10px;
+}
 
 .popup{
 position:fixed;
@@ -99,24 +79,18 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.6);
+background:rgba(0,0,0,0.5);
 display:none;
-justify-content:center;
 align-items:center;
+justify-content:center;
 }
 
 .popup-box{
-background:#1c1c1c;
-padding:25px;
+background:white;
+padding:20px;
 border-radius:10px;
 text-align:center;
-width:260px;
-}
-
-.popup-box button{
-background:#ff2e9f;
-color:white;
-margin-top:10px;
+width:250px;
 }
 
 </style>
@@ -125,315 +99,98 @@ margin-top:10px;
 
 <body>
 
-<div class="header">
+<h2>Crypto Prediction</h2>
 
-<h2>PARLAY UP / DOWN 5 MIN</h2>
+<div id="markets"></div>
 
-<div class="wallet">
-RIALO : <span id="saldo"></span>
+<div class="betbox">
+
+<h3>Bet List</h3>
+
+<div id="betList">
+Belum ada pilihan
 </div>
 
-</div>
+<input type="number" id="betAmount" placeholder="Masukan nominal bet" disabled>
 
-<div class="market-container">
-
-<div class="card">
-<h3>BTC</h3>
-<div class="price">$<span id="btcPrice">...</span></div>
-
-<button class="up" onclick="pick('btc','UP')">UP</button>
-<button class="down" onclick="pick('btc','DOWN')">DOWN</button>
+<button class="place" onclick="placeBet()">Place Bet</button>
 
 </div>
 
-<div class="card">
-<h3>ETH</h3>
-<div class="price">$<span id="ethPrice">...</span></div>
-
-<button class="up" onclick="pick('eth','UP')">UP</button>
-<button class="down" onclick="pick('eth','DOWN')">DOWN</button>
-
-</div>
-
-<div class="card">
-<h3>SOL</h3>
-<div class="price">$<span id="solPrice">...</span></div>
-
-<button class="up" onclick="pick('sol','UP')">UP</button>
-<button class="down" onclick="pick('sol','DOWN')">DOWN</button>
-
-</div>
-
-</div>
-
-<center>
-
-Bet Amount :
-
-<select id="amount">
-<option value="10">10</option>
-<option value="50">50</option>
-<option value="100">100</option>
-</select>
-
-RIALO
-
-<br><br>
-
-<button class="placebet" onclick="placeBet()">PLACE PARLAY</button>
-
-</center>
-
-<div class="history">
-
-<h3>History Bet</h3>
-
-<div id="history"></div>
-
-</div>
-
-<!-- POPUP -->
-
-<div id="popup" class="popup">
-
+<div class="popup" id="popup">
 <div class="popup-box">
-
 <div id="popupText"></div>
-
+<br>
 <button onclick="closePopup()">OK</button>
-
 </div>
-
 </div>
 
 <script>
 
-let saldo = localStorage.getItem("rialoBalance")
+const markets=["bitcoin","ethereum","solana"]
 
-if(!saldo){
-
-saldo=500
-localStorage.setItem("rialoBalance",saldo)
-
-}
-
-document.getElementById("saldo").innerText=saldo
-
-let btc,eth,sol
 let picks={}
-
-/* POPUP */
+let prices={}
 
 function showPopup(text){
-
 document.getElementById("popupText").innerText=text
 document.getElementById("popup").style.display="flex"
-
 }
 
 function closePopup(){
-
 document.getElementById("popup").style.display="none"
-
 }
 
-/* PRICE API */
+function updateBetList(){
 
-async function getPrice(){
-
-try{
-
-let r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd")
-
-let d = await r.json()
-
-btc = d.bitcoin.usd
-eth = d.ethereum.usd
-sol = d.solana.usd
-
-document.getElementById("btcPrice").innerText=btc
-document.getElementById("ethPrice").innerText=eth
-document.getElementById("solPrice").innerText=sol
-
-localStorage.setItem("btcPrice",btc)
-localStorage.setItem("ethPrice",eth)
-localStorage.setItem("solPrice",sol)
-
-}catch(e){
-
-btc = localStorage.getItem("btcPrice")
-eth = localStorage.getItem("ethPrice")
-sol = localStorage.getItem("solPrice")
-
-document.getElementById("btcPrice").innerText=btc
-document.getElementById("ethPrice").innerText=eth
-document.getElementById("solPrice").innerText=sol
-
-}
-
-}
-
-getPrice()
-
-setInterval(getPrice,10000)
-
-/* PICK */
-
-function pick(m,d){
-
-picks[m]=d
-
-showPopup(m.toUpperCase()+" "+d+" selected")
-
-}
-
-/* PLACE BET */
-
-function placeBet(){
-
-let bet = parseInt(document.getElementById("amount").value)
-
-let saldo = parseInt(localStorage.getItem("rialoBalance"))
-
-if(!picks.btc || !picks.eth || !picks.sol){
-
-showPopup("Pilih semua market")
-
-return
-
-}
-
-if(saldo<bet){
-
-showPopup("Saldo tidak cukup")
-
-return
-
-}
-
-saldo-=bet
-
-localStorage.setItem("rialoBalance",saldo)
-
-document.getElementById("saldo").innerText=saldo
-
-let data={
-
-btc:picks.btc,
-eth:picks.eth,
-sol:picks.sol,
-
-btcEntry:btc,
-ethEntry:eth,
-solEntry:sol,
-
-amount:bet,
-status:"LIVE",
-time:Date.now()
-
-}
-
-let history = JSON.parse(localStorage.getItem("parlayHistory"))||[]
-
-history.push(data)
-
-localStorage.setItem("parlayHistory",JSON.stringify(history))
-
-renderHistory()
-
-setTimeout(()=>checkResult(history.length-1),300000)
-
-}
-
-/* CHECK RESULT */
-
-function checkResult(index){
-
-let history = JSON.parse(localStorage.getItem("parlayHistory"))
-
-let bet = history[index]
-
-fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd")
-
-.then(r=>r.json())
-
-.then(d=>{
-
-let win=true
-
-let btcNow=d.bitcoin.usd
-let ethNow=d.ethereum.usd
-let solNow=d.solana.usd
-
-if((btcNow>bet.btcEntry?"UP":"DOWN")!=bet.btc)win=false
-if((ethNow>bet.ethEntry?"UP":"DOWN")!=bet.eth)win=false
-if((solNow>bet.solEntry?"UP":"DOWN")!=bet.sol)win=false
-
-bet.status = win?"WIN":"LOSE"
-
-if(win){
-
-let saldo=parseInt(localStorage.getItem("rialoBalance"))
-
-saldo += bet.amount*2
-
-localStorage.setItem("rialoBalance",saldo)
-
-document.getElementById("saldo").innerText=saldo
-
-showPopup("YOU WIN")
-
-}else{
-
-showPopup("YOU LOSE")
-
-}
-
-localStorage.setItem("parlayHistory",JSON.stringify(history))
-
-renderHistory()
-
-})
-
-}
-
-/* RENDER HISTORY */
-
-function renderHistory(){
-
-let history = JSON.parse(localStorage.getItem("parlayHistory"))||[]
+let list=document.getElementById("betList")
 
 let html=""
 
-history.reverse().forEach(b=>{
+for(let m in picks){
 
-html+=`
-
-<div class="betbox">
-
-YOUR BET <br>
-
-BTC ${b.btc} ENTRY ${b.btcEntry} <br>
-ETH ${b.eth} ENTRY ${b.ethEntry} <br>
-SOL ${b.sol} ENTRY ${b.solEntry} <br>
-
-AMOUNT : ${b.amount} RIALO <br>
-
-STATUS : <span class="${b.status.toLowerCase()}">${b.status}</span>
-
-</div>
-
-`
-
-})
-
-document.getElementById("history").innerHTML=html
+html+=m.toUpperCase()+" - "+picks[m]+"<br>"
 
 }
 
-renderHistory()
+if(html==="") html="Belum ada pilihan"
 
-</script>
+list.innerHTML=html
 
-</body>
-</html>
+if(Object.keys(picks).length===3){
+
+document.getElementById("betAmount").disabled=false
+
+}
+
+}
+
+function pick(m,d){
+
+if(Object.keys(picks).length>=3 && !picks[m]){
+
+showPopup("Maksimal 3 market")
+
+return
+
+}
+
+picks[m]=d
+
+updateBetList()
+
+}
+
+function placeBet(){
+
+if(Object.keys(picks).length<3){
+
+showPopup("Pilih 3 market")
+
+return
+
+}
+
+let bet=document.getElementById("betAmount").value
+
+if(!bet || bet<=0){
