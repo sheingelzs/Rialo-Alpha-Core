@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rialo Predict | Market Analysis Alpha</title>
+    <title>Rialo Predict | Alpha</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        rialoBg: '#08090a', // Hitam yang lebih halus
-                        rialoAccent: '#1e2023', // Abu-abu gelap untuk container
-                        rialoLogo: '#FDFDD0' // Warna krem logo Anda
+                        rialoBg: '#08090a',
+                        rialoAccent: '#1e2023',
+                        rialoLogo: '#FDFDD0'
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Tipografi kustom agar tidak standar browser */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
     </style>
@@ -47,15 +46,12 @@
         <div class="text-center max-w-2xl mx-auto flex flex-col items-center">
             
             <div class="mb-10 p-2 bg-rialoAccent rounded-3xl border border-gray-800 shadow-2xl shadow-rialoLogo/5">
-                <img src="images/logo.png" alt="Rialo Alpha Logo" class="w-48 h-auto object-contain">
+                <img src="images/logo.png" alt="Rialo Logo" class="w-48 h-auto object-contain">
             </div>
 
-            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-4 text-white leading-tight">
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-10 text-white leading-tight">
                 Welcome to the <span class="text-gray-400">Market Prediction</span>
             </h1>
-            <p class="text-lg text-gray-400 mb-10 max-w-lg">
-                Analisa data cerdas untuk memprediksi pergerakan pasar Alpha. Akurat, cepat, dan transparan.
-            </p>
 
             <a href="parlay.html" class="inline-flex items-center gap-2.5 bg-white text-rialoBg font-semibold px-8 py-3 rounded-full hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-white/10">
                 Mulai Prediksi
