@@ -3,89 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Predict - System Menu</title>
+    <title>Market Predict - Alpha</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        marketBg: '#08090a',
+                        marketAccent: '#1e2023',
+                        marketLogoColor: '#FDFDD0'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #08090a; }
-        
-        .menu-card { 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            border: 1px solid #1f2937; 
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        /* --- ANIMASI LOGO MUTAR 3D (KAYAK KOIN) --- */
+        @keyframes mutar3D {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
         }
-        .menu-card:hover {
-            border-color: #4ade80;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(74, 222, 128, 0.2);
+
+        .logo-3d {
+            /* 10 detik biar pelan dan elegan */
+            animation: mutar3D 10s linear infinite;
+            /* Penting agar terlihat 3D */
+            transform-style: preserve-3d;
         }
-        .menu-card:active { transform: scale(0.97); }
+
+        /* Tambahan perspektif di container agar efek 3D-nya berasa */
+        .perspective-container {
+            perspective: 1000px;
+        }
     </style>
 </head>
-<body class="text-white antialiased flex flex-col min-h-screen">
+<body class="bg-marketBg text-white antialiased flex flex-col min-h-screen">
 
-    <nav class="border-b border-gray-800 bg-[#08090a] px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded-full bg-[#FDFDD0] flex items-center justify-center font-bold text-black text-[10px]">M</div>
-            <span class="text-xs font-black uppercase tracking-widest text-white">System <span class="text-gray-500 font-medium">Terminal</span></span>
+    <nav class="border-b border-gray-800 bg-marketBg sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-marketLogoColor flex items-center justify-center font-bold text-marketBg text-xl font-bold">M</div>
+                <span class="text-xl font-bold tracking-tight">Market <span class="text-gray-500 font-medium">Predict</span></span>
+            </div>
+            <div class="flex items-center space-x-2 bg-green-950/50 px-3 py-1 rounded-full border border-green-800">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+                <p class="text-xs text-green-300 font-bold uppercase tracking-widest">Live</p>
+            </div>
         </div>
-        <a href="index.html" class="text-[9px] font-bold text-gray-500 uppercase tracking-widest hover:text-white transition">Close</a>
     </nav>
 
-    <main class="max-w-md mx-auto p-6 flex-grow flex flex-col justify-center w-full">
-        
-        <div class="mb-10 text-center">
-            <h1 class="text-4xl font-black italic uppercase leading-none tracking-tighter">Main <span class="text-green-500">Modules</span></h1>
-            <p class="text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em] mt-2 italic">Authentication Success: User Admin</p>
-        </div>
-
-        <div class="grid gap-5">
+    <main class="flex-grow flex items-center justify-center px-6 py-20">
+        <div class="text-center max-w-2xl mx-auto flex flex-col items-center">
             
-            <a href="ai.html" class="menu-card bg-[#111214] p-6 rounded-[2.5rem] block relative overflow-hidden group">
-                <div class="flex justify-between items-start relative z-10">
-                    <div class="space-y-1">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xl font-black italic uppercase group-hover:text-green-400 transition">Alpha Core AI</span>
-                            <span class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-                        </div>
-                        <p class="text-gray-500 text-[9px] uppercase font-bold tracking-widest">Knowledge & Network Base</p>
-                    </div>
-                    <div class="bg-white/5 p-2 rounded-xl group-hover:bg-green-500/10 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-green-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                        </svg>
-                    </div>
-                </div>
-                <p class="mt-4 text-[11px] text-gray-400 font-medium leading-relaxed opacity-70">Sistem AI pintar untuk menjawab semua pertanyaan seputar Rialo dan ekosistem Market Predict.</p>
-                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-green-500/5 blur-2xl rounded-full"></div>
-            </a>
-
-            <a href="parlay.html" class="menu-card bg-[#111214] p-6 rounded-[2.5rem] block relative overflow-hidden group">
-                <div class="flex justify-between items-start relative z-10">
-                    <div class="space-y-1">
-                        <span class="text-xl font-black italic uppercase group-hover:text-blue-400 transition">Market Parlay</span>
-                        <p class="text-gray-500 text-[9px] uppercase font-bold tracking-widest">High-Accuracy Prediction</p>
-                    </div>
-                    <div class="bg-white/5 p-2 rounded-xl group-hover:bg-blue-500/10 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-blue-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                        </svg>
-                    </div>
-                </div>
-                <p class="mt-4 text-[11px] text-gray-400 font-medium leading-relaxed opacity-70">Generate sinyal Alpha dan dapatkan hasil prediksi kemenangan parlay berbasis data Rialo.</p>
-                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-blue-500/5 blur-2xl rounded-full"></div>
-            </a>
-
-        </div>
-
-        <div class="mt-16 flex flex-col items-center">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-black border border-gray-700 flex items-center justify-center shadow-2xl mb-4">
-                <div class="text-white font-black text-xl italic">M</div>
+            <div class="perspective-container mb-10 p-2 bg-marketAccent rounded-3xl border border-gray-800 shadow-2xl shadow-white/5 overflow-hidden">
+                <img src="images/market.png" alt="Logo" class="w-48 h-auto object-contain logo-3d">
             </div>
-            <p class="text-[7px] text-gray-700 font-black uppercase tracking-[0.5em]">Rialo Core Framework v2.4</p>
-        </div>
 
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-10 text-white leading-tight uppercase italic">
+                Welcome to the <span class="text-gray-400">Market Prediction</span>
+            </h1>
+
+            <a href="parlay.html" class="inline-flex items-center gap-2.5 bg-white text-marketBg font-black px-10 py-4 rounded-full hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-xl shadow-white/10 uppercase tracking-tight">
+                Mulai Prediksi
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round
+                    " d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+        </div>
     </main>
 
 </body>
 </html>
+<a href="ai.html" class="...">Open Alpha AI</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Predict - Alpha Core AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #08090a; overflow: hidden; margin: 0; }
+        
+        /* Cursor Efek Ngetik */
+        .cursor { display: inline-block; width: 8px; height: 15px; background: #4ade80; margin-left: 4px; animation: blink 0.8s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        .chat-bubble { border-radius: 20px 20px 20px 4px; }
+        #chat-container { scroll-behavior: smooth; height: calc(100vh - 160px); overflow-y: auto; padding-bottom: 20px; }
 
+        /* --- TAMPILAN LOADING/SCANNING --- */
+        #scan-screen {
+            position: fixed; inset: 0; background: #08090a; z-index: 100;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: monospace; color: #4ade80; font-size: 10px; letter-spacing: 2px;
+        }
+        .scan-line { animation: scanPulse 1s infinite; font-weight: bold; color: white; font-size: 14px; margin: 10px 0; }
+        @keyframes scanPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        @keyframes progress { from { width: 0; } to { width: 100%; } }
+
+        /* Sembunyikan Chat di Awal */
+        #main-ui { display: none; opacity: 0; transition: opacity 1s; }
+    </style>
+</head>
+<body class="text-white antialiased flex flex-col min-h-screen">
+
+    <div id="scan-screen">
+        <div class="text-center space-y-2">
+            <div class="opacity-50 tracking-widest text-[8px]">ESTABLISHING SECURE CONNECTION...</div>
+            <div class="scan-line">[ INITIALIZING ALPHA CORE AI ]</div>
+            <div class="opacity-50 text-[8px]">DECRYPTING RIALO PROTOCOL v2.4</div>
+            <div class="mt-6 h-1 w-48 bg-gray-900 rounded-full overflow-hidden mx-auto border border-gray-800">
+                <div class="h-full bg-green-500 animate-[progress_3s_ease-in-out]"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-ui" class="flex flex-col min-h-screen">
+        <nav class="border-b border-gray-800 bg-[#08090a] px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-[#FDFDD0] flex items-center justify-center font-bold text-black text-[10px]">M</div>
+                <span class="text-xs font-black uppercase tracking-widest text-white">Alpha Core <span class="text-green-500 ml-1">AI</span></span>
+            </div>
+            <a href="menu.html" class="text-[9px] font-bold text-gray-500 uppercase tracking-widest hover:text-white transition">Exit Terminal</a>
+        </nav>
+
+        <main class="flex-grow p-4 max-w-md mx-auto w-full space-y-6" id="chat-container">
+            <div id="welcome-msg" class="flex flex-col items-start hidden">
+                <div class="bg-[#1e2023] border border-gray-800 p-4 chat-bubble text-xs leading-relaxed max-w-[90%] text-green-400 font-mono shadow-2xl">
+                    [SYSTEM READY]<br><br>
+                    Greetings, User. I am **Alpha Core**, your decentralized intelligence unit. 
+                    I am specialized in **Rialo Ecosystem** analytics.
+                    <br><br>
+                    <span class="text-gray-500 uppercase font-bold tracking-tighter">Query hint: "What is Rialo?"</span>
+                </div>
+            </div>
+        </main>
+
+        <div class="p-4 border-t border-gray-800 bg-[#08090a] sticky bottom-0">
+            <div class="max-w-md mx-auto relative">
+                <input type="text" id="user-input" autocomplete="off" placeholder="Enter command..." 
+                    class="w-full bg-[#1e2023] border border-gray-700 rounded-full py-4 px-6 pr-14 text-sm focus:outline-none focus:border-green-500 transition shadow-inner placeholder:text-gray-600">
+                <button onclick="handleSend()" class="absolute right-2 top-2 bg-white text-black p-2.5 rounded-full hover:bg-gray-200 transition active:scale-90">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+                    </svg>
+                </button>
+            </div>
+            <p class="text-[7px] text-center text-gray-800 mt-2.5 uppercase tracking-[0.3em]">Neural Verification Secured by Rialo</p>
+        </div>
+    </div>
+
+    <script>
+        // Logika Perpindahan Layar Scan ke Chat
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('scan-screen').style.display = 'none';
+                const mainUI = document.getElementById('main-ui');
+                mainUI.style.display = 'flex';
+                document.body.style.overflow = 'auto';
+                setTimeout(() => { 
+                    mainUI.style.opacity = '1'; 
+                    document.getElementById('welcome-msg').style.display = 'block';
+                }, 100);
+            }, 3000); 
+        };
+
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+
+        // Database Jawaban (English)
+        const responses = {
+            "rialo": "RIALO is a high-performance Layer 1 Blockchain ecosystem. It ensures data transparency and verified on-chain analytics for Market Predict.",
+            "what is rialo": "RIALO is a next-generation decentralized network that provides the neural framework for our Alpha Engine to process market signals securely.",
+            "whats rialo": "RIALO is the core Web3 infrastructure of this project. It makes every prediction tamper-proof and fully transparent.",
+            "prediction": "The Alpha Neural algorithm identifies market anomalies. Current success rate is maintained at 89.4% within the Rialo Network.",
+            "safe": "System is decentralized. We don't store private keys. All analysis is verified by secure Rialo validator nodes.",
+            "hello": "Alpha Core online. Database synced. Ready for your command, User."
+        };
+
+        function handleSend() {
+            const rawText = userInput.value.trim();
+            const text = rawText.toLowerCase();
+            if (text === "") return;
+
+            addBubble(rawText, 'user');
+            userInput.value = "";
+
+            setTimeout(() => {
+                let botMsg = "Access Denied: Query not found. Try: 'What is Rialo?' or 'Is it safe?'";
+                for (let key in responses) {
+                    if (text.includes(key)) { botMsg = responses[key]; break; }
+                }
+                addBubble(botMsg, 'bot');
+            }, 800);
+        }
+
+        function addBubble(msg, sender) {
+            const wrapper = document.createElement('div');
+            wrapper.className = sender === 'user' ? 'flex flex-col items-end' : 'flex flex-col items-start';
+            const bubble = document.createElement('div');
+            bubble.className = sender === 'user' 
+                ? 'bg-white text-black font-bold p-3 px-5 rounded-2xl rounded-tr-none text-xs max-w-[80%] shadow-lg' 
+                : 'bg-[#1e2023] border border-gray-800 p-4 chat-bubble text-xs text-green-400 font-mono leading-relaxed max-w-[90%] shadow-xl';
+            wrapper.appendChild(bubble);
+            chatContainer.appendChild(wrapper);
+            
+            if (sender === 'bot') typeEffect(bubble, msg);
+            else bubble.innerText = msg;
+
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function typeEffect(el, text) {
+            let i = 0; el.innerHTML = "";
+            function type() {
+                if (i < text.length) { el.innerHTML += text.charAt(i); i++; setTimeout(type, 20); }
+                else { el.innerHTML += '<span class="cursor"></span>'; chatContainer.scrollTop = chatContainer.scrollHeight; }
+            }
+            type();
+        }
+
+        userInput.addEventListener("keypress", (e) => { if (e.key === "Enter") handleSend(); });
+    </script>
+</body>
+</html>
