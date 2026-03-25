@@ -3,6 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Predict - Alpha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #08090a; }
+
+        /* ANIMASI LOGO MUTAR 3D */
+        @keyframes mutar3D {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        .logo-3d {
+            animation: mutar3D 10s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        .perspective-container {
+            perspective: 1000px;
+        }
+    </style>
+</head>
+<body class="text-white antialiased flex flex-col min-h-screen">
+
+    <nav class="border-b border-gray-800 bg-[#08090a] sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-xl font-bold tracking-tight text-white uppercase italic">Market <span class="text-gray-500 font-medium italic">Predict</span></span>
+            </div>
+            
+            <div class="flex items-center space-x-2 bg-green-950/50 px-3 py-1 rounded-full border border-green-800">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+                <p class="text-xs text-green-300 font-bold uppercase tracking-widest">Live</p>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center px-6 py-20">
+        <div class="text-center max-w-2xl mx-auto flex flex-col items-center">
+            
+            <div class="perspective-container mb-10 p-2 bg-[#1e2023] rounded-3xl border border-gray-800 shadow-2xl shadow-white/5 overflow-hidden">
+                <img src="images/market.png" alt="Logo" class="w-48 h-auto object-contain logo-3d">
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-10 text-white leading-tight uppercase italic">
+                Welcome to the <br><span class="text-gray-400">Market Prediction</span>
+            </h1>
+
+            <a href="menu.html" class="inline-flex items-center gap-2.5 bg-white text-black font-black px-10 py-4 rounded-full hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-xl shadow-white/10 uppercase tracking-tight">
+                Mulai Prediksi
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+        </div>
+    </main>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Predict - Alpha Core AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
