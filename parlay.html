@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RIALO - Crypto Prediction</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@800&display=swap" rel="stylesheet"/>
+<title>RIALO ALPHA - Realtime</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@800&display=swap" rel="stylesheet"/>
 <style>
-/* ══════════════ CORE UI ══════════════ */
 :root {
   --bg: #050810;
   --card: #0f1929;
@@ -14,171 +13,139 @@
   --accent: #4ade80;
   --red: #f87171;
   --text: #e8eaf0;
-  --font: 'Space Grotesk', sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk', sans-serif;min-height:100vh;}
 
-/* NAV (HOME & MARKET DELETED) */
-.nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,0.95);backdrop-filter:blur(12px);}
-.nav-logo{font-family:'Syne', sans-serif;font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;cursor:pointer;}
-.logo-dot{width:9px;height:9px;background:var(--accent);border-radius:50%;}
-.nav-tabs{display:flex;gap:0.3rem;background:rgba(255,255,255,0.05);border-radius:10px;padding:4px;}
-.nav-tab{padding:0.4rem 1rem;border-radius:7px;border:none;background:transparent;color:rgba(255,255,255,0.4);font-size:0.8rem;font-weight:600;cursor:pointer;transition:0.2s;}
-.nav-tab.active{background:rgba(255,255,255,0.1);color:#fff;}
+/* NAV */
+.nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;background:rgba(5,8,16,0.9);backdrop-filter:blur(10px);}
+.nav-logo{font-family:'Syne', sans-serif;font-size:1.2rem;font-weight:800;display:flex;align-items:center;gap:8px;cursor:pointer;}
+.logo-dot{width:10px;height:10px;background:var(--accent);border-radius:50%;box-shadow: 0 0 10px var(--accent);}
+.btn-connect{background:var(--accent);color:#000;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;transition:0.3s;}
+.btn-connect:hover{opacity:0.8;transform:scale(1.05);}
 
 /* PAGES */
-.page{display:none;animation:fadeIn 0.3s ease;padding:2rem 1.5rem;}
-.page.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page{display:none;padding:2rem 1.5rem;max-width:1000px;margin:0 auto;}
+.page.active{display:block;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 
-/* MENU DASHBOARD */
-.menu-container{max-width:600px;margin:0 auto;}
-.section-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:1rem;display:block;}
-.menu-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;cursor:pointer;display:flex;align-items:center;gap:1.2rem;transition:0.25s;margin-bottom:1rem;}
-.menu-card:hover{border-color:var(--accent);background:rgba(74,222,128,0.03);transform:translateY(-2px);}
-.icon-box{width:45px;height:45px;background:rgba(74,222,128,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+/* DASHBOARD CARDS */
+.grid-menu{display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1rem;margin-top:1.5rem;}
+.menu-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;}
+.menu-card:hover{border-color:var(--accent);background:rgba(74,222,128,0.02);}
 
-/* SOCIAL LINKS */
-.social-list{display:grid;gap:0.6rem;}
-.social-item{display:flex;align-items:center;gap:1rem;padding:0.8rem 1rem;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);transition:0.2s;}
-.social-item:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.2);}
+/* PRICE ROW */
+.price-row{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.02);padding:1rem;border-radius:12px;margin-bottom:0.8rem;border:1px solid var(--border);}
+.price-val{font-family:monospace;font-weight:bold;color:var(--accent);}
 
-/* PARLAY SECTION */
-.parlay-grid{display:grid;grid-template-columns:1fr 320px;gap:1.5rem;max-width:1000px;margin:0 auto;}
-.predict-row{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:0.7rem;display:flex;align-items:center;justify-content:space-between;}
-.coin-info b{font-size:1.1rem;color:#fff;}
-.coin-info small{color:rgba(255,255,255,0.4);font-family:'Space Mono';}
-.btn-group{display:flex;gap:0.5rem;}
-.btn-action{padding:0.5rem 1.2rem;border-radius:8px;border:none;font-weight:700;cursor:pointer;transition:0.2s;}
-.up{background:rgba(74,222,128,0.1);color:var(--accent);border:1px solid rgba(74,222,128,0.2);}
-.down{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
-.btn-action.selected.up{background:var(--accent);color:#000;}
-.btn-action.selected.down{background:var(--red);color:#fff;}
+/* VS MARKET SECTION */
+.vs-badge{background:rgba(74,222,128,0.1);color:var(--accent);padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:bold;}
 
-.slip-box{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:18px;padding:1.5rem;position:sticky;top:100px;height:fit-content;}
-
-@media(max-width:850px){ .parlay-grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
 
 <nav class="nav">
-  <div class="nav-logo" onclick="showPage('menu')">
-    <div class="logo-dot"></div>RIALO
-  </div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" id="tab-menu" onclick="showPage('menu')">Menu</button>
-    <button class="nav-tab" id="tab-parlay" onclick="showPage('parlay')">Parlay</button>
-  </div>
-  <button style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:0.4rem 1rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;">Connect</button>
+  <div class="nav-logo" onclick="showPage('menu')"><div class="logo-dot"></div> RIALO ALPHA</div>
+  <button class="btn-connect" id="wallet-btn" onclick="connectWallet()">Connect Wallet</button>
 </nav>
 
 <div class="page active" id="page-menu">
-  <div class="menu-container">
-    <h1 style="font-family:'Syne';font-size:2rem;margin-bottom:1.5rem;">Dashboard</h1>
-    
-    <span class="section-label">Prediction Markets</span>
-    <div class="menu-card" onclick="showPage('parlay')">
-      <div class="icon-box">🎯</div>
-      <div style="flex:1">
-        <div style="font-weight:700;font-size:1.1rem">Start Parlay</div>
-        <div style="font-size:0.8rem;color:rgba(255,255,255,0.4)">Multi-pick pools with 1.8x rewards</div>
-      </div>
-      <div style="color:var(--accent)">→</div>
+  <h1 style="font-family:'Syne';font-size:2.2rem;margin-bottom:0.5rem;">Welcome, Alpha</h1>
+  <p style="color:rgba(255,255,255,0.5);margin-bottom:2rem;">Explore Rialo Ecosystem & Market Predictions</p>
+
+  <h3 style="font-size:0.8rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent)">Core Apps</h3>
+  <div class="grid-menu">
+    <div class="menu-card" onclick="showPage('market')">
+      <div style="font-size:1.5rem;margin-bottom:10px;">📊</div>
+      <div style="font-weight:700;font-size:1.1rem">VS Market <span class="vs-badge">LIVE</span></div>
+      <p style="font-size:0.85rem;color:rgba(255,255,255,0.4);margin-top:5px;">Predict price movements & win Rialo points.</p>
     </div>
 
-    <span class="section-label" style="margin-top:2rem;">Community</span>
-    <div class="social-list">
-      <a href="https://x.com/rialohq" target="_blank" class="social-item">
-        <div style="font-size:1.2rem">𝕏</div>
-        <div><b>Rialo HQ</b><br><small style="color:rgba(255,255,255,0.3)">Follow our latest updates</small></div>
-      </a>
-      <a href="https://discord.gg/rialoprotocol" target="_blank" class="social-item">
-        <div style="font-size:1.2rem">👾</div>
-        <div><b>Discord Community</b><br><small style="color:rgba(255,255,255,0.3)">Join the builder ecosystem</small></div>
-      </a>
+    <div class="menu-card">
+      <div style="font-size:1.5rem;margin-bottom:10px;">🛡️</div>
+      <div style="font-weight:700;font-size:1.1rem">Rialo Shield</div>
+      <p style="font-size:0.85rem;color:rgba(255,255,255,0.4);margin-top:5px;">Smart contract security & verification.</p>
     </div>
+  </div>
+
+  <h3 style="font-size:0.8rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-top:2.5rem;">The Team (X)</h3>
+  <div class="grid-menu">
+    <a href="https://x.com/sheina" target="_blank" class="menu-card">
+      <div style="font-weight:700">Sheina</div>
+      <p style="font-size:0.8rem;color:rgba(255,255,255,0.4)">Core Contributor / Design</p>
+    </a>
+    <a href="https://x.com/gelzs" target="_blank" class="menu-card">
+      <div style="font-weight:700">Gelzs</div>
+      <p style="font-size:0.8rem;color:rgba(255,255,255,0.4)">Backend / Developer</p>
+    </a>
   </div>
 </div>
 
-<div class="page" id="page-parlay">
-  <div class="parlay-grid">
-    <div class="parlay-main">
-      <h2 style="font-family:'Syne';margin-bottom:1.5rem">Live Parlay Pools</h2>
-      
-      <div class="predict-row">
-        <div class="coin-info"><b>BTC</b> <br><small>$93,120.40</small></div>
-        <div class="btn-group">
-          <button class="btn-action up" onclick="togglePick(this)">▲ UP</button>
-          <button class="btn-action down" onclick="togglePick(this)">▼ DOWN</button>
-        </div>
-      </div>
+<div class="page" id="page-market">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+    <h2 style="font-family:'Syne';">VS Market</h2>
+    <button onclick="showPage('menu')" style="background:transparent;border:none;color:var(--accent);cursor:pointer;">← Back</button>
+  </div>
 
-      <div class="predict-row">
-        <div class="coin-info"><b>ETH</b> <br><small>$2,385.12</small></div>
-        <div class="btn-group">
-          <button class="btn-action up" onclick="togglePick(this)">▲ UP</button>
-          <button class="btn-action down" onclick="togglePick(this)">▼ DOWN</button>
-        </div>
-      </div>
-
-      <div class="predict-row">
-        <div class="coin-info"><b>SOL</b> <br><small>$142.60</small></div>
-        <div class="btn-group">
-          <button class="btn-action up" onclick="togglePick(this)">▲ UP</button>
-          <button class="btn-action down" onclick="togglePick(this)">▼ DOWN</button>
-        </div>
-      </div>
+  <div id="price-container">
+    <div class="price-row">
+      <div><b>BTC / USDT</b></div>
+      <div class="price-val" id="btc-price">Loading...</div>
     </div>
-
-    <div class="slip-sidebar">
-      <div class="slip-box">
-        <h3 style="font-family:'Syne';font-size:1rem;margin-bottom:1rem">Bet Slip</h3>
-        <div id="slip-content" style="text-align:center;padding:2rem 0;color:rgba(255,255,255,0.2);font-size:0.85rem">
-          No active picks.<br>Choose UP or DOWN.
-        </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">
-        <button style="width:100%;background:var(--accent);color:#000;border:none;padding:0.8rem;border-radius:10px;font-weight:700;cursor:pointer;opacity:0.5">Place Parlay</button>
-      </div>
+    <div class="price-row">
+      <div><b>ETH / USDT</b></div>
+      <div class="price-val" id="eth-price">Loading...</div>
     </div>
+    <div class="price-row">
+      <div><b>SOL / USDT</b></div>
+      <div class="price-val" id="sol-price">Loading...</div>
+    </div>
+  </div>
+  
+  <div style="margin-top:2rem; background:rgba(255,255,255,0.05); padding:1.5rem; border-radius:16px; text-align:center; border:1px dashed var(--border);">
+    <p style="font-size:0.9rem; color:rgba(255,255,255,0.5)">Select a pair above to start your prediction.</p>
   </div>
 </div>
 
 <script>
+// NAVIGATION
 function showPage(id) {
-  // Reset Pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  
-  // Activate Target
   document.getElementById('page-' + id).classList.add('active');
-  document.getElementById('tab-' + id).classList.add('active');
   window.scrollTo(0,0);
 }
 
-function togglePick(btn) {
-  const parent = btn.parentElement;
-  // Clear other button in same row
-  parent.querySelectorAll('.btn-action').forEach(b => {
-    if(b !== btn) b.classList.remove('selected');
-  });
-  // Toggle current
-  btn.classList.toggle('selected');
-  
-  // Simple UI update for slip
-  const selectedCount = document.querySelectorAll('.btn-action.selected').length;
-  const slip = document.getElementById('slip-content');
-  if(selectedCount > 0) {
-    slip.innerHTML = `<b style="color:var(--accent); font-size:1.2rem">${selectedCount}</b> Picks Selected`;
-    slip.style.color = "#fff";
-  } else {
-    slip.innerHTML = "No active picks.<br>Choose UP or DOWN.";
-    slip.style.color = "rgba(255,255,255,0.2)";
+// WALLET SIMULATION
+function connectWallet() {
+  const btn = document.getElementById('wallet-btn');
+  btn.innerText = "Connecting...";
+  setTimeout(() => {
+    btn.innerText = "0xRialo...4ade";
+    btn.style.background = "transparent";
+    btn.style.border = "1px solid var(--accent)";
+    btn.style.color = "var(--accent)";
+  }, 1000);
+}
+
+// REALTIME PRICE FETCHING (API)
+async function fetchPrices() {
+  try {
+    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd');
+    const data = await res.json();
+    
+    document.getElementById('btc-price').innerText = "$" + data.bitcoin.usd.toLocaleString();
+    document.getElementById('eth-price').innerText = "$" + data.ethereum.usd.toLocaleString();
+    document.getElementById('sol-price').innerText = "$" + data.solana.usd.toLocaleString();
+  } catch (err) {
+    console.error("Price fetch failed");
   }
 }
+
+// Refresh price every 10 seconds
+setInterval(fetchPrices, 10000);
+fetchPrices();
 </script>
 
 </body>
 </html>
-
