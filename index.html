@@ -1,73 +1,77 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Market Prediction</title>
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: Arial, sans-serif;
-}
-
-body{
-  background:#000;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  overflow:hidden;
-}
-
-.container{
-  position:relative;
-  width:100%;
-  max-width:1400px;
-}
-
-.container img{
-  width:100%;
-  height:auto;
-  display:block;
-}
-.container a img {
-  cursor: pointer;
-}
-  .title{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
-  
-  width:90%;
-  text-align:center;
-
-  font-size:clamp(20px, 5vw, 100px);
-  font-weight:900;
-
-  background: linear-gradient(90deg, #ff0000, #ffffff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-  letter-spacing:2px;
-}
-</style>
-
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rialo Predict | Market Analysis Alpha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rialoBg: '#08090a', // Hitam yang lebih halus
+                        rialoAccent: '#1e2023', // Abu-abu gelap untuk container
+                        rialoLogo: '#FDFDD0' // Warna krem logo Anda
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Tipografi kustom agar tidak standar browser */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
+<body class="bg-rialoBg text-white antialiased flex flex-col min-h-screen">
 
-<body>
+    <nav class="border-b border-gray-800 bg-rialoBg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-rialoLogo flex items-center justify-center font-bold text-rialoBg text-xl">R</div>
+                <span class="text-xl font-bold tracking-tight">Rialo <span class="text-gray-500">Predict</span></span>
+            </div>
+            
+            <div class="flex items-center space-x-2 bg-green-950/50 px-3 py-1 rounded-full border border-green-800">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+                <p class="text-xs text-green-300 font-medium">LIVE</p>
+            </div>
+        </div>
+    </nav>
 
-<div class="container">
-<a href="menu.html">
-  <img src="images/market.png" alt="Market Image">
-  <div class="title">
-    Wellcome to the Market Prediction
-  </div>
-</div>
+    <main class="flex-grow flex items-center justify-center px-6 py-20">
+        <div class="text-center max-w-2xl mx-auto flex flex-col items-center">
+            
+            <div class="mb-10 p-2 bg-rialoAccent rounded-3xl border border-gray-800 shadow-2xl shadow-rialoLogo/5">
+                <img src="images/your_logo.png" alt="Rialo Alpha Logo" class="w-48 h-auto object-contain">
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-4 text-white leading-tight">
+                Welcome to the <span class="text-gray-400">Market Prediction</span>
+            </h1>
+            <p class="text-lg text-gray-400 mb-10 max-w-lg">
+                Analisis data cerdas untuk memprediksi pergerakan pasar Alpha. Akurat, cepat, dan transparan.
+            </p>
+
+            <a href="parlay.html" class="inline-flex items-center gap-2.5 bg-white text-rialoBg font-semibold px-8 py-3 rounded-full hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-white/10">
+                Mulai Prediksi
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+        </div>
+    </main>
+
+    <footer class="border-t border-gray-800 bg-rialoAccent/50 mt-20">
+        <div class="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-gray-500">
+            &copy; 2024 Rialo Predict. Seluruh data prediksi dihasilkan oleh algoritma Alpha. 
+            <span class="block text-gray-600 mt-1">Gunakan sebagai referensi, bukan saran finansial.</span>
+        </div>
+    </footer>
 
 </body>
 </html>
