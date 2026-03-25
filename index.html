@@ -3,24 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Predict | Alpha</title>
+    <title>Market Predict - Alpha</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        marketBg: '#08090a',
-                        marketAccent: '#1e2023',
-                        marketLogoColor: '#FDFDD0'
+                        marketBg: '#08090a', // Hitam halus
+                        marketAccent: '#1e2023', // Abu-abu gelap untuk container
+                        marketLogoColor: '#FDFDD0' // Warna krem logo
                     }
                 }
             }
         }
     </script>
     <style>
+        /* Tipografi Inter yang modern */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
+
+        /* --- KEYFRAMES ANIMASI PUTAR HALUS (360 derajat) --- */
+        @keyframes putarHalus {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- CLASS CSS UNTUK MENERAPKAN ANIMASI KE GAMBAR --- */
+        .logo-muter-halus {
+            /* Menjalankan keyframes putarHalus */
+            animation-name: putarHalus;
+            /* Durasi 10 detik agar putarannya lambat dan santai */
+            animation-duration: 10s;
+            /* Putaran linear (kecepatannya sama terus dari awal sampai akhir) */
+            animation-timing-function: linear;
+            /* Berputar terus tanpa henti */
+            animation-iteration-count: infinite;
+        }
     </style>
 </head>
 <body class="bg-marketBg text-white antialiased flex flex-col min-h-screen">
@@ -46,7 +65,7 @@
         <div class="text-center max-w-2xl mx-auto flex flex-col items-center">
             
             <div class="mb-10 p-2 bg-marketAccent rounded-3xl border border-gray-800 shadow-2xl shadow-white/5">
-                <img src="images/market.png" alt="Market Logo" class="w-48 h-auto object-contain">
+                <img src="images/market.png" alt="Market Logo" class="w-48 h-auto object-contain logo-muter-halus">
             </div>
 
             <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-10 text-white leading-tight">
