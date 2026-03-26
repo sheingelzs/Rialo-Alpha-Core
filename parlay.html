@@ -1,202 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>RIALO — Crypto Prediction Market</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIALO — Live Predict</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Syne:wght@800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg:#050810; --bg2:#0b1120; --card:#0f1929; --border:#1a2a42;
-            --accent:#4ade80; --accent2:#7c5cfc; --red:#f87171; --green:#4ade80;
-            --text:#e8eaf0; --muted:#5a7090;
-            --font:'Space Grotesk',sans-serif; --font-head:'Syne',sans-serif; --font-mono:'Space Mono',monospace;
-        }
-
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { background:var(--bg); color:var(--text); font-family:var(--font); min-height:100vh; overflow-x:hidden; }
-
-        @keyframes flash-green { 0% { background: rgba(74, 222, 128, 0.4); } 100% { background: transparent; } }
-        @keyframes flash-red { 0% { background: rgba(248, 113, 113, 0.4); } 100% { background: transparent; } }
-        .up-flash { animation: flash-green 0.8s ease-out; }
-        .down-flash { animation: flash-red 0.8s ease-out; }
-
-        .nav { display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.06); position:sticky; top:0; z-index:100; background:rgba(5,8,16,0.92); backdrop-filter:blur(16px); }
-        .nav-logo { font-family:var(--font-head); font-size:1.25rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px; }
-        .logo-dot { width:9px; height:9px; background:var(--accent); border-radius:50%; box-shadow: 0 0 10px var(--accent); }
-
-        .page { padding:2rem 1.5rem; max-width:1000px; margin:0 auto; }
-        .parlay-container { display:grid; grid-template-columns: 1fr 340px; gap:1.5rem; }
-        @media(max-width:850px){ .parlay-container { grid-template-columns:1fr; } }
-
-        .predict-row { display:flex; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.2rem; gap:1.2rem; margin-bottom:0.8rem; transition: 0.3s; }
-        .predict-row:hover { border-color: var(--accent2); transform: translateX(5px); }
-        
-        .coin-info { width:150px; }
-        .coin-name { font-weight:700; font-size:0.95rem; display:block; letter-spacing: 1px; color: var(--muted); }
-        .coin-price-sm { font-family:var(--font-mono); font-size:1.15rem; color:var(--text); font-weight:bold; display:inline-block; margin-top:4px; padding: 2px 6px; border-radius: 4px; }
-        .coin-change-sm { font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:6px; background: rgba(255,255,255,0.05); }
-
-        .predict-btns { display:flex; gap:0.6rem; margin-left:auto; }
-        button.up-btn, button.dn-btn { padding:0.7rem 1.4rem; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:800; cursor:pointer; transition:0.2s; font-family: var(--font-head); }
-        
-        button.up-btn.selected { background:var(--green); color:black; border-color:var(--green); box-shadow: 0 0 20px rgba(74,222,128,0.2); }
-        button.dn-btn.selected { background:var(--red); color:white; border-color:var(--red); box-shadow: 0 0 20px rgba(248,113,113,0.2); }
-
-        .bet-slip { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:1.5rem; height:fit-content; position:sticky; top:85px; }
-        .slip-header { display:flex; justify-content:space-between; margin-bottom:1.5rem; align-items: center; }
-        .slip-count { background: var(--accent2); color:white; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
-        
-        .slip-item { display:flex; justify-content:space-between; padding:0.8rem; background:rgba(255,255,255,0.03); border-radius:10px; margin-bottom:0.6rem; font-size:0.9rem; border-left: 4px solid var(--accent2); }
-
-        .place-btn { width:100%; padding:1.1rem; background:var(--accent); color:black; border:none; border-radius:10px; font-weight:800; cursor:pointer; margin-top:1.5rem; font-size:1rem; transition: 0.3s; font-family: var(--font-head); }
-        .place-btn:disabled { background: #1a2a42; color: #5a7090; cursor: not-allowed; }
+        :root { --bg:#050810; --card:#0f1929; --accent:#4ade80; --red:#f87171; --text:#e8eaf0; }
+        body { background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-serif; margin:0; padding:20px; }
+        .predict-row { background:var(--card); border:1px solid #1a2a42; padding:20px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; transition: 0.3s; }
+        .price { font-weight:bold; font-size:1.2rem; transition: 0.3s; padding: 2px 8px; border-radius:5px; }
+        .up-flash { background: rgba(74, 222, 128, 0.3); color: #4ade80; }
+        .down-flash { background: rgba(248, 113, 113, 0.3); color: #f87171; }
+        .btn-group button { padding:10px 20px; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-left:5px; }
+        .up-btn { background:#1a2a42; color:#4ade80; }
+        .dn-btn { background:#1a2a42; color:#f87171; }
+        .selected-up { background:#4ade80 !important; color:#000 !important; }
+        .selected-dn { background:#f87171 !important; color:#fff !important; }
     </style>
 </head>
 <body>
-
-<nav class="nav">
-    <div class="nav-logo"><div class="logo-dot"></div> RIALO</div>
-    <div id="status" style="font-size: 0.7rem; color: var(--accent); font-family: var(--font-mono);">SYSTEM: LIVE</div>
-</nav>
-
-<div class="page">
-    <div class="parlay-container">
-        <div class="parlay-left">
-            <h2 style="font-family:var(--font-head); margin-bottom:1.5rem; font-size: 2rem;">Predict 2026 Market</h2>
-            
-            <div class="predict-row">
-                <div class="coin-info">
-                    <span class="coin-name">BITCOIN</span>
-                    <span class="coin-price-sm" id="price-bitcoin">Connecting...</span>
-                </div>
-                <span class="coin-change-sm" id="change-bitcoin">0.00%</span>
-                <div class="predict-btns">
-                    <button class="up-btn" onclick="pick('BTC', 'UP', this)">UP</button>
-                    <button class="dn-btn" onclick="pick('BTC', 'DOWN', this)">DOWN</button>
-                </div>
-            </div>
-
-            <div class="predict-row">
-                <div class="coin-info">
-                    <span class="coin-name">ETHEREUM</span>
-                    <span class="coin-price-sm" id="price-ethereum">Connecting...</span>
-                </div>
-                <span class="coin-change-sm" id="change-ethereum">0.00%</span>
-                <div class="predict-btns">
-                    <button class="up-btn" onclick="pick('ETH', 'UP', this)">UP</button>
-                    <button class="dn-btn" onclick="pick('ETH', 'DOWN', this)">DOWN</button>
-                </div>
-            </div>
-
-            <div class="predict-row">
-                <div class="coin-info">
-                    <span class="coin-name">SOLANA</span>
-                    <span class="coin-price-sm" id="price-solana">Connecting...</span>
-                </div>
-                <span class="coin-change-sm" id="change-solana">0.00%</span>
-                <div class="predict-btns">
-                    <button class="up-btn" onclick="pick('SOL', 'UP', this)">UP</button>
-                    <button class="dn-btn" onclick="pick('SOL', 'DOWN', this)">DOWN</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="bet-slip">
-            <div class="slip-header">
-                <h3 style="font-family:var(--font-head); font-size:1.2rem;">My Parlay</h3>
-                <span class="slip-count" id="slip-count">0</span>
-            </div>
-            <div id="slip-items">
-                <p style="color:var(--muted); font-size:0.85rem; text-align:center; padding: 30px 0;">No predictions selected</p>
-            </div>
-            <button class="place-btn" id="place-btn" disabled onclick="alert('Parlay Placed!')">PLACE PARLAY</button>
+    <h1 style="font-family:'Syne';">RIALO PREDICT</h1>
+    
+    <div class="predict-row">
+        <div><span>BTC/USDT</span><div id="price-btc" class="price">$92,000.00</div></div>
+        <div class="btn-group">
+            <button class="up-btn" onclick="this.classList.toggle('selected-up')">UP</button>
+            <button class="dn-btn" onclick="this.classList.toggle('selected-dn')">DOWN</button>
         </div>
     </div>
-</div>
 
-<script>
-    let selections = {};
-    let lastPrices = {};
-    const coins = ['bitcoin', 'ethereum', 'solana'];
+    <div class="predict-row">
+        <div><span>ETH/USDT</span><div id="price-eth" class="price">$4,800.00</div></div>
+        <div class="btn-group">
+            <button class="up-btn" onclick="this.classList.toggle('selected-up')">UP</button>
+            <button class="dn-btn" onclick="this.classList.toggle('selected-dn')">DOWN</button>
+        </div>
+    </div>
 
-    async function updatePrices() {
-        try {
-            const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins.join(',')}&vs_currencies=usd&include_24hr_change=true`);
-            const data = await response.json();
+    <script>
+        let prices = { btc: 92000, eth: 4800 };
 
-            coins.forEach(coin => {
-                const price = data[coin].usd;
-                const change = data[coin].usd_24h_change;
-                const pEl = document.getElementById(`price-${coin}`);
-                const cEl = document.getElementById(`change-${coin}`);
-
-                if (pEl) {
-                    // Flash Effect logic
-                    if (lastPrices[coin]) {
-                        pEl.classList.remove('up-flash', 'down-flash');
-                        void pEl.offsetWidth; 
-                        if (price > lastPrices[coin]) pEl.classList.add('up-flash');
-                        else if (price < lastPrices[coin]) pEl.classList.add('down-flash');
-                    }
-                    lastPrices[coin] = price;
-
-                    pEl.innerText = new Intl.NumberFormat('en-US', {
-                        style: 'currency', currency: 'USD'
-                    }).format(price);
-                }
-
-                if (cEl) {
-                    const isPos = change >= 0;
-                    cEl.innerText = `${isPos ? '▲' : '▼'} ${Math.abs(change).toFixed(2)}%`;
-                    cEl.style.color = isPos ? 'var(--green)' : 'var(--red)';
-                }
-            });
-            document.getElementById('status').innerText = "SYSTEM: LIVE (March 2026)";
-        } catch (err) {
-            console.error("API Error:", err);
-            document.getElementById('status').innerText = "SYSTEM: RECONNECTING...";
+        function update() {
+            for (let coin in prices) {
+                let change = (Math.random() * 20) - 10; // Gerak acak
+                let oldPrice = prices[coin];
+                prices[coin] += change;
+                
+                let el = document.getElementById('price-' + coin);
+                el.innerText = '$' + prices[coin].toLocaleString(undefined, {minimumFractionDigits: 2});
+                
+                // Efek Warna Flash
+                el.classList.remove('up-flash', 'down-flash');
+                void el.offsetWidth; // Reset animasi
+                el.classList.add(change > 0 ? 'up-flash' : 'down-flash');
+            }
         }
-    }
-
-    window.pick = function(coin, dir, btn) {
-        const parent = btn.parentElement;
-        if (selections[coin] === dir) {
-            delete selections[coin];
-            btn.classList.remove('selected');
-        } else {
-            parent.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
-            selections[coin] = dir;
-            btn.classList.add('selected');
-        }
-        updateSlipUI();
-    };
-
-    function updateSlipUI() {
-        const box = document.getElementById('slip-items');
-        const badge = document.getElementById('slip-count');
-        const placeBtn = document.getElementById('place-btn');
-        const keys = Object.keys(selections);
-        badge.innerText = keys.length;
-        placeBtn.disabled = keys.length === 0;
-
-        if (keys.length === 0) {
-            box.innerHTML = '<p style="color:var(--muted); font-size:0.85rem; text-align:center; padding: 30px 0;">No predictions selected</p>';
-        } else {
-            box.innerHTML = keys.map(k => `
-                <div class="slip-item" style="border-left-color: ${selections[k] === 'UP' ? 'var(--green)' : 'var(--red)'}">
-                    <span style="font-weight:bold;">${k}/USDT</span>
-                    <span style="font-weight:800; color:${selections[k] === 'UP' ? 'var(--green)' : 'var(--red)'}">
-                        ${selections[k]} ${selections[k] === 'UP' ? '▲' : '▼'}
-                    </span>
-                </div>
-            `).join('');
-        }
-    }
-
-    // Update setiap 3 detik (Polling)
-    setInterval(updatePrices, 3000);
-    updatePrices(); // Initial call
-</script>
+        setInterval(update, 1000); // Update setiap 1 detik
+    </script>
 </body>
 </html>
