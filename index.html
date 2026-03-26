@@ -33,8 +33,6 @@
         
         #main-ui { display: none; opacity: 0; transition: opacity 1s; }
         .chat-bubble { border-radius: 20px 20px 20px 4px; }
-        .cursor { display: inline-block; width: 8px; height: 15px; background: #4ade80; margin-left: 4px; animation: blink 0.8s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
 </head>
 <body class="antialiased">
@@ -83,7 +81,7 @@
             </h1>
 
             <div class="w-full max-w-md bg-[#111214] border border-gray-800 rounded-3xl p-6 mb-10 space-y-4">
-                <h3 class="text-[10px] uppercase tracking-[0.3em] text-gray-500 font-bold mb-2 text-center">Live Market Feed</h3>
+                <h3 class="text-[10px] uppercase tracking-[0.3em] text-gray-500 font-bold mb-2 text-center">Binance Real-time Feed</h3>
                 
                 <div class="flex items-center justify-between p-3 bg-[#1e2023] rounded-2xl border border-gray-800">
                     <div class="flex items-center gap-3">
@@ -126,20 +124,20 @@
             <button onclick="exitTerminal()" class="text-[9px] font-bold text-gray-500 uppercase hover:text-white">Exit Terminal</button>
         </nav>
         <main class="flex-grow p-4 max-w-md mx-auto w-full overflow-y-auto" id="chat-container">
-            <div id="welcome-msg" class="bg-[#1e2023] border border-gray-800 p-4 chat-bubble text-xs text-green-400 font-mono">
-                [SYSTEM READY] Synchronizing...<br><br>
-                Greetings. I am Alpha Core. How can I assist you with Rialo Ecosystem today?
+            <div class="bg-[#1e2023] border border-gray-800 p-4 chat-bubble text-xs text-green-400 font-mono">
+                [SYSTEM READY] Synchronizing with Rialo...<br><br>
+                Type "What is Rialo?" to begin.
             </div>
         </main>
         <div class="p-4 bg-[#08090a] border-t border-gray-800">
             <div class="max-w-md mx-auto relative">
-                <input type="text" id="user-input" placeholder="Enter command..." class="w-full bg-[#1e2023] border border-gray-700 rounded-full py-4 px-6 text-sm focus:outline-none focus:border-green-500 transition shadow-inner">
+                <input type="text" id="user-input" placeholder="Enter command..." class="w-full bg-[#1e2023] border border-gray-700 rounded-full py-4 px-6 text-sm focus:outline-none focus:border-green-500 transition">
             </div>
         </div>
     </div>
 
     <script>
-        // TERMINAL LOGIC
+        // TERMINAL SWITCH
         function startTerminal() {
             document.getElementById('landing-page').style.display = 'none';
             const ui = document.getElementById('main-ui');
@@ -151,7 +149,7 @@
             location.reload();
         }
 
-        // BINANCE WEBSOCKET PRICE FEED
+        // PRICE STREAMING
         const priceBtc = document.getElementById('price-btc');
         const priceEth = document.getElementById('price-eth');
         let lastBtc = 0; let lastEth = 0;
@@ -161,20 +159,19 @@
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
             const rawPrice = parseFloat(data.c);
-            const formattedPrice = rawPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            const formatted = rawPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
             if (data.s === 'BTCUSDT') {
-                priceBtc.innerText = formattedPrice;
+                priceBtc.innerText = formatted;
                 priceBtc.className = `text-[10px] font-mono ${rawPrice > lastBtc ? 'price-up' : 'price-down'}`;
                 lastBtc = rawPrice;
             } else if (data.s === 'ETHUSDT') {
-                priceEth.innerText = formattedPrice;
+                priceEth.innerText = formatted;
                 priceEth.className = `text-[10px] font-mono ${rawPrice > lastEth ? 'price-up' : 'price-down'}`;
                 lastEth = rawPrice;
             }
         };
 
-        // UI INITIALIZATION
         window.onload = () => {
             setTimeout(() => {
                 document.getElementById('scan-screen').style.display = 'none';
@@ -183,32 +180,6 @@
                 setTimeout(() => lp.style.opacity = '1', 50);
             }, 3000);
         };
-
-        // SIMPLE CHAT ENGINE
-        const userInput = document.getElementById('user-input');
-        const chatContainer = document.getElementById('chat-container');
-
-        userInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter" && userInput.value.trim() !== "") {
-                const text = userInput.value;
-                addBubble(text, 'user');
-                userInput.value = "";
-                setTimeout(() => addBubble("Processing query through Alpha Core neural nodes...", 'bot'), 600);
-            }
-        });
-
-        function addBubble(msg, sender) {
-            const wrapper = document.createElement('div');
-            wrapper.className = sender === 'user' ? 'flex flex-col items-end mt-4' : 'flex flex-col items-start mt-4';
-            const bubble = document.createElement('div');
-            bubble.className = sender === 'user' 
-                ? 'bg-white text-black font-bold p-3 px-5 rounded-2xl rounded-tr-none text-xs max-w-[80%]' 
-                : 'bg-[#1e2023] border border-gray-800 p-4 chat-bubble text-xs text-green-400 font-mono max-w-[90%]';
-            bubble.innerText = msg;
-            wrapper.appendChild(bubble);
-            chatContainer.appendChild(wrapper);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
     </script>
 </body>
 </html>
