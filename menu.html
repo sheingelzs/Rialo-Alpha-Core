@@ -1066,10 +1066,11 @@ async function swapConnectWallet(){
 }
 
 function showMobileWalletModal(){
-  // Ambil URL halaman sekarang untuk deep link
   const currentUrl=encodeURIComponent(window.location.href);
   const metamaskDeepLink='https://metamask.app.link/dapp/'+window.location.host+window.location.pathname;
   const phantomDeepLink='https://phantom.app/ul/browse/'+currentUrl+'?ref='+currentUrl;
+  const okxDeepLink='okx://wallet/dapp/url?dappUrl='+currentUrl;
+  const okxFallback='https://www.okx.com/download';
 
   document.getElementById('modal-content').innerHTML=`
     <div class="modal-title">Open with Wallet App</div>
@@ -1091,6 +1092,14 @@ function showMobileWalletModal(){
         </div>
         <div class="wallet-status popular">Open ↗</div>
       </div>
+      <div class="wallet-item" onclick="tryOkxDeepLink('${okxDeepLink}','${okxFallback}')">
+        <div class="wallet-logo" style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1)">⬛</div>
+        <div class="wallet-info-block">
+          <div class="wallet-name">OKX Wallet</div>
+          <div class="wallet-type">Buka di OKX Wallet Browser</div>
+        </div>
+        <div class="wallet-status popular">Open ↗</div>
+      </div>
       <div class="wallet-item" onclick="window.location.href='https://go.cb-w.com/dapp?cb_url='+encodeURIComponent(window.location.href)">
         <div class="wallet-logo" style="background:rgba(22,82,240,0.15)">🔵</div>
         <div class="wallet-info-block">
@@ -1106,6 +1115,15 @@ function showMobileWalletModal(){
   document.getElementById('wallet-modal').classList.add('open');
 }
 
+function tryOkxDeepLink(deepLink, fallback){
+  // Try deep link, fallback to download if app not installed
+  const start=Date.now();
+  window.location.href=deepLink;
+  setTimeout(()=>{
+    if(Date.now()-start<1500) window.location.href=fallback;
+  },800);
+}
+
 function showNoWalletModal(){
   document.getElementById('modal-content').innerHTML=`
     <div class="modal-title">No Wallet Detected</div>
@@ -1119,6 +1137,11 @@ function showNoWalletModal(){
       <div class="wallet-item" onclick="window.open('https://phantom.app/','_blank')">
         <div class="wallet-logo" style="background:rgba(153,69,255,0.15)">👻</div>
         <div class="wallet-info-block"><div class="wallet-name">Phantom</div><div class="wallet-type">Browser Extension — Solana & EVM</div></div>
+        <div class="wallet-status popular">Install ↗</div>
+      </div>
+      <div class="wallet-item" onclick="window.open('https://www.okx.com/web3','_blank')">
+        <div class="wallet-logo" style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1)">⬛</div>
+        <div class="wallet-info-block"><div class="wallet-name">OKX Wallet</div><div class="wallet-type">Browser Extension & Mobile</div></div>
         <div class="wallet-status popular">Install ↗</div>
       </div>
       <div class="wallet-item" onclick="window.open('https://www.coinbase.com/wallet','_blank')">
