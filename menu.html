@@ -1003,13 +1003,15 @@ function renderSwapWalletArea(){
   if(!area) return;
   if(swapWallet){
     const short=swapWallet.slice(0,6)+'…'+swapWallet.slice(-4);
+    const ethBal=swapBalances.ETH.toFixed(4);
+    const rialoBal=swapBalances.RIALO.toFixed(2);
     area.innerHTML=`
       <div class="swap-wallet-strip">
         <div class="swap-wallet-left">
           <div class="sw-dot"></div>
           <div>
             <div class="sw-addr">${short}</div>
-            <div class="sw-bal">ETH: ${swapBalances.ETH.toFixed(4)}</div>
+            <div class="sw-bal" id="strip-bal">ETH: ${ethBal} &nbsp;|&nbsp; RIALO: ${rialoBal}</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -1048,15 +1050,28 @@ async function swapConnectWallet(){
     const accounts=await window.ethereum.request({method:'eth_requestAccounts'});
     if(!accounts||accounts.length===0) throw new Error('No accounts returned');
     swapWallet=accounts[0];
+
+    // Fetch real ETH balance first, then render
     try{
       const hexBal=await window.ethereum.request({method:'eth_getBalance',params:[swapWallet,'latest']});
       swapBalances.ETH=parseInt(hexBal,16)/1e18;
     }catch(e){ swapBalances.ETH=0; }
-    swapBalances.USDC=Math.random()*500+100;
-    swapBalances.SOL=Math.random()*10+1;
-    swapBalances.RIALO=Math.random()*1000+50;
+
+    // Simulated balances for testnet (USDC, SOL, RIALO not on-chain yet)
+    swapBalances.USDC=parseFloat((Math.random()*500+100).toFixed(2));
+    swapBalances.SOL=parseFloat((Math.random()*10+1).toFixed(4));
+    swapBalances.RIALO=parseFloat((Math.random()*1000+50).toFixed(2));
+
+    // Close modal if open
+    closeModal();
+
+    // Render wallet UI with all balances ready
     renderSwapWalletArea();
-    window.ethereum.on('accountsChanged',accs=>{ if(!accs||!accs.length) swapDisconnect(); else { swapWallet=accs[0]; renderSwapWalletArea(); } });
+
+    window.ethereum.on('accountsChanged',accs=>{
+      if(!accs||!accs.length) swapDisconnect();
+      else { swapWallet=accs[0]; renderSwapWalletArea(); }
+    });
   }catch(e){
     if(btn){ btn.textContent='Connect Wallet to Swap'; btn.disabled=false; }
     if(e.code===4001) showSwapError('Connection rejected by user.');
@@ -1161,11 +1176,18 @@ function swapDisconnect(){
 }
 
 function updateSwapBalances(){
-  const fb=document.getElementById('from-balance'); if(fb) fb.textContent=swapBalances[fromToken].toFixed(fromToken==='USDC'?2:4)+' '+fromToken;
-  const tb=document.getElementById('to-balance'); if(tb) tb.textContent=swapBalances.RIALO.toFixed(2)+' RIALO';
-  const oe=document.getElementById('opt-bal-eth'); if(oe) oe.textContent=swapBalances.ETH.toFixed(4);
-  const os=document.getElementById('opt-bal-sol'); if(os) os.textContent=swapBalances.SOL.toFixed(4);
-  const ou=document.getElementById('opt-bal-usdc'); if(ou) ou.textContent=swapBalances.USDC.toFixed(2);
+  // Update token panels
+  const fb=document.getElementById('from-balance');
+  if(fb) fb.textContent=swapBalances[fromToken].toFixed(fromToken==='USDC'?2:4)+' '+fromToken;
+  const tb=document.getElementById('to-balance');
+  if(tb) tb.textContent=swapBalances.RIALO.toFixed(2)+' RIALO';
+  // Update dropdown option balances
+  const oe=document.getElementById('opt-bal-eth'); if(oe) oe.textContent=swapBalances.ETH.toFixed(4)+' ETH';
+  const os=document.getElementById('opt-bal-sol'); if(os) os.textContent=swapBalances.SOL.toFixed(4)+' SOL';
+  const ou=document.getElementById('opt-bal-usdc'); if(ou) ou.textContent=swapBalances.USDC.toFixed(2)+' USDC';
+  // Also refresh strip text if wallet connected
+  const strip=document.getElementById('strip-bal');
+  if(strip) strip.innerHTML='ETH: '+swapBalances.ETH.toFixed(4)+' &nbsp;|&nbsp; RIALO: '+swapBalances.RIALO.toFixed(2);
 }
 
 function toggleFromDropdown(){
