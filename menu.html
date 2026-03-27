@@ -1031,16 +1031,23 @@ function renderSwapWalletArea(){
 
 async function swapConnectWallet(){
   const btn=document.querySelector('.swap-connect-btn');
-  // No MetaMask → show install modal
+  const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  // Mobile tanpa window.ethereum → deep link ke wallet app
   if(typeof window.ethereum === 'undefined'){
-    showNoWalletModal(); return;
+    if(isMobile){
+      showMobileWalletModal(); 
+    } else {
+      showNoWalletModal();
+    }
+    return;
   }
+
   if(btn){ btn.textContent='Connecting…'; btn.disabled=true; }
   try{
     const accounts=await window.ethereum.request({method:'eth_requestAccounts'});
     if(!accounts||accounts.length===0) throw new Error('No accounts returned');
     swapWallet=accounts[0];
-    // fetch real ETH balance
     try{
       const hexBal=await window.ethereum.request({method:'eth_getBalance',params:[swapWallet,'latest']});
       swapBalances.ETH=parseInt(hexBal,16)/1e18;
@@ -1058,9 +1065,48 @@ async function swapConnectWallet(){
   }
 }
 
+function showMobileWalletModal(){
+  // Ambil URL halaman sekarang untuk deep link
+  const currentUrl=encodeURIComponent(window.location.href);
+  const metamaskDeepLink='https://metamask.app.link/dapp/'+window.location.host+window.location.pathname;
+  const phantomDeepLink='https://phantom.app/ul/browse/'+currentUrl+'?ref='+currentUrl;
+
+  document.getElementById('modal-content').innerHTML=`
+    <div class="modal-title">Open with Wallet App</div>
+    <div class="modal-sub">Pilih wallet untuk membuka dApp ini dan connect langsung.</div>
+    <div class="wallet-list">
+      <div class="wallet-item" onclick="window.location.href='${metamaskDeepLink}'">
+        <div class="wallet-logo" style="background:rgba(247,147,26,0.15)">🦊</div>
+        <div class="wallet-info-block">
+          <div class="wallet-name">MetaMask</div>
+          <div class="wallet-type">Buka di MetaMask Browser</div>
+        </div>
+        <div class="wallet-status installed">Open ↗</div>
+      </div>
+      <div class="wallet-item" onclick="window.location.href='${phantomDeepLink}'">
+        <div class="wallet-logo" style="background:rgba(153,69,255,0.15)">👻</div>
+        <div class="wallet-info-block">
+          <div class="wallet-name">Phantom</div>
+          <div class="wallet-type">Buka di Phantom Browser</div>
+        </div>
+        <div class="wallet-status popular">Open ↗</div>
+      </div>
+      <div class="wallet-item" onclick="window.location.href='https://go.cb-w.com/dapp?cb_url='+encodeURIComponent(window.location.href)">
+        <div class="wallet-logo" style="background:rgba(22,82,240,0.15)">🔵</div>
+        <div class="wallet-info-block">
+          <div class="wallet-name">Coinbase Wallet</div>
+          <div class="wallet-type">Buka di Coinbase Browser</div>
+        </div>
+        <div class="wallet-status popular">Open ↗</div>
+      </div>
+    </div>
+    <p style="font-size:0.72rem;color:var(--muted);margin-top:1rem;line-height:1.6;text-align:center;">
+      Kalau udah di dalam browser wallet, tutup popup ini dan tap Connect lagi.
+    </p>`;
+  document.getElementById('wallet-modal').classList.add('open');
+}
+
 function showNoWalletModal(){
-  // Show install options modal
-  const overlay=document.getElementById('wallet-modal');
   document.getElementById('modal-content').innerHTML=`
     <div class="modal-title">No Wallet Detected</div>
     <div class="modal-sub">Install a Web3 wallet to connect and swap tokens.</div>
@@ -1082,7 +1128,7 @@ function showNoWalletModal(){
       </div>
     </div>
     <p style="font-size:0.72rem;color:var(--muted);margin-top:1rem;line-height:1.5;">After installing, refresh this page and click Connect Wallet again.</p>`;
-  overlay.classList.add('open');
+  document.getElementById('wallet-modal').classList.add('open');
 }
 
 function swapDisconnect(){
