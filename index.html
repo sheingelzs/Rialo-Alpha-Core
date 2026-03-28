@@ -9,29 +9,18 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
 
-        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; margin: 0; overflow: hidden; position: relative; }
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; margin: 0; overflow: hidden; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* FIX: DIGITAL GRID BACKGROUND (NET-LIKE EFFECT) */
-        .grid-bg {
+        /* CANVAS BACKGROUND LAYER */
+        #neural-canvas {
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                linear-gradient(to right, rgba(147, 51, 234, 0.15) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(147, 51, 234, 0.15) 1px, transparent 1px);
-            background-size: 60px 60px;
-            z-index: -1;
-            /* Efek Perspektif Digital */
-            transform: perspective(1000px) rotateX(60deg);
-            animation: gridAnimate 30s linear infinite;
-        }
-
-        @keyframes gridAnimate {
-            0% { transform: perspective(1000px) rotateX(60deg) translateY(0) rotateZ(0deg); }
-            100% { transform: perspective(1000px) rotateX(60deg) translateY(60px) rotateZ(360deg); }
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none; /* Agar tidak menghalangi klik pada UI */
         }
 
         /* 3D LOGO ANIMATION */
@@ -39,8 +28,8 @@
         .logo-3d { animation: rotate3D 15s linear infinite; transform-style: preserve-3d; }
         
         /* TERMINAL STYLES */
-        .chat-bubble { border-radius: 4px; border-left: 3px solid #9333ea; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(12px); }
-        #chat-container { scroll-behavior: smooth; height: calc(100vh - 200px); overflow-y: auto; padding-right: 10px; }
+        .chat-bubble { border-radius: 4px; border-left: 3px solid #9333ea; background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(8px); border-top: 1px solid rgba(255,255,255,0.03); }
+        #chat-container { scroll-behavior: smooth; height: calc(100vh - 200px); overflow-y: auto; padding-right: 10px; position: relative; z-index: 10; }
         .cursor { display: inline-block; width: 8px; height: 15px; background: #9333ea; margin-left: 4px; animation: blink 0.8s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
@@ -58,13 +47,15 @@
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: #333; }
         .tech-label { color: #a855f7; font-weight: bold; }
+        
+        .ui-layer { position: relative; z-index: 10; }
     </style>
 </head>
 <body class="antialiased">
 
-    <div class="grid-bg"></div>
+    <canvas id="neural-canvas"></canvas>
 
-    <div id="landing-page" class="flex flex-col min-h-screen items-center justify-center p-6 text-center relative z-10">
+    <div id="landing-page" class="ui-layer flex flex-col min-h-screen items-center justify-center p-6 text-center">
         <div class="mb-10 p-6 bg-[#0a0a0a]/50 rounded-full border border-purple-900/20 shadow-2xl shadow-purple-500/10 backdrop-blur-md">
             <img src="images/market.png" alt="Rialo Logo" class="w-32 h-32 object-contain logo-3d">
         </div>
@@ -79,11 +70,11 @@
         <div class="text-[9px] tracking-[0.6em] mb-2 uppercase opacity-40">Security Protocol Alpha-7</div>
         <div class="text-xs font-bold uppercase italic tracking-widest text-white">Establishing Neural Link with Rialo Mainframe...</div>
         <div class="progress-bar"><div class="progress-fill"></div></div>
-        <div class="mt-4 text-[8px] font-mono opacity-30 uppercase">RISC-V VM: Optimal | Latency: 50ms | Nodes: Online</div>
+        <div class="mt-4 text-[8px] font-mono opacity-30 uppercase text-center">RISC-V VM: Optimal | Latency: 50ms | Nodes: Online</div>
     </div>
 
-    <div id="terminal-ui" class="hidden-ui flex-col h-screen relative z-10">
-        <nav class="p-6 border-b border-white/5 flex justify-between items-center bg-[#050505]/80 backdrop-blur-lg sticky top-0 z-50">
+    <div id="terminal-ui" class="hidden-ui flex-col h-screen ui-layer">
+        <nav class="p-6 border-b border-white/5 flex justify-between items-center bg-[#050505]/60 backdrop-blur-md sticky top-0 z-50">
             <div class="flex items-center gap-4">
                 <span class="text-xs font-black uppercase tracking-widest italic">RIALO <span class="text-purple-600">TECHNICAL ORACLE</span></span>
                 <span class="hidden md:inline-block text-[8px] px-2 py-0.5 border border-purple-900/50 text-purple-500 font-mono uppercase">Subzero Labs Infrastructure</span>
@@ -92,7 +83,7 @@
         </nav>
 
         <main id="chat-container" class="flex-grow p-6 space-y-8 max-w-5xl mx-auto w-full">
-            <div class="bg-[#0a0a0a]/80 border border-white/5 p-6 chat-bubble text-[11px] font-mono leading-relaxed text-purple-300 shadow-2xl backdrop-blur-md">
+            <div class="chat-bubble p-6 text-[11px] font-mono leading-relaxed text-purple-300 shadow-2xl">
                 [SYSTEM]: DATA PROTOCOLS FULLY LOADED. RIALO CORE v2.4 ONLINE. <br><br>
                 Welcome, Builder. I am synced with the official Rialo technical documentation.<br><br>
                 <span class="text-white font-bold underline">COMMAND DIRECTORY:</span><br>
@@ -104,7 +95,7 @@
             </div>
         </main>
 
-        <div class="p-6 bg-[#050505]/95 border-t border-white/5 backdrop-blur-xl">
+        <div class="p-6 bg-[#050505]/80 border-t border-white/5 backdrop-blur-lg">
             <div class="max-w-5xl mx-auto flex gap-4">
                 <div class="relative flex-grow">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-purple-600 font-bold text-xs">>>></span>
@@ -117,41 +108,125 @@
     </div>
 
     <script>
+        // --- DATA ORACLE ---
         const RialoOracle = {
             "rialo": "<b>[DEFINITION: RIALO NETWORK]</b><br><br>" +
                      "RIALO is a <b>Supermodular Layer 1 Blockchain</b> specifically engineered to bridge Real-World Finance (RWF) with the Web3 ecosystem.<br><br>" +
                      "• <b>Mission:</b> To eliminate dependence on slow, expensive middleware and oracles.<br>" +
                      "• <b>Real-World Connectivity:</b> <i>Rialo Edge</i> allows dApps to communicate directly with the internet without intermediaries.<br>" +
-                     "• <b>Programmatic Privacy:</b> Native encrypted messaging mapped to Email/Phone/Device IDs, removing complex wallet barriers.",
+                     "• <b>Programmatic Privacy:</b> Native encrypted messaging mapped to Email/Phone/Device IDs.",
 
             "backed": "<b>[BACKING & LEADERSHIP: THE ELITE FOUNDATION]</b><br><br>" +
                       "Rialo is supported by premier institutional investors and led by world-class cryptographers:<br><br>" +
                       "• <b>Funding:</b> Successfully raised a <b>$20 Million Seed Round</b> led by <span class='text-white'>Pantera Capital</span>.<br>" +
                       "• <b>Builder:</b> Developed by <span class='text-white'>Subzero Labs</span>.<br>" +
-                      "• <b>Key Figure:</b> Led by <b>Jan Camenisch</b>, a legendary cryptographer (Former Head of Research at IBM & DFINITY).<br>" +
-                      "• <b>Elite Team:</b> Engineers hailing from <b>Google, Apple, Microsoft, Amazon</b>, Solana, Near, and EigenLayer.",
+                      "• <b>Key Figure:</b> Led by <b>Jan Camenisch</b> (Former Head of Research at IBM & DFINITY).<br>" +
+                      "• <b>Elite Team:</b> Engineers from <b>Google, Apple, Microsoft, Amazon</b>, Solana, Near, and EigenLayer.",
 
             "arch": "<b>[CORE ARCHITECTURE - TECHNICAL STACK]</b><br><br>" +
-                    "Rialo implements a high-efficiency Supermodular infrastructure:<br><br>" +
-                    "• <b>Rialo VM:</b> Built on <b>RISC-V</b>. Fully compatible with SVM (Solana), with upcoming support for EVM and MoveVM.<br>" +
+                    "• <b>Rialo VM:</b> Built on <b>RISC-V</b>. Compatible with SVM (Solana), EVM, and MoveVM.<br>" +
                     "• <b>Rialo Consensus:</b> Parallel multi-concurrent proposer mechanism with <b>50ms Block Time</b>.<br>" +
-                    "• <b>Execution Engine:</b> Event-driven processing with <i>Conditional Transactions</i> for nanosecond-level latency.<br>" +
+                    "• <b>Execution Engine:</b> Event-driven with <i>Conditional Transactions</i> for nanosecond latency.<br>" +
                     "• <b>Rialo IPC:</b> Native Identity, Privacy, and Compliance for secure PII management.",
 
             "feat": "<b>[NATIVE CAPABILITIES - MIDDLEWARE REMOVAL]</b><br><br>" +
-                    "Optimized for maximum throughput and developer efficiency:<br><br>" +
-                    "• <b>Rialo Stream:</b> Validator-integrated data feeds (Oracles) operating 40x faster than legacy solutions.<br>" +
-                    "• <b>Rialo Interop:</b> Native interoperability protocol 10x faster than traditional cross-chain bridges.<br>" +
-                    "• <b>Rialo Cruise:</b> Native <b>Gas-less Transactions</b> for a seamless Web2-like user onboarding experience.<br>" +
-                    "• <b>Rialo Read Path:</b> Direct validator data access (100ms) reducing operational costs for developers significantly.",
+                    "• <b>Rialo Stream:</b> Native data feeds (Oracles) operating 40x faster than legacy solutions.<br>" +
+                    "• <b>Rialo Interop:</b> Native interoperability protocol 10x faster than traditional bridges.<br>" +
+                    "• <b>Rialo Cruise:</b> Native <b>Gas-less Transactions</b> for seamless user onboarding.<br>" +
+                    "• <b>Rialo Read Path:</b> Direct validator data access (100ms) reducing operational costs.",
 
             "roadmap": "<b>[MILESTONES & ROADMAP 2025-2026]</b><br><br>" +
-                       "• <b>Q1-Q2 2025:</b> Seed Round Completion | Private Devnet | Native Wallet Support.<br>" +
-                       "• <b>Q3 2025:</b> Stealth Mode Exit | 20+ Data Providers | 30+ Validator Node Testing.<br>" +
-                       "• <b>Q4 2025:</b> Testnet v1 Launch | Community Builder Programs & dApp Incubation.<br>" +
+                       "• <b>Q1-Q2 2025:</b> Seed Round Completion | Private Devnet.<br>" +
+                       "• <b>Q3 2025:</b> Stealth Mode Exit | 20+ Data Providers.<br>" +
+                       "• <b>Q4 2025:</b> Testnet v1 Launch | Builder Programs.<br>" +
                        "• <b>2026:</b> <b>MAINNET GENESIS LAUNCH.</b>"
         };
 
+        // --- NEURAL GRID BACKGROUND ENGINE ---
+        const canvas = document.getElementById('neural-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 150 };
+
+        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+        window.addEventListener('resize', () => { initCanvas(); });
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            let numberOfParticles = (canvas.width * canvas.height) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = (Math.random() * 30) + 1;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(147, 51, 234, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                // Mouse Interaction
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    const directionX = dx / distance;
+                    const directionY = dy / distance;
+                    this.x -= directionX * force * 5;
+                    this.y -= directionY * force * 5;
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                // Connect particles
+                for (let j = i; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.strokeStyle = `rgba(147, 51, 234, ${1 - (distance / 100)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        initCanvas();
+        animate();
+
+        // --- APP LOGIC ---
         function startScanning() {
             document.getElementById('landing-page').classList.add('hidden-ui');
             const scanner = document.getElementById('scan-screen');
@@ -168,19 +243,16 @@
             const input = document.getElementById('user-input');
             const text = input.value.toLowerCase();
             if (text.trim() === "") return;
-
             addBubble(input.value, 'user');
             input.value = "";
-
             setTimeout(() => {
-                let responses = [];
-                if (text.includes("what") || text.includes("define") || text.includes("rialo")) { responses.push(RialoOracle.rialo); }
-                if (text.includes("back") || text.includes("investor") || text.includes("pantera") || text.includes("fund") || text.includes("who") || text.includes("subzero")) { responses.push(RialoOracle.backed); }
-                if (text.includes("arch") || text.includes("tech") || text.includes("vm") || text.includes("risc") || text.includes("infra")) { responses.push(RialoOracle.arch); }
-                if (text.includes("feat") || text.includes("cruise") || text.includes("stream")) { responses.push(RialoOracle.feat); }
-                if (text.includes("roadmap") || text.includes("when") || text.includes("plan") || text.includes("2026")) { responses.push(RialoOracle.roadmap); }
-
-                let finalMsg = responses.length > 0 ? responses.join("<br><br>") : "ERROR: Query outside technical parameters. Use keywords: 'What is Rialo?', 'Who is backing Rialo?', 'Architecture', or 'Roadmap'.";
+                let r = [];
+                if (text.includes("rialo") || text.includes("what")) r.push(RialoOracle.rialo);
+                if (text.includes("back") || text.includes("pantera") || text.includes("who")) r.push(RialoOracle.backed);
+                if (text.includes("arch") || text.includes("tech") || text.includes("vm")) r.push(RialoOracle.arch);
+                if (text.includes("feat") || text.includes("stream")) r.push(RialoOracle.feat);
+                if (text.includes("road") || text.includes("plan") || text.includes("2026")) r.push(RialoOracle.roadmap);
+                let finalMsg = r.length > 0 ? r.join("<br><br>") : "ERROR: Query outside technical parameters. Use: 'What is Rialo?', 'Who is backing?', 'Architecture', 'Roadmap'.";
                 addBubble(finalMsg, 'bot');
             }, 600);
         }
@@ -189,9 +261,8 @@
             const container = document.getElementById('chat-container');
             const bubble = document.createElement('div');
             bubble.className = sender === 'user' 
-                ? 'text-xs text-white uppercase font-bold text-right border-r-2 border-white pr-4 mb-6 relative z-20' 
-                : 'bg-[#0a0a0a]/80 border border-white/5 p-6 chat-bubble text-[11px] font-mono leading-relaxed text-purple-200 mb-8 shadow-2xl backdrop-blur-md relative z-20';
-            
+                ? 'text-xs text-white uppercase font-bold text-right border-r-2 border-white pr-4 mb-6 relative' 
+                : 'chat-bubble p-6 text-[11px] font-mono leading-relaxed text-purple-200 mb-8 shadow-2xl relative';
             if (sender === 'bot') {
                 bubble.innerHTML = "<div class='text-purple-600 font-black mb-3 border-b border-purple-900/20 pb-1 flex justify-between uppercase tracking-widest text-[9px]'><span>[RIALO_DEEP_SCAN]</span><span>Mainnet_v2.4_Oracle</span></div>";
                 container.appendChild(bubble);
@@ -207,7 +278,6 @@
             let i = 0;
             const content = document.createElement('span');
             el.appendChild(content);
-
             function type() {
                 if (i < text.length) {
                     if (text.substr(i, 4) === "<br>") { content.innerHTML += "<br>"; i += 4; }
@@ -215,8 +285,6 @@
                     else if (text.startsWith("</b>", i)) { content.innerHTML += "</b>"; i += 4; }
                     else if (text.startsWith("<span class='text-white'>", i)) { content.innerHTML += "<span class='text-white'>"; i += 25; }
                     else if (text.startsWith("</span>", i)) { content.innerHTML += "</span>"; i += 7; }
-                    else if (text.startsWith("<i>", i)) { content.innerHTML += "<i>"; i += 3; }
-                    else if (text.startsWith("</i>", i)) { content.innerHTML += "</i>"; i += 4; }
                     else { content.innerHTML += text.charAt(i); i++; }
                     setTimeout(type, 2);
                     document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
@@ -224,7 +292,6 @@
             }
             type();
         }
-
         document.getElementById('user-input').addEventListener("keypress", (e) => { if (e.key === "Enter") handleSend(); });
     </script>
 </body>
