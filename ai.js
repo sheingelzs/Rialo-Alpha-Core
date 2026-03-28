@@ -1,11 +1,11 @@
 /**
- * RIALO ALL-IN-ONE ENGINE v4.0 (FIXED)
- * High-Density Visuals + Accurate Oracle Data
+ * RIALO ALL-IN-ONE ENGINE v5.0 (Global Edition)
+ * High-Density Visuals + English Technical Oracle
  * Repository: sheingelzs
  */
 
 // ==========================================
-// 1. NEURAL GRID ENGINE (Visual Jaring-Jaring)
+// 1. NEURAL GRID ENGINE (Interactive Visuals)
 // ==========================================
 const canvas = document.getElementById('neural-canvas');
 const ctx = canvas.getContext('2d');
@@ -80,18 +80,18 @@ function animate() {
 }
 
 // ==========================================
-// 2. RIALO ORACLE DATA (Data Akurat & Lengkap)
+// 2. RIALO ORACLE DATA (English Technical Specs)
 // ==========================================
 const RialoOracle = {
-    "rialo": "<b>[DEFINITION: RIALO NETWORK]</b><br><br>RIALO adalah <b>Supermodular Layer 1 Blockchain</b> yang dirancang untuk menghubungkan Real-World Finance (RWF) ke Web3 secara langsung.<br><br>• <b>Misi:</b> Menghilangkan ketergantungan pada middleware/oracle yang lambat.<br>• <b>Rialo Edge:</b> Memungkinkan dApps berkomunikasi langsung dengan internet tanpa perantara.<br>• <b>Privacy:</b> Enkripsi pesan native yang terhubung ke Email/Phone/Device ID.",
+    "rialo": "<b>[DEFINITION: RIALO NETWORK]</b><br><br>RIALO is a <b>Supermodular Layer 1 Blockchain</b> designed to seamlessly bridge Real-World Finance (RWF) with the Web3 ecosystem.<br><br>• <b>Mission:</b> Eliminate reliance on slow, expensive third-party middleware and oracles.<br>• <b>Rialo Edge:</b> Enables dApps to communicate directly with the internet without intermediaries.<br>• <b>Programmatic Privacy:</b> Native encrypted messaging mapped to Email, Phone, or Device IDs.",
 
-    "backed": "<b>[BACKING & LEADERSHIP]</b><br><br>Rialo didukung oleh institusi papan atas dan tim kriptografer elit:<br><br>• <b>Pendanaan:</b> Berhasil mengumpulkan <b>$20 Juta Seed Round</b> yang dipimpin oleh <span class='text-white'>Pantera Capital</span>.<br>• <b>Builder:</b> Dikembangkan oleh <span class='text-white'>Subzero Labs</span>.<br>• <b>Tokoh Kunci:</b> Dipimpin oleh <b>Jan Camenisch</b> (Mantan Head of Research di IBM & DFINITY).<br>• <b>Tim Elit:</b> Insinyur dari Google, Apple, Microsoft, Amazon, Solana, dan Near.",
+    "backed": "<b>[BACKING & LEADERSHIP]</b><br><br>Rialo is supported by top-tier institutional investors and led by elite cryptographers:<br><br>• <b>Funding:</b> Successfully raised a <b>$20 Million Seed Round</b> led by <span class='text-white'>Pantera Capital</span>.<br>• <b>Builder:</b> Developed by <span class='text-white'>Subzero Labs</span>.<br>• <b>Key Figure:</b> Led by <b>Jan Camenisch</b> (Former Head of Research at IBM & DFINITY).<br>• <b>Elite Team:</b> Engineers from Google, Apple, Microsoft, Amazon, Solana, and Near.",
 
-    "arch": "<b>[CORE ARCHITECTURE - TECHNICAL]</b><br><br>• <b>Rialo VM:</b> Berbasis <b>RISC-V</b>. Kompatibel dengan SVM (Solana), EVM, dan MoveVM.<br>• <b>Konsensus:</b> Mekanisme multi-concurrent proposer dengan <b>50ms Block Time</b>.<br>• <b>Execution:</b> Event-driven dengan <i>Conditional Transactions</i> untuk latensi nanosekon.",
+    "arch": "<b>[CORE ARCHITECTURE - TECHNICAL]</b><br><br>• <b>Rialo VM:</b> Built on <b>RISC-V</b>. Fully compatible with SVM (Solana), EVM (Ethereum), and MoveVM.<br>• <b>Consensus:</b> Parallel multi-concurrent proposer mechanism achieving <b>50ms Block Times</b>.<br>• <b>Execution Engine:</b> Event-driven with <i>Conditional Transactions</i> for nanosecond latency.",
 
-    "feat": "<b>[NATIVE CAPABILITIES]</b><br><br>• <b>Rialo Stream:</b> Data feeds (Oracles) native yang 40x lebih cepat.<br>• <b>Rialo Interop:</b> Protokol interoperabilitas 10x lebih cepat dari bridge biasa.<br>• <b>Rialo Cruise:</b> Fitur <b>Gas-less Transactions</b> untuk user baru.<br>• <b>Rialo Read Path:</b> Akses data validator langsung (100ms) untuk menekan biaya.",
+    "feat": "<b>[NATIVE CAPABILITIES]</b><br><br>• <b>Rialo Stream:</b> Native data feeds (Oracles) operating 40x faster than legacy solutions.<br>• <b>Rialo Interop:</b> Native interoperability protocol 10x faster than traditional bridges.<br>• <b>Rialo Cruise:</b> Native <b>Gas-less Transactions</b> for seamless user onboarding.<br>• <b>Rialo Read Path:</b> Direct validator data access (100ms) reducing operational overhead.",
 
-    "roadmap": "<b>[ROADMAP 2025-2026]</b><br><br>• <b>Q1-Q2 2025:</b> Penyelesaian Seed Round | Private Devnet.<br>• <b>Q3 2025:</b> Keluar dari Stealth Mode | 20+ Data Providers.<br>• <b>Q4 2025:</b> Peluncuran Testnet v1 | Builder Programs.<br>• <b>2026:</b> <b>MAINNET GENESIS LAUNCH.</b>"
+    "roadmap": "<b>[ROADMAP 2025-2026]</b><br><br>• <b>Q1-Q2 2025:</b> Seed Round Completion | Private Devnet.<br>• <b>Q3 2025:</b> Stealth Mode Exit | 20+ Data Providers Integrated.<br>• <b>Q4 2025:</b> Public Testnet v1 Launch | Global Builder Programs.<br>• <b>2026:</b> <b>OFFICIAL MAINNET GENESIS.</b>"
 };
 
 // ==========================================
@@ -107,16 +107,16 @@ window.handleSend = function() {
 
     setTimeout(() => {
         let responses = [];
-        // Pencarian keyword yang lebih akurat
-        if (text.includes("rialo") || text.includes("apa") || text.includes("what")) responses.push(RialoOracle.rialo);
-        if (text.includes("back") || text.includes("pantera") || text.includes("who") || text.includes("dana")) responses.push(RialoOracle.backed);
-        if (text.includes("arch") || text.includes("tech") || text.includes("vm") || text.includes("arsitektur")) responses.push(RialoOracle.arch);
-        if (text.includes("feat") || text.includes("fitur") || text.includes("cruise") || text.includes("stream")) responses.push(RialoOracle.feat);
-        if (text.includes("road") || text.includes("plan") || text.includes("2026") || text.includes("kapan")) responses.push(RialoOracle.roadmap);
+        // Enhanced keyword matching
+        if (text.includes("rialo") || text.includes("what is") || text.includes("definition")) responses.push(RialoOracle.rialo);
+        if (text.includes("back") || text.includes("pantera") || text.includes("who") || text.includes("investor") || text.includes("fund")) responses.push(RialoOracle.backed);
+        if (text.includes("arch") || text.includes("tech") || text.includes("vm") || text.includes("stack")) responses.push(RialoOracle.arch);
+        if (text.includes("feat") || text.includes("feature") || text.includes("cruise") || text.includes("stream") || text.includes("capabilities")) responses.push(RialoOracle.feat);
+        if (text.includes("road") || text.includes("plan") || text.includes("2026") || text.includes("when")) responses.push(RialoOracle.roadmap);
 
         let finalMsg = responses.length > 0 
             ? responses.join("<br><br>") 
-            : "<b>[ERROR]</b>: Query di luar parameter teknis. Gunakan keyword: <i>RIALO, BACKED, ARCHITECTURE, FEATURES,</i> atau <i>ROADMAP.</i>";
+            : "<b>[ERROR]</b>: Query outside technical parameters. Try keywords: <i>RIALO, BACKED, ARCHITECTURE, FEATURES,</i> or <i>ROADMAP.</i>";
         
         addBubble(finalMsg, 'bot');
     }, 600);
@@ -154,14 +154,14 @@ function typeEffect(el, text) {
             else if (text.startsWith("<span class='text-white'>", i)) { content.innerHTML += "<span class='text-white'>"; i += 25; }
             else if (text.startsWith("</span>", i)) { content.innerHTML += "</span>"; i += 7; }
             else { content.innerHTML += text.charAt(i); i++; }
-            setTimeout(type, 1); // Dipercepat biar gak nunggu lama
+            setTimeout(type, 1);
             document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
         } else { el.innerHTML += '<span class="cursor"></span>'; }
     }
     type();
 }
 
-// Jalankan Inisialisasi
+// Initialization
 document.addEventListener('DOMContentLoaded', () => {
     initCanvas();
     animate();
