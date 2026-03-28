@@ -1497,61 +1497,24 @@ function renderTxns(){
 // ══ MARKET ══
 <script>
 // --- GLOBAL STATE ---
+// --- DEKLARASI VARIABEL (GANTI KODE LAMA DENGAN INI) ---
 let allCoins = [];
 let mainChartInst = null;
-let currentCoinId = 'bitcoin';
+let currentCoinId = 'bitcoin'; // Ini pengganti selectedCoinId agar lebih konsisten
 let currentDays = 7;
-let gainTabMode = 'gainers';
-let sortKey = 'rank';
-let sortDir = 1;
 let marketRefreshInterval = null;
 
-// --- INITIALIZATION ---
+// --- INISIALISASI ---
 window.onload = () => {
     initCanvas();
     loadMarketData();
-    // Perbaikan Bug 1: Menentukan interval update yang benar (60 detik)
+    // Memastikan data update setiap 60 detik
     if (!marketRefreshInterval) {
         marketRefreshInterval = setInterval(loadMarketData, 60000);
     }
 };
 
-// --- CORE FUNCTIONS ---
-async function fetchMarket() {
-    try {
-        const r = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=24h,7d');
-        if (!r.ok) throw new Error('Rate Limit / Network Error');
-        return await r.json();
-    } catch (e) {
-        console.error("Fetch Error:", e);
-        return [];
-    }
-}
-
-function showPage(pageId) {
-    // Navigasi Tab
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    
-    const targetPage = document.getElementById(pageId);
-    if (targetPage) targetPage.classList.add('active');
-    
-    // Highlight icon navigasi
-    const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(n => n.innerText.toLowerCase().includes(pageId));
-    if (activeNav) activeNav.classList.add('active');
-
-    // Perbaikan Bug: Hanya render chart jika di halaman market untuk hemat memori
-    if (pageId === 'market') {
-        setTimeout(renderMainChart, 100);
-    }
-    
-    // Update data Garage saat tab dibuka
-    if (pageId === 'garage') {
-        updateGarageData();
-    }
-}
-
-// --- SWAP LOGIC (PERBAIKAN BUG SWAP) ---
+// --- FUNGSI SWAP (PERBAIKAN UTAMA) ---
 function updateSwapEstimate() {
     const amountInput = document.getElementById('swap-amount-input');
     const estimateOutput = document.getElementById('swap-estimate-output');
@@ -1565,90 +1528,24 @@ function updateSwapEstimate() {
 
     const coinData = allCoins.find(c => c.id === selectedCoinId);
     if (coinData) {
-        // Simulasi: 1 Rialo Token diasumsikan seharga $0.50 (atau sesuaikan kebutuhan)
-        const rialoPrice = 0.50; 
-        const totalValueInUsd = amount * rialoPrice;
-        const result = totalValueInUsd / coinData.current_price;
+        const rialoPrice = 0.50; // Harga simulasi Rialo Token
+        const result = (amount * rialoPrice) / coinData.current_price;
         estimateOutput.value = result.toFixed(6);
     }
 }
 
-// --- GARAGE LOGIC (PERBAIKAN DATA STATIS) ---
+// --- FUNGSI GARAGE (PERBAIKAN SALDO LIVE) ---
 function updateGarageData() {
     if (allCoins.length === 0) return;
-
-    // Contoh: Ambil harga Bitcoin & Ethereum untuk update saldo simulasi
     const btc = allCoins.find(c => c.id === 'bitcoin');
     const eth = allCoins.find(c => c.id === 'ethereum');
 
-    // Update Balance secara dinamis (Contoh simulasi kepemilikan 0.05 BTC & 1 ETH)
     const btcValue = btc ? (0.05 * btc.current_price) : 0;
     const ethValue = eth ? (1.2 * eth.current_price) : 0;
-    const totalBalance = 1500 + btcValue + ethValue; // 1500 adalah base USD balance
+    const totalBalance = 1500 + btcValue + ethValue;
 
     const balanceEl = document.querySelector('.balance-amount');
     if (balanceEl) balanceEl.innerText = `$${totalBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
 }
 
-// --- RENDER FUNCTIONS (MARKET) ---
-function renderTable(data) {
-    const tbody = document.getElementById('market-tbody');
-    if (!tbody) return;
-    tbody.innerHTML = data.map(c => `
-        <tr onclick="selectCoin('${c.id}')" style="cursor:pointer">
-            <td>${c.market_cap_rank}</td>
-            <td><div style="display:flex;align-items:center;gap:8px">
-                <img src="${c.image}" width="20"/> <b>${c.symbol.toUpperCase()}</b>
-            </div></td>
-            <td>$${c.current_price.toLocaleString()}</td>
-            <td style="color:${c.price_change_percentage_24h >= 0 ? 'var(--green)' : 'var(--red)'}">
-                ${c.price_change_percentage_24h?.toFixed(2)}%
-            </td>
-            <td>$${c.market_cap.toLocaleString()}</td>
-        </tr>
-    `).join('');
-}
-
-async function loadMarketData() {
-    try {
-        const coins = await fetchMarket();
-        if (coins.length > 0) {
-            allCoins = coins;
-            renderTable(coins);
-            
-            // Isi dropdown swap otomatis
-            const swapSelect = document.getElementById('swap-coin-select');
-            if (swapSelect && swapSelect.options.length <= 1) {
-                swapSelect.innerHTML = coins.slice(0, 10).map(c => 
-                    `<option value="${c.id}">${c.name} (${c.symbol.toUpperCase()})</option>`
-                ).join('');
-            }
-
-            document.getElementById('lastUpdate').textContent = 'Live: ' + new Date().toLocaleTimeString();
-        }
-    } catch (e) {
-        console.error("Market Load Error", e);
-    }
-}
-
-// --- BACKGROUND CANVAS (RESPONSIVE) ---
-function initCanvas() {
-    const canvas = document.getElementById('net-canvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Perbaikan Bug 5: Menghilangkan distorsi canvas saat resize
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // ... (logika partikel kamu di sini) ...
-        requestAnimationFrame(animate);
-    }
-    animate();
-}
-</script>
+// Tambahkan sisa fungsi lainnya (fetchMarket, renderTable, dll) di bawah sini...
