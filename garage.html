@@ -14,535 +14,184 @@
   --font:'Space Grotesk',sans-serif;--font-head:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
-#net-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh;}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes logopulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.5)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-@keyframes valPulse{0%,100%{opacity:1}50%{opacity:0.6}}
+#net-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
 /* NAV */
 .nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,0.95);backdrop-filter:blur(16px);}
-.nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;}
-.logo-dot{width:9px;height:9px;background:var(--accent);border-radius:50%;animation:logopulse 2s infinite;}
-.nav-right{display:flex;align-items:center;gap:0.6rem;}
+.nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logo-dot{width:9px;height:9px;background:var(--accent);border-radius:50%;}
 .nav-links{display:flex;gap:0.2rem;background:rgba(255,255,255,0.05);border-radius:9px;padding:3px;}
-.nav-link{padding:0.35rem 0.85rem;border-radius:6px;background:transparent;color:rgba(255,255,255,0.45);font-family:var(--font);font-size:0.78rem;font-weight:500;cursor:pointer;transition:all 0.2s;text-decoration:none;border:none;}
-.nav-link:hover{color:rgba(255,255,255,0.8);}
+.nav-link{padding:0.35rem 0.85rem;border-radius:6px;color:rgba(255,255,255,0.45);font-size:0.78rem;font-weight:500;text-decoration:none;transition:0.2s;}
 .nav-link.active{background:rgba(255,255,255,0.1);color:#fff;}
-.wallet-nav-btn{padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(74,222,128,0.35);background:rgba(74,222,128,0.08);color:var(--accent);font-family:var(--font);font-size:0.77rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
-.wallet-nav-btn.connected{border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.75);}
-.wdot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
-
-/* PAGE */
-.page{position:relative;z-index:1;animation:fadeIn 0.25s ease;}
+.wallet-nav-btn{padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(74,222,128,0.35);background:rgba(74,222,128,0.08);color:var(--accent);font-size:0.77rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;}
 
 /* STANDBY */
-.garage-standby{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:88vh;text-align:center;padding:2rem;}
-.node-status-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:var(--red);padding:0.35rem 1rem;border-radius:999px;font-family:var(--font-mono);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;margin-bottom:2rem;}
+.page{position:relative;z-index:1;}
+.garage-standby{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:85vh;text-align:center;padding:2rem;}
+.node-status-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:var(--red);padding:0.35rem 1rem;border-radius:999px;font-family:var(--font-mono);font-size:0.7rem;margin-bottom:2rem;}
 .node-status-badge.online{background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.25);color:var(--accent);}
-.node-status-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1.5s infinite;}
-.node-status-badge.online .node-status-dot{background:var(--accent);}
-.garage-standby h2{font-family:var(--font-head);font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:0.75rem;line-height:1.1;}
-.garage-standby h2 .dim{color:rgba(255,255,255,0.25);}
-.garage-standby p{font-size:0.88rem;color:var(--muted);max-width:420px;line-height:1.7;margin-bottom:2rem;}
-.ignition-btn{display:inline-flex;align-items:center;gap:10px;padding:0.9rem 2rem;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.4);color:var(--accent);font-family:var(--font-mono);font-size:0.85rem;font-weight:700;letter-spacing:0.08em;border-radius:12px;cursor:pointer;transition:all 0.2s;}
-.ignition-btn:hover{background:rgba(74,222,128,0.15);box-shadow:0 0 24px rgba(74,222,128,0.15);}
-.ignition-btn svg{width:16px;height:16px;flex-shrink:0;}
+.node-status-dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+.garage-standby h2{font-family:var(--font-head);font-size:clamp(1.8rem,4vw,3rem);font-weight:800;margin-bottom:1rem;}
+.ignition-btn{display:inline-flex;align-items:center;gap:10px;padding:1rem 2.5rem;background:rgba(74,222,128,0.1);border:1px solid var(--accent);color:var(--accent);font-family:var(--font-mono);font-weight:700;border-radius:12px;cursor:pointer;transition:0.3s;}
+.ignition-btn:hover{box-shadow:0 0 20px rgba(74,222,128,0.3);transform:translateY(-2px);}
 
 /* ASSEMBLY */
-.assembly-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:88vh;padding:2rem;text-align:center;}
-.assembly-title{font-family:var(--font-head);font-size:1.4rem;font-weight:800;margin-bottom:2.5rem;letter-spacing:-0.02em;}
-.assembly-layers{display:flex;flex-direction:column;gap:0.75rem;width:100%;max-width:420px;margin-bottom:2rem;}
-.asm-layer{display:flex;align-items:center;gap:1rem;padding:0.85rem 1.1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;opacity:0;transform:translateX(-16px);transition:all 0.5s ease;}
-.asm-layer.loaded{opacity:1;transform:translateX(0);border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.04);}
-.asm-layer-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-.asm-layer-icon.exec{background:rgba(74,222,128,0.12);}
-.asm-layer-icon.settle{background:rgba(98,126,234,0.12);}
-.asm-layer-icon.da{background:rgba(124,92,252,0.12);}
-.asm-layer-text{flex:1;text-align:left;}
-.asm-layer-label{font-family:var(--font-mono);font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;}
-.asm-layer-status{font-size:0.85rem;font-weight:700;}
-.asm-layer-status.pending{color:rgba(255,255,255,0.2);}
-.asm-layer-status.loading{color:var(--amber);}
-.asm-layer-status.done{color:var(--accent);}
-.asm-check{font-size:1rem;opacity:0;transition:opacity 0.3s;}
-.asm-layer.loaded .asm-check{opacity:1;}
-.asm-progress-bar{width:100%;max-width:420px;height:2px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;}
-.asm-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));width:0%;transition:width 0.4s ease;border-radius:99px;}
+.assembly-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:85vh;}
+.asm-layer{display:flex;align-items:center;gap:1rem;padding:1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;width:350px;margin-bottom:0.75rem;opacity:0.3;transition:0.5s;}
+.asm-layer.loaded{opacity:1;border-color:var(--accent);background:rgba(74,222,128,0.05);}
+.asm-progress-bar{width:350px;height:4px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;margin-top:1.5rem;}
+.asm-progress-fill{height:100%;background:var(--accent);width:0%;transition:0.4s;}
 
 /* DASHBOARD */
-.garage-dashboard{display:none;position:relative;z-index:1;padding:1.5rem 2rem;max-width:1100px;margin:0 auto;}
-.garage-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
-.garage-label{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.35rem;}
-.garage-title{font-family:var(--font-head);font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:0.4rem;}
-.garage-subtitle{font-size:0.8rem;color:var(--muted);}
-.garage-key-badge{display:flex;align-items:center;gap:8px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:10px;padding:0.55rem 0.85rem;}
-.gkb-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:logopulse 2s infinite;flex-shrink:0;}
-.gkb-label{font-size:0.6rem;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
-.gkb-addr{font-family:var(--font-mono);font-size:0.75rem;color:var(--text);font-weight:700;}
-.gkb-disconnect{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.68rem;font-family:var(--font);margin-left:0.5rem;transition:color 0.2s;}
-.gkb-disconnect:hover{color:var(--red);}
-.garage-section-title{font-family:var(--font-head);font-weight:800;font-size:1rem;letter-spacing:-0.3px;margin-bottom:1rem;display:flex;align-items:center;gap:10px;color:var(--text);}
-.garage-section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
-
-/* TELEMETRY */
-.telemetry-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;}
-.tele-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;position:relative;overflow:hidden;}
-.tele-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.tele-card.green::before{background:linear-gradient(90deg,var(--accent),transparent);}
-.tele-card.purple::before{background:linear-gradient(90deg,var(--accent2),transparent);}
-.tele-card.cyan::before{background:linear-gradient(90deg,var(--cyan),transparent);}
-.tele-card.amber::before{background:linear-gradient(90deg,var(--amber),transparent);}
-.tele-label{font-family:var(--font-mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.6rem;}
-.tele-value{font-family:var(--font-head);font-size:1.6rem;font-weight:800;line-height:1;margin-bottom:0.3rem;}
-.tele-value.accent{color:var(--accent);}
-.tele-value.cyan{color:var(--cyan);}
-.tele-value.amber{color:var(--amber);}
-.tele-value.pulse-val{animation:valPulse 1.2s ease-in-out infinite;}
-.tele-sub{font-size:0.7rem;color:var(--muted);}
-.tele-tag{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:0.62rem;padding:2px 8px;border-radius:99px;margin-top:0.5rem;}
-.tele-tag.ok{background:rgba(74,222,128,0.1);color:var(--accent);}
-.tele-tag.active{background:rgba(34,211,238,0.1);color:var(--cyan);}
-
-/* MODULAR STACK */
-.modular-stack{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:1.5rem;}
-.vm-card,.gas-card,.finality-card,.layer-stack-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;}
-.vm-card-title,.gas-card-title,.finality-card-title,.layer-stack-title{font-family:var(--font-mono);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem;}
-.finality-card{display:flex;flex-direction:column;align-items:center;}
-.finality-card-title{align-self:flex-start;}
-.finality-unit{font-size:0.7rem;color:var(--muted);text-align:center;margin-top:2px;}
-.finality-pantera{font-size:0.65rem;color:rgba(255,255,255,0.2);text-align:center;margin-top:0.5rem;font-family:var(--font-mono);}
-.finality-pantera span{color:rgba(255,255,255,0.4);}
-.vm-tabs{display:flex;gap:0.4rem;}
-.vm-tab{flex:1;padding:0.6rem 0.4rem;border-radius:9px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:rgba(255,255,255,0.3);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;cursor:pointer;transition:all 0.2s;text-align:center;}
-.vm-tab:hover{border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);}
-.vm-tab.active{background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.4);color:var(--accent);}
-.vm-status{margin-top:0.85rem;font-size:0.75rem;color:var(--muted);line-height:1.6;}
-.vm-status strong{color:var(--accent);font-family:var(--font-mono);}
-.vm-swap-hint{margin-top:0.6rem;font-size:0.68rem;color:rgba(255,255,255,0.2);font-family:var(--font-mono);border-top:1px solid rgba(255,255,255,0.05);padding-top:0.6rem;}
-.gas-rows{display:flex;flex-direction:column;gap:0.5rem;}
-.gas-row{display:flex;align-items:center;justify-content:space-between;padding:0.55rem 0.75rem;border-radius:9px;border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.03);}
-.gas-row-label{font-size:0.75rem;color:rgba(255,255,255,0.45);}
-.gas-row-val{font-family:var(--font-mono);font-size:0.75rem;font-weight:700;}
-.gas-row-val.ok{color:var(--accent);}
-.gas-subsidy{margin-top:0.75rem;display:flex;align-items:center;gap:8px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:9px;padding:0.55rem 0.75rem;}
-.gas-subsidy-icon{font-size:1rem;}
-.gas-subsidy-text{font-size:0.72rem;color:rgba(255,255,255,0.5);line-height:1.5;}
-.gas-subsidy-text strong{color:var(--accent);}
-.layer-item{display:flex;align-items:center;gap:0.85rem;padding:0.65rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-.layer-item:last-child{border-bottom:none;}
-.layer-num{font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);width:20px;flex-shrink:0;}
-.layer-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;}
-.layer-info{flex:1;}
-.layer-name{font-size:0.82rem;font-weight:700;margin-bottom:2px;}
-.layer-desc{font-size:0.68rem;color:var(--muted);}
-.layer-status-pill{font-family:var(--font-mono);font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
-.layer-status-pill.ok{background:rgba(74,222,128,0.1);color:var(--accent);}
-.layer-status-pill.modular{background:rgba(34,211,238,0.1);color:var(--cyan);}
-
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:none;align-items:center;justify-content:center;padding:1rem;}
-.modal-overlay.open{display:flex;animation:fadeIn 0.2s ease;}
-.modal{background:#0d1117;border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:1.75rem;width:100%;max-width:420px;position:relative;}
-.modal-close{position:absolute;top:0.9rem;right:0.9rem;background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.1rem;cursor:pointer;}
-.modal-close:hover{color:#fff;}
-.modal-title{font-family:var(--font-head);font-size:1.15rem;font-weight:800;margin-bottom:0.3rem;}
-.modal-sub{font-size:0.8rem;color:rgba(255,255,255,0.38);margin-bottom:1.35rem;}
-.wallet-list{display:flex;flex-direction:column;gap:0.55rem;}
-.wallet-item{display:flex;align-items:center;gap:0.85rem;padding:0.85rem 0.95rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;cursor:pointer;transition:all 0.2s;}
-.wallet-item:hover{background:rgba(255,255,255,0.08);border-color:rgba(74,222,128,0.3);}
-.wallet-item.not-installed{opacity:0.5;cursor:not-allowed;}
-.wallet-item.not-installed:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08);}
-.wallet-logo{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
-.wallet-info-block{flex:1;}
-.wallet-name{font-weight:600;font-size:0.88rem;}
-.wallet-type{font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:1px;}
-.wallet-status{font-size:0.72rem;font-weight:600;}
-.wallet-status.installed{color:var(--accent);}
-.wallet-status.not-found{color:var(--red);}
-.install-hint{font-size:0.65rem;color:var(--muted);margin-top:0.75rem;text-align:center;line-height:1.6;}
-.spinner{width:44px;height:44px;border:3px solid rgba(74,222,128,0.15);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem;}
-.center-modal{text-align:center;padding:0.5rem 0;}
-.modal-big-title{font-family:var(--font-head);font-size:1.1rem;font-weight:800;margin-bottom:0.35rem;}
-.modal-desc{font-size:0.8rem;color:rgba(255,255,255,0.38);line-height:1.6;margin-bottom:1.25rem;}
-
-@media(max-width:700px){
-  .telemetry-grid{grid-template-columns:1fr 1fr;}
-  .modular-stack{grid-template-columns:1fr;}
-  .garage-dashboard{padding:1rem;}
-}
+.garage-dashboard{display:none;padding:2rem;max-width:1100px;margin:0 auto;}
+.telemetry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem;}
+.tele-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:1.5rem;border-top:3px solid var(--accent);}
+.tele-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;margin-bottom:0.5rem;}
+.tele-value{font-size:1.8rem;font-weight:800;font-family:var(--font-head);}
 </style>
 </head>
 <body>
 <canvas id="net-canvas"></canvas>
 
 <nav class="nav">
-  <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
-  <div class="nav-right">
-    <div class="nav-links">
-      <a class="nav-link" href="menu.html">Home</a>
-      <a class="nav-link" href="wallet.html">Swap</a>
-      <a class="nav-link active" href="garage.html">Garage</a>
-      <a class="nav-link" href="market.html">Market</a>
-    </div>
-    <button class="wallet-nav-btn" id="nav-wallet-btn" onclick="handleNavWallet()">Insert Validator Key</button>
+  <div class="nav-logo"><div class="logo-dot"></div>RIALO</div>
+  <div class="nav-links">
+    <a class="nav-link" href="#">Home</a>
+    <a class="nav-link active" href="#">Garage</a>
   </div>
+  <button class="wallet-nav-btn" id="nav-wallet-btn" onclick="directConnect()">Mount Key</button>
 </nav>
 
 <div class="page">
-  <!-- STANDBY -->
   <div class="garage-standby" id="garage-standby">
-    <div class="node-status-badge" id="node-badge">
-      <div class="node-status-dot"></div>NODE_STATUS: DISCONNECTED
-    </div>
-    <h2>Rialo Alpha Core<br><span class="dim">// Validator Garage</span></h2>
-    <p>Mesin modular belum aktif. Mount Validator Key untuk memulai proses assembly dan mengakses Engine Telemetry Dashboard.</p>
-    <button class="ignition-btn" onclick="startIgnition()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-      [INSERT VALIDATOR KEY]
-    </button>
+    <div class="node-status-badge" id="node-badge"><div class="node-status-dot"></div>NODE_STATUS: OFFLINE</div>
+    <h2>Rialo Alpha Core<br><span style="color:rgba(255,255,255,0.2)">// Validator Garage</span></h2>
+    <p style="color:var(--muted);margin-bottom:2rem;">Hubungkan Wallet (MetaMask/OKX/Phantom) untuk akses Dashboard.</p>
+    <button class="ignition-btn" onclick="directConnect()">[ CONNECT WALLET ]</button>
   </div>
 
-  <!-- ASSEMBLY -->
   <div class="assembly-screen" id="assembly-screen">
-    <div class="assembly-title">Mounting Validator Key…<br><span style="color:var(--muted);font-size:0.9rem;font-family:var(--font-mono)">Assembling Supermodular Stack</span></div>
-    <div class="assembly-layers">
-      <div class="asm-layer" id="asm-l1">
-        <div class="asm-layer-icon exec">⚙️</div>
-        <div class="asm-layer-text">
-          <div class="asm-layer-label">Layer 1 · Execution</div>
-          <div class="asm-layer-status pending" id="asm-s1">Waiting…</div>
-        </div>
-        <span class="asm-check">✓</span>
-      </div>
-      <div class="asm-layer" id="asm-l2">
-        <div class="asm-layer-icon settle">🔷</div>
-        <div class="asm-layer-text">
-          <div class="asm-layer-label">Layer 2 · Settlement</div>
-          <div class="asm-layer-status pending" id="asm-s2">Waiting…</div>
-        </div>
-        <span class="asm-check">✓</span>
-      </div>
-      <div class="asm-layer" id="asm-l3">
-        <div class="asm-layer-icon da">🗄️</div>
-        <div class="asm-layer-text">
-          <div class="asm-layer-label">Layer 3 · Data Availability</div>
-          <div class="asm-layer-status pending" id="asm-s3">Waiting…</div>
-        </div>
-        <span class="asm-check">✓</span>
-      </div>
-    </div>
+    <h3 style="margin-bottom:2rem;font-family:var(--font-mono)">ASSEMBLING STACK...</h3>
+    <div class="asm-layer" id="asm-l1">⚙️ Layer 1: RISC-V Engine <span id="asm-s1" style="margin-left:auto">WAIT</span></div>
+    <div class="asm-layer" id="asm-l2">🔷 Layer 2: ETH Settlement <span id="asm-s2" style="margin-left:auto">WAIT</span></div>
+    <div class="asm-layer" id="asm-l3">🗄️ Layer 3: Data Availability <span id="asm-s3" style="margin-left:auto">WAIT</span></div>
     <div class="asm-progress-bar"><div class="asm-progress-fill" id="asm-progress"></div></div>
-    <p style="font-size:0.72rem;color:var(--muted);margin-top:1rem;font-family:var(--font-mono)" id="asm-log">Initializing…</p>
+    <p id="asm-log" style="margin-top:1rem;font-size:0.8rem;color:var(--muted)">Initializing...</p>
   </div>
 
-  <!-- DASHBOARD -->
   <div class="garage-dashboard" id="garage-dashboard">
-    <div class="garage-header">
-      <div>
-        <div class="garage-label">Engine Telemetry</div>
-        <div class="garage-title">Validator Dashboard</div>
-        <div class="garage-subtitle">Rialo Alpha Core · Supermodular Stack Active</div>
-      </div>
-      <div class="garage-key-badge" id="garage-key-badge">
-        <div class="gkb-dot"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end">
         <div>
-          <div class="gkb-label">Validator Key</div>
-          <div class="gkb-addr" id="gkb-addr">—</div>
+            <h1 style="font-family:var(--font-head)">Engine Telemetry</h1>
+            <p style="color:var(--muted)">Validator Address: <span id="gkb-addr" style="color:var(--accent)">-</span></p>
         </div>
-        <button class="gkb-disconnect" onclick="disconnectGarage()">Eject ↗</button>
-      </div>
+        <button onclick="window.location.reload()" style="background:none;border:1px solid var(--border);color:var(--muted);padding:0.5rem 1rem;border-radius:8px;cursor:pointer">Eject ↗</button>
     </div>
-    <div class="garage-section-title">Live Engine Telemetry</div>
+    
     <div class="telemetry-grid">
-      <div class="tele-card green">
-        <div class="tele-label">Time to Finality</div>
-        <div class="tele-value accent pulse-val">50<span style="font-size:1rem">ms</span></div>
-        <div class="tele-sub">Confirmed on Rialo L1</div>
-        <div class="tele-tag ok">● OPTIMAL</div>
+      <div class="tele-card">
+        <div class="tele-label">Finality</div>
+        <div class="tele-value" style="color:var(--accent)">50ms</div>
       </div>
-      <div class="tele-card cyan">
-        <div class="tele-label">Gas Fees</div>
-        <div class="tele-value cyan" style="font-size:1.2rem;letter-spacing:-0.02em">SUBSIDIZED</div>
-        <div class="tele-sub">Fuel-Injection Protocol Active</div>
-        <div class="tele-tag ok">● GAS-LESS</div>
+      <div class="tele-card">
+        <div class="tele-label">Gas Status</div>
+        <div class="tele-value" style="color:var(--cyan)">SUBSIDIZED</div>
       </div>
-      <div class="tele-card amber">
+      <div class="tele-card">
         <div class="tele-label">Active VM</div>
-        <div class="tele-value" style="color:var(--amber);font-size:1.3rem" id="dash-vm-label">EVM</div>
-        <div class="tele-sub">Swappable without chain rebuild</div>
-        <div class="tele-tag active">● MODULAR</div>
-      </div>
-      <div class="tele-card purple">
-        <div class="tele-label">Stack Integrity</div>
-        <div class="tele-value" style="color:var(--accent2);font-size:1.2rem">3 / 3</div>
-        <div class="tele-sub">All layers operational</div>
-        <div class="tele-tag ok">● VERIFIED</div>
+        <div class="tele-value" style="color:var(--amber)">EVM</div>
       </div>
     </div>
-    <div class="garage-section-title">Supermodular Diagnostic Suite</div>
-    <div class="modular-stack">
-      <div class="vm-card">
-        <div class="vm-card-title">⚙ Modular VM Interface</div>
-        <div class="vm-tabs">
-          <button class="vm-tab active" onclick="switchVM('EVM',this)">EVM</button>
-          <button class="vm-tab" onclick="switchVM('SVM',this)">SVM</button>
-          <button class="vm-tab" onclick="switchVM('MOVE',this)">MOVE</button>
-        </div>
-        <div class="vm-status" id="vm-status-text">Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Gas model: SUBSIDIZED.</div>
-        <div class="vm-swap-hint">// Swap VM without chain rebuild · Supermodular by design</div>
-      </div>
-      <div class="gas-card">
-        <div class="gas-card-title">⛽ Cruise Monitor — Gas System</div>
-        <div class="gas-rows">
-          <div class="gas-row"><span class="gas-row-label">Base Fee</span><span class="gas-row-val ok">0 GWEI</span></div>
-          <div class="gas-row"><span class="gas-row-label">Priority Fee</span><span class="gas-row-val ok">0 GWEI</span></div>
-          <div class="gas-row"><span class="gas-row-label">Tx Cost</span><span class="gas-row-val ok">$0.000</span></div>
-          <div class="gas-row"><span class="gas-row-label">Subsidy Status</span><span class="gas-row-val ok">ACTIVE ⚡</span></div>
-        </div>
-        <div class="gas-subsidy">
-          <div class="gas-subsidy-icon">⚡</div>
-          <div class="gas-subsidy-text">Rialo Fuel-Injection Protocol: <strong>Gas fees fully subsidized</strong> during testnet. Zero-cost transactions.</div>
-        </div>
-      </div>
-      <div class="finality-card">
-        <div class="finality-card-title">🏁 Finality Gauge</div>
-        <svg viewBox="0 0 140 80" style="width:160px;height:90px">
-          <defs><linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#4ade80"/><stop offset="100%" style="stop-color:#22d3ee"/></linearGradient></defs>
-          <path d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10" stroke-linecap="round"/>
-          <path d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="url(#gGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="20"/>
-          <text x="70" y="60" text-anchor="middle" font-family="Syne" font-size="26" font-weight="800" fill="#4ade80">50</text>
-          <text x="70" y="74" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#5a7090">ms</text>
-        </svg>
-        <div class="finality-unit">Time to Finality · Rialo L1</div>
-        <div class="finality-pantera">Backed by <span>Pantera Capital</span> · 2025</div>
-      </div>
-      <div class="layer-stack-card">
-        <div class="layer-stack-title">🧱 Supermodular Layer Stack</div>
-        <div class="layer-item">
-          <div class="layer-num">L1</div>
-          <div class="layer-icon" style="background:rgba(74,222,128,0.12)">⚙️</div>
-          <div class="layer-info"><div class="layer-name">RISC-V Engine</div><div class="layer-desc">Execution · Lightweight, portable compute</div></div>
-          <span class="layer-status-pill ok">LOADED</span>
-        </div>
-        <div class="layer-item">
-          <div class="layer-num">L2</div>
-          <div class="layer-icon" style="background:rgba(98,126,234,0.12)">🔷</div>
-          <div class="layer-info"><div class="layer-name">Ethereum Settlement</div><div class="layer-desc">Settlement · Proven security model</div></div>
-          <span class="layer-status-pill ok">VERIFIED</span>
-        </div>
-        <div class="layer-item">
-          <div class="layer-num">L3</div>
-          <div class="layer-icon" style="background:rgba(124,92,252,0.12)">🗄️</div>
-          <div class="layer-info"><div class="layer-name">Data Availability</div><div class="layer-desc">DA · Always accessible, always on</div></div>
-          <span class="layer-status-pill modular">SYNCED</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL -->
-<div class="modal-overlay" id="wallet-modal" onclick="handleOverlayClick(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div id="modal-content"></div>
   </div>
 </div>
 
 <script>
-// ── NETWORK CANVAS ──
+let globalWallet = null;
+
+async function directConnect() {
+  // Langsung cari provider (MetaMask, OKX, atau Phantom)
+  const provider = window.okxwallet || window.ethereum || (window.phantom && window.phantom.ethereum);
+
+  if (provider) {
+    try {
+      const accounts = await provider.request({ method: 'eth_requestAccounts' });
+      if (accounts.length > 0) {
+        globalWallet = accounts[0];
+        
+        // Update Nav
+        const btn = document.getElementById('nav-wallet-btn');
+        btn.innerHTML = `✔️ ${globalWallet.slice(0,6)}...`;
+        btn.style.borderColor = 'var(--accent)';
+
+        runAssembly(globalWallet);
+      }
+    } catch (err) {
+      alert("Koneksi ditolak.");
+    }
+  } else {
+    alert("Wallet tidak ditemukan. Pasang MetaMask atau OKX Wallet.");
+  }
+}
+
+function runAssembly(addr) {
+  document.getElementById('garage-standby').style.display = 'none';
+  document.getElementById('assembly-screen').style.display = 'flex';
+  
+  const steps = [
+    { id: 'asm-l1', sid: 'asm-s1', log: 'Mounting RISC-V...', prog: '33%', status: 'OK' },
+    { id: 'asm-l2', sid: 'asm-s2', log: 'Verifying ETH...', prog: '66%', status: 'OK' },
+    { id: 'asm-l3', sid: 'asm-s3', log: 'Syncing DA...', prog: '100%', status: 'OK' }
+  ];
+
+  let i = 0;
+  function next() {
+    if (i >= steps.length) {
+      setTimeout(() => showDashboard(addr), 600);
+      return;
+    }
+    const s = steps[i];
+    document.getElementById('asm-log').textContent = s.log;
+    setTimeout(() => {
+      document.getElementById(s.id).classList.add('loaded');
+      document.getElementById(s.sid).textContent = s.status;
+      document.getElementById('asm-progress').style.width = s.prog;
+      i++;
+      setTimeout(next, 800);
+    }, 1000);
+  }
+  next();
+}
+
+function showDashboard(addr) {
+  document.getElementById('assembly-screen').style.display = 'none';
+  document.getElementById('garage-dashboard').style.display = 'block';
+  document.getElementById('gkb-addr').textContent = addr;
+  document.getElementById('node-badge').classList.add('online');
+  document.getElementById('node-badge').innerHTML = '<div class="node-status-dot"></div>NODE_STATUS: ONLINE';
+}
+
+// Background Canvas Animation
 (function(){
   const canvas = document.getElementById('net-canvas');
   const ctx = canvas.getContext('2d');
-  const NODE_COUNT = 90, MAX_DIST = 160;
-  let W, H, angle = 0;
-  const nodes = Array.from({length: NODE_COUNT}, () => ({
-    bx: (Math.random()-0.5)*2200, by: (Math.random()-0.5)*1400,
-    vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4,
-    r: Math.random()*2+1
-  }));
-  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  let w, h;
+  const nodes = [];
+  function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
   window.addEventListener('resize', resize); resize();
+  for(let i=0; i<50; i++) nodes.push({x: Math.random()*w, y: Math.random()*h, vx: Math.random()-0.5, vy: Math.random()-0.5});
   function draw(){
-    ctx.clearRect(0,0,W,H); angle += 0.0008;
-    const cos = Math.cos(angle), sin = Math.sin(angle), cx = W/2, cy = H/2;
-    nodes.forEach(n => { n.bx += n.vx; n.by += n.vy; if(n.bx<-1200)n.bx=1200; if(n.bx>1200)n.bx=-1200; if(n.by<-800)n.by=800; if(n.by>800)n.by=-800; });
-    const pts = nodes.map(n => ({ x:cx+n.bx*cos-n.by*sin, y:cy+n.bx*sin+n.by*cos, r:n.r }));
-    for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){ const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy); if(d<MAX_DIST){ ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/MAX_DIST)*0.45})`;ctx.lineWidth=0.7;ctx.stroke(); } }
-    pts.forEach(p => { ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(74,222,128,0.7)';ctx.fill(); });
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = 'rgba(74,222,128,0.2)';
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy;
+      if(n.x<0 || n.x>w) n.vx *= -1; if(n.y<0 || n.y>h) n.vy *= -1;
+      ctx.beginPath(); ctx.arc(n.x, n.y, 2, 0, Math.PI*2); ctx.fill();
+    });
     requestAnimationFrame(draw);
   }
   draw();
 })();
-
-// ── WALLET STATE ──
-let globalWallet = null, globalChainId = null, activeProvider = null;
-
-function detectProviders(){
-  const eth = window.ethereum; if(!eth) return { metamask:null, phantom:null, okx:null, coinbase:null };
-  const providers = eth.providers || [eth];
-  const find = flag => providers.find(p=>p&&p[flag]) || null;
-  return {
-    metamask: find('isMetaMask') ? providers.find(p=>p.isMetaMask&&!p.isPhantom) : null,
-    phantom: find('isPhantom') || null,
-    okx: (window.okxwallet || find('isOKExWallet') || find('isOKXWallet')) || null,
-    coinbase: find('isCoinbaseWallet') || find('isCoinbaseBrowser') || null,
-  };
-}
-function getProviderFor(k){
-  const eth = window.ethereum; if(!eth) return null;
-  const providers = eth.providers || [eth];
-  if(k==='okx' && window.okxwallet) return window.okxwallet;
-  if(k==='metamask') return providers.find(p=>p.isMetaMask&&!p.isPhantom)||eth;
-  if(k==='phantom') return providers.find(p=>p.isPhantom)||eth;
-  if(k==='coinbase') return providers.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||eth;
-  return eth;
-}
-function bindProviderEvents(provider){
-  if(!provider) return;
-  provider.on && provider.on('accountsChanged', accounts => { if(!accounts||!accounts.length){ disconnectAll(); return; } globalWallet=accounts[0]; updateNavWalletBtn(globalWallet); });
-  provider.on && provider.on('chainChanged', chainId => { globalChainId = chainId; });
-}
-function updateNavWalletBtn(addr){
-  const btn = document.getElementById('nav-wallet-btn');
-  btn.classList.add('connected');
-  btn.innerHTML = `<span class="wdot"></span> ${addr.slice(0,6)}…${addr.slice(-4)}`;
-}
-function handleNavWallet(){ globalWallet ? disconnectAll() : openWalletModal(); }
-function disconnectAll(){
-  globalWallet = null; globalChainId = null; activeProvider = null;
-  const btn = document.getElementById('nav-wallet-btn');
-  btn.classList.remove('connected'); btn.innerHTML = 'Insert Validator Key';
-  resetGarageToStandby();
-}
-function resetGarageToStandby(){
-  document.getElementById('garage-standby').style.display = 'flex';
-  document.getElementById('assembly-screen').style.display = 'none';
-  document.getElementById('garage-dashboard').style.display = 'none';
-  const badge = document.getElementById('node-badge');
-  badge.classList.remove('online');
-  badge.innerHTML = '<div class="node-status-dot"></div>NODE_STATUS: DISCONNECTED';
-}
-
-// ── MODAL ──
-function closeModal(){ document.getElementById('wallet-modal').classList.remove('open'); }
-function handleOverlayClick(e){ if(e.target===document.getElementById('wallet-modal')) closeModal(); }
-
-function openWalletModal(){
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  if(typeof window.ethereum==='undefined' && !window.okxwallet){ isMobile ? showMobileModal() : showNoWalletModal(); return; }
-  isMobile ? showMobileModal() : showDesktopModal();
-}
-
-function showDesktopModal(){
-  const d = detectProviders();
-  const wallets = [
-    { key:'metamask', icon:'🦊', bg:'rgba(247,147,26,0.15)', name:'MetaMask',       type:'Browser Extension',      detected:!!d.metamask, url:'https://metamask.io/download/' },
-    { key:'phantom',  icon:'👻', bg:'rgba(153,69,255,0.15)', name:'Phantom',        type:'Solana & EVM · Extension',detected:!!d.phantom,  url:'https://phantom.app/download' },
-    { key:'okx',      icon:'⬛', bg:'rgba(0,0,0,0.3)',        name:'OKX Wallet',    type:'Extension & Mobile',     detected:!!(window.okxwallet||d.okx), url:'https://www.okx.com/web3' },
-    { key:'coinbase', icon:'🔵', bg:'rgba(22,82,240,0.15)',   name:'Coinbase Wallet',type:'Extension · Mobile',    detected:!!d.coinbase, url:'https://www.coinbase.com/wallet' },
-  ];
-  const items = wallets.map(w => w.detected
-    ? `<div class="wallet-item" onclick="connectWallet('${w.key}','${w.name}')"><div class="wallet-logo" style="background:${w.bg}">${w.icon}</div><div class="wallet-info-block"><div class="wallet-name">${w.name}</div><div class="wallet-type">${w.type}</div></div><div class="wallet-status installed">● Detected</div></div>`
-    : `<div class="wallet-item not-installed" onclick="window.open('${w.url}','_blank')"><div class="wallet-logo" style="background:${w.bg};opacity:.5">${w.icon}</div><div class="wallet-info-block"><div class="wallet-name">${w.name}</div><div class="wallet-type">${w.type}</div></div><div class="wallet-status not-found">Install ↗</div></div>`
-  ).join('');
-  document.getElementById('modal-content').innerHTML = `<div class="modal-title">Insert Validator Key</div><div class="modal-sub">Connect wallet untuk mount Validator Key dan akses Garage.</div><div class="wallet-list">${items}</div><p class="install-hint">Hanya wallet bertanda <span style="color:var(--accent)">● Detected</span> yang terinstall.</p>`;
-  document.getElementById('wallet-modal').classList.add('open');
-}
-function showNoWalletModal(){
-  document.getElementById('modal-content').innerHTML = `<div class="center-modal"><div style="font-size:2.5rem;margin-bottom:1rem">🔑</div><div class="modal-big-title">No Wallet Detected</div><div class="modal-desc">Install browser wallet extension terlebih dahulu.</div><div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem"><a href="https://metamask.io/download/" target="_blank" style="display:block;padding:.75rem 1.25rem;background:rgba(247,147,26,0.1);border:1px solid rgba(247,147,26,0.3);color:#f7931a;text-decoration:none;font-family:var(--font);font-weight:600;border-radius:10px;font-size:.88rem;text-align:center">🦊 Install MetaMask</a><a href="https://phantom.app/download" target="_blank" style="display:block;padding:.75rem 1.25rem;background:rgba(153,69,255,0.1);border:1px solid rgba(153,69,255,0.3);color:#9945ff;text-decoration:none;font-family:var(--font);font-weight:600;border-radius:10px;font-size:.88rem;text-align:center">👻 Install Phantom</a></div><p style="font-size:.72rem;color:var(--muted);margin-top:1rem">Refresh setelah install.</p></div>`;
-  document.getElementById('wallet-modal').classList.add('open');
-}
-function showMobileModal(){
-  const cur = encodeURIComponent(window.location.href);
-  const links = [
-    { icon:'🦊', name:'MetaMask',        href:`https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}` },
-    { icon:'👻', name:'Phantom',         href:`https://phantom.app/ul/browse/${cur}?ref=${cur}` },
-    { icon:'⬛', name:'OKX Wallet',      href:`okx://wallet/dapp/url?dappUrl=${cur}` },
-    { icon:'🔵', name:'Coinbase Wallet', href:`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(window.location.href)}` },
-  ];
-  const items = links.map(l=>`<div class="wallet-item" onclick="window.location.href='${l.href}'"><div class="wallet-logo" style="background:rgba(255,255,255,.06)">${l.icon}</div><div class="wallet-info-block"><div class="wallet-name">${l.name}</div><div class="wallet-type">Open in ${l.name} Browser</div></div><div class="wallet-status installed">Open ↗</div></div>`).join('');
-  document.getElementById('modal-content').innerHTML = `<div class="modal-title">Open with Wallet App</div><div class="modal-sub">Pilih wallet untuk membuka dApp.</div><div class="wallet-list">${items}</div>`;
-  document.getElementById('wallet-modal').classList.add('open');
-}
-
-async function connectWallet(walletKey, walletName){
-  document.getElementById('modal-content').innerHTML = `<div class="center-modal"><div class="spinner"></div><div class="modal-big-title">Mounting ${walletName}…</div><div class="modal-desc">Approve di wallet kamu.</div></div>`;
-  const provider = getProviderFor(walletKey);
-  if(!provider){ document.getElementById('modal-content').innerHTML=`<div class="center-modal"><div style="font-size:2rem;margin-bottom:.75rem">⚠️</div><div class="modal-big-title">${walletName} Not Available</div><button onclick="showDesktopModal()" style="margin-top:1rem;padding:.6rem 1.5rem;background:var(--accent);color:#050810;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font)">Back</button></div>`; return; }
-  try{
-    const accounts = await provider.request({ method:'eth_requestAccounts' });
-    if(!accounts||!accounts.length) throw new Error('No accounts');
-    globalWallet = accounts[0]; activeProvider = provider;
-    globalChainId = await provider.request({ method:'eth_chainId' });
-    bindProviderEvents(provider);
-    updateNavWalletBtn(globalWallet);
-    closeModal();
-    runAssembly(globalWallet);
-  }catch(e){
-    const msg = e.code===4001 ? 'Connection rejected.' : (e.message||'Unknown error');
-    document.getElementById('modal-content').innerHTML=`<div class="center-modal"><div style="font-size:2rem;margin-bottom:.75rem">⚠️</div><div class="modal-big-title">Connection Failed</div><div class="modal-desc">${msg}</div><button onclick="showDesktopModal()" style="margin-top:1rem;padding:.6rem 1.5rem;background:var(--accent);color:#050810;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font)">Try Again</button></div>`;
-  }
-}
-
-// ── GARAGE LOGIC ──
-function startIgnition(){ globalWallet ? runAssembly(globalWallet) : openWalletModal(); }
-
-function runAssembly(addr){
-  document.getElementById('garage-standby').style.display = 'none';
-  document.getElementById('assembly-screen').style.display = 'flex';
-  document.getElementById('garage-dashboard').style.display = 'none';
-  ['asm-l1','asm-l2','asm-l3'].forEach(id => { const el=document.getElementById(id); if(el) el.classList.remove('loaded'); });
-  ['asm-s1','asm-s2','asm-s3'].forEach(id => { const el=document.getElementById(id); if(el){ el.className='asm-layer-status pending'; el.textContent='Waiting…'; } });
-  const prog = document.getElementById('asm-progress'); if(prog) prog.style.width='0%';
-  const log = document.getElementById('asm-log'); if(log) log.textContent='Initializing…';
-  const steps = [
-    { layerId:'asm-l1', statusId:'asm-s1', text:'RISC-V Engine Loaded',        progress:'33%',  log:'[L1] Mounting RISC-V execution engine…' },
-    { layerId:'asm-l2', statusId:'asm-s2', text:'Ethereum Integrity Verified', progress:'66%',  log:'[L2] Verifying Ethereum settlement layer…' },
-    { layerId:'asm-l3', statusId:'asm-s3', text:'Data Availability Synced',    progress:'100%', log:'[L3] Syncing DA layer… Finality: 50ms ✓' },
-  ];
-  let i = 0;
-  function nextStep(){
-    if(i>=steps.length){ setTimeout(() => showDashboard(addr), 600); return; }
-    const s = steps[i];
-    const logEl = document.getElementById('asm-log'); if(logEl) logEl.textContent = s.log;
-    const stEl = document.getElementById(s.statusId); if(stEl){ stEl.className='asm-layer-status loading'; stEl.textContent='Loading…'; }
-    setTimeout(() => {
-      const layer = document.getElementById(s.layerId); if(layer) layer.classList.add('loaded');
-      if(stEl){ stEl.className='asm-layer-status done'; stEl.textContent=s.text; }
-      const progEl = document.getElementById('asm-progress'); if(progEl) progEl.style.width=s.progress;
-      i++; setTimeout(nextStep, 700);
-    }, 900);
-  }
-  setTimeout(nextStep, 400);
-}
-
-function showDashboard(addr){
-  document.getElementById('assembly-screen').style.display = 'none';
-  document.getElementById('garage-dashboard').style.display = 'block';
-  document.getElementById('gkb-addr').textContent = addr.slice(0,10)+'…'+addr.slice(-6);
-  const badge = document.getElementById('node-badge');
-  badge.classList.add('online');
-  badge.innerHTML = '<div class="node-status-dot"></div>NODE_STATUS: ONLINE';
-}
-
-function disconnectGarage(){ disconnectAll(); }
-
-const vmDescriptions = {
-  EVM:  'Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Gas model: SUBSIDIZED.',
-  SVM:  'Active: <strong>SVM</strong> — Solana Virtual Machine. Parallel transaction processing. Rust-based programs.',
-  MOVE: 'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset management. Aptos/Sui compatible.'
-};
-function switchVM(vm, btn){
-  document.querySelectorAll('.vm-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('vm-status-text').innerHTML = vmDescriptions[vm];
-  document.getElementById('dash-vm-label').textContent = vm;
-}
 </script>
 </body>
 </html>
