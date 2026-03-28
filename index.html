@@ -12,21 +12,26 @@
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; margin: 0; overflow: hidden; position: relative; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* DIGITAL GRID BACKGROUND (Jaring-jaring) */
+        /* FIX: DIGITAL GRID BACKGROUND (NET-LIKE EFFECT) */
         .grid-bg {
-            position: fixed; top: 0; left: 0; width: 200%; height: 200%;
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
             background-image: 
-                linear-gradient(to right, rgba(147, 51, 234, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(147, 51, 234, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-            transform: perspective(500px) rotateX(60deg) translateY(-20%);
+                linear-gradient(to right, rgba(147, 51, 234, 0.15) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(147, 51, 234, 0.15) 1px, transparent 1px);
+            background-size: 60px 60px;
             z-index: -1;
-            animation: gridMove 20s linear infinite;
+            /* Efek Perspektif Digital */
+            transform: perspective(1000px) rotateX(60deg);
+            animation: gridAnimate 30s linear infinite;
         }
 
-        @keyframes gridMove {
-            0% { transform: perspective(500px) rotateX(60deg) translateY(-50%) rotateZ(0deg); }
-            100% { transform: perspective(500px) rotateX(60deg) translateY(0%) rotateZ(5deg); }
+        @keyframes gridAnimate {
+            0% { transform: perspective(1000px) rotateX(60deg) translateY(0) rotateZ(0deg); }
+            100% { transform: perspective(1000px) rotateX(60deg) translateY(60px) rotateZ(360deg); }
         }
 
         /* 3D LOGO ANIMATION */
@@ -34,7 +39,7 @@
         .logo-3d { animation: rotate3D 15s linear infinite; transform-style: preserve-3d; }
         
         /* TERMINAL STYLES */
-        .chat-bubble { border-radius: 4px; border-left: 3px solid #9333ea; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); }
+        .chat-bubble { border-radius: 4px; border-left: 3px solid #9333ea; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(12px); }
         #chat-container { scroll-behavior: smooth; height: calc(100vh - 200px); overflow-y: auto; padding-right: 10px; }
         .cursor { display: inline-block; width: 8px; height: 15px; background: #9333ea; margin-left: 4px; animation: blink 0.8s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
@@ -52,7 +57,6 @@
         .hidden-ui { display: none !important; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: #333; }
-
         .tech-label { color: #a855f7; font-weight: bold; }
     </style>
 </head>
@@ -64,8 +68,8 @@
         <div class="mb-10 p-6 bg-[#0a0a0a]/50 rounded-full border border-purple-900/20 shadow-2xl shadow-purple-500/10 backdrop-blur-md">
             <img src="images/market.png" alt="Rialo Logo" class="w-32 h-32 object-contain logo-3d">
         </div>
-        <h1 class="text-6xl md:text-8xl font-black tracking-tighter italic uppercase mb-4 leading-none drop-shadow-[0_0_15px_rgba(147,51,234,0.3)]">RIALO <span class="text-purple-600">NETWORK</span></h1>
-        <p class="text-gray-500 font-mono text-[10px] md:text-xs tracking-[0.5em] uppercase mb-12">The Supermodular L1 Blockchain Stack</p>
+        <h1 class="text-6xl md:text-8xl font-black tracking-tighter italic uppercase mb-4 leading-none drop-shadow-[0_0_20px_rgba(147,51,234,0.4)]">RIALO <span class="text-purple-600">NETWORK</span></h1>
+        <p class="text-gray-400 font-mono text-[10px] md:text-xs tracking-[0.5em] uppercase mb-12">The Supermodular L1 Blockchain Stack</p>
         <button onclick="startScanning()" class="px-12 py-5 bg-white text-black font-black uppercase text-xs tracking-[0.2em] hover:bg-purple-600 hover:text-white transition-all rounded-sm shadow-xl active:scale-95">
             Initialize Alpha Core
         </button>
@@ -73,7 +77,7 @@
 
     <div id="scan-screen">
         <div class="text-[9px] tracking-[0.6em] mb-2 uppercase opacity-40">Security Protocol Alpha-7</div>
-        <div class="text-xs font-bold uppercase italic tracking-widest">Establishing Neural Link with Rialo Mainframe...</div>
+        <div class="text-xs font-bold uppercase italic tracking-widest text-white">Establishing Neural Link with Rialo Mainframe...</div>
         <div class="progress-bar"><div class="progress-fill"></div></div>
         <div class="mt-4 text-[8px] font-mono opacity-30 uppercase">RISC-V VM: Optimal | Latency: 50ms | Nodes: Online</div>
     </div>
@@ -91,7 +95,7 @@
             <div class="bg-[#0a0a0a]/80 border border-white/5 p-6 chat-bubble text-[11px] font-mono leading-relaxed text-purple-300 shadow-2xl backdrop-blur-md">
                 [SYSTEM]: DATA PROTOCOLS FULLY LOADED. RIALO CORE v2.4 ONLINE. <br><br>
                 Welcome, Builder. I am synced with the official Rialo technical documentation.<br><br>
-                <span class="text-white">COMMAND DIRECTORY:</span><br>
+                <span class="text-white font-bold underline">COMMAND DIRECTORY:</span><br>
                 > <span class="tech-label">RIALO</span>: Core Definition & Vision<br>
                 > <span class="tech-label">BACKED</span>: Funding, Investors & Leadership<br>
                 > <span class="tech-label">ARCHITECTURE</span>: RISC-V VM & Parallel Consensus<br>
@@ -100,7 +104,7 @@
             </div>
         </main>
 
-        <div class="p-6 bg-[#050505]/90 border-t border-white/5 backdrop-blur-xl">
+        <div class="p-6 bg-[#050505]/95 border-t border-white/5 backdrop-blur-xl">
             <div class="max-w-5xl mx-auto flex gap-4">
                 <div class="relative flex-grow">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-purple-600 font-bold text-xs">>>></span>
@@ -118,7 +122,7 @@
                      "RIALO is a <b>Supermodular Layer 1 Blockchain</b> specifically engineered to bridge Real-World Finance (RWF) with the Web3 ecosystem.<br><br>" +
                      "• <b>Mission:</b> To eliminate dependence on slow, expensive middleware and oracles.<br>" +
                      "• <b>Real-World Connectivity:</b> <i>Rialo Edge</i> allows dApps to communicate directly with the internet without intermediaries.<br>" +
-                     "• <b>Programmatic Privacy:</b> Native encrypted messaging mapped to Email/Phone/Device IDs, removing complex wallet barriers for new users.",
+                     "• <b>Programmatic Privacy:</b> Native encrypted messaging mapped to Email/Phone/Device IDs, removing complex wallet barriers.",
 
             "backed": "<b>[BACKING & LEADERSHIP: THE ELITE FOUNDATION]</b><br><br>" +
                       "Rialo is supported by premier institutional investors and led by world-class cryptographers:<br><br>" +
