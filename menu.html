@@ -1011,22 +1011,22 @@ function showDesktopWalletModal(destination){
     <div class="modal-title">Insert Validator Key</div>
     <div class="modal-sub">Choose your wallet to mount the Validator Key and access the Garage.</div>
     <div class="wallet-list">
-      <div class="wallet-item" onclick="connectEthWallet('MetaMask','🦊',${JSON.stringify(destination)})">
+      <div class="wallet-item" onclick="connectEthWallet('MetaMask','🦊','${destination}')">
         <div class="wallet-logo" style="background:rgba(247,147,26,0.15)">🦊</div>
         <div class="wallet-info-block"><div class="wallet-name">MetaMask</div><div class="wallet-type">Browser Extension — Most popular</div></div>
         <div class="wallet-status installed">Detected</div>
       </div>
-      <div class="wallet-item" onclick="connectEthWallet('Phantom','👻',${JSON.stringify(destination)})">
+      <div class="wallet-item" onclick="connectEthWallet('Phantom','👻','${destination}')">
         <div class="wallet-logo" style="background:rgba(153,69,255,0.15)">👻</div>
         <div class="wallet-info-block"><div class="wallet-name">Phantom</div><div class="wallet-type">Solana &amp; EVM · Browser Extension</div></div>
         <div class="wallet-status popular">Popular</div>
       </div>
-      <div class="wallet-item" onclick="connectEthWallet('OKX Wallet','⬛',${JSON.stringify(destination)})">
+      <div class="wallet-item" onclick="connectEthWallet('OKX Wallet','⬛','${destination}')">
         <div class="wallet-logo" style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1)">⬛</div>
         <div class="wallet-info-block"><div class="wallet-name">OKX Wallet</div><div class="wallet-type">Browser Extension &amp; Mobile</div></div>
         <div class="wallet-status popular">Popular</div>
       </div>
-      <div class="wallet-item" onclick="connectEthWallet('Coinbase Wallet','🔵',${JSON.stringify(destination)})">
+      <div class="wallet-item" onclick="connectEthWallet('Coinbase Wallet','🔵','${destination}')">
         <div class="wallet-logo" style="background:rgba(22,82,240,0.15)">🔵</div>
         <div class="wallet-info-block"><div class="wallet-name">Coinbase Wallet</div><div class="wallet-type">Browser Extension · Mobile</div></div>
         <div class="wallet-status popular">Popular</div>
