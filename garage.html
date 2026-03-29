@@ -25,7 +25,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
 .logo-dot{width:9px;height:9px;background:var(--accent);border-radius:50%;animation:lpulse 2s infinite;}
 .nav-right{display:flex;align-items:center;gap:.6rem;}
-.nav-links{display:flex;gap:.2rem;background:rgba(255,255,255,.05);border-radius:99px;padding:3px;}
+.nav-links{display:flex;gap:.2rem;background:rgba(255,255,255,.05);border-radius:9px;padding:3px;}
 .nav-link{padding:.35rem .85rem;border-radius:6px;background:transparent;color:rgba(255,255,255,.45);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;text-decoration:none;border:none;font-family:var(--font);}
 .nav-link:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.06);}
 .nav-link.active{background:rgba(255,255,255,.1);color:#fff;}
@@ -339,7 +339,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
                 <span class="vpack-name">💎 Stake ETH</span>
                 <span class="vpack-fee">Fee: 0.000001 ETH</span>
               </div>
-              <div class="vpack-desc">Deposit ETH ke Validator Contract. Minimum 0.000001 ETH. Transaksi nyata di Ethereum Mainnet.</div>
+              <div class="vpack-desc">Deposit ETH ke Validator Contract. Transaksi simulasi Alpha Core.</div>
               <div class="vpack-input">
                 <input class="vpack-field" id="stake-amount" type="number" placeholder="0.000001 ETH" min="0.000001" step="0.000001"/>
                 <button class="vpack-btn" id="stake-btn" onclick="doStake()">Stake →</button>
@@ -432,10 +432,10 @@ const VM={
     desc:'Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity ready. Fee: Fixed 0.000001 ETH.'},
   SVM:{finality:22,fStatus:'ULTRA FAST',integrity:'12 / 12',iStatus:'STABLE',color:'#22d3ee',gaugeOffset:15,
     stack:[{name:"Solana",logo:"https://cryptologos.cc/logos/solana-sol-logo.png?v=032",status:"SVM CORE"},{name:"Pyth Network",logo:"https://cryptologos.cc/logos/pyth-network-pyth-logo.png?v=032",status:"ORACLE"},{name:"Jupiter",logo:"https://static.jup.ag/jup/tokens/jup.png",status:"AGGREGATOR"}],
-    desc:'Active: <strong>SVM</strong> — Solana Virtual Machine. Parallel tx processing. Rust-based.'},
+    desc:'Active: <strong>SVM</strong> — Solana Virtual Machine. Parallel tx processing. Rust-based. Fee: Fixed 0.000001 ETH.'},
   MOVE:{finality:45,fStatus:'SECURE',integrity:'5 / 5',iStatus:'SYNCHRONIZED',color:'#7c5cfc',gaugeOffset:55,
     stack:[{name:"Sui",logo:"https://cryptologos.cc/logos/sui-sui-logo.png?v=032",status:"OBJECT-VM"},{name:"Aptos",logo:"https://cryptologos.cc/logos/aptos-apt-logo.png?v=032",status:"MOVE-CORE"},{name:"Movement",logo:"https://avatars.githubusercontent.com/u/131062835?s=200&v=4",status:"M2 STACK"}],
-    desc:'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset mgmt.'}
+    desc:'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset mgmt. Fee: Fixed 0.000001 ETH.'}
 };
 
 /* ── GAS LIVE FETCH ── */
@@ -501,7 +501,7 @@ function getProvider(type){
 const AP=()=>window._rialoProv||window.ethereum;
 
 /* ── TRANSACTIONS ── */
-function toHex(eth){return'0x'+BigInt(Math.round(eth*1e18)).toString(16);}
+function toHex(eth){return'0x'+BigInt(Math.round(eth*1e15)).toString(16)+'000';}
 
 async function doStake(){
   const prov=AP();if(!prov||!walletAddress){showToast('stake','error','Wallet tidak terkoneksi.');return;}
@@ -521,7 +521,7 @@ async function doSend(){
   const prov=AP();if(!prov||!walletAddress){showToast('send','error','Wallet tidak terkoneksi.');return;}
   const to=document.getElementById('send-addr').value.trim();
   const amt=parseFloat(document.getElementById('send-amount').value);
-  if(!to||!to.startsWith('0x')||to.length!==42){showToast('send','error','Address tidak valid.');return;}
+  if(!to||!to.startsWith('0x')||to.length!==42){showToast('send','error','Address tidak valid (harus 42 karakter mulai 0x).');return;}
   if(!amt||amt<=0){showToast('send','error','Masukkan jumlah ETH.');return;}
   const btn=document.getElementById('send-btn');btn.disabled=true;btn.textContent='Waiting…';
   showToast('send','pending','Menunggu konfirmasi send di wallet kamu…');
@@ -619,17 +619,13 @@ function renderPicker(){
 async function connectWallet(type){
   const provider=getProvider(type);
   if(!provider){showToast('conn','error','Provider tidak ditemukan.');return;}
-  document.getElementById('wallet-area').innerHTML=`<div class="conn-state"><div class="conn-spin"></div><div class="conn-lbl">Menunggu konfirmasi di wallet kamu…</div></div>`;
+  document.getElementById('wallet-area').innerHTML=`<div class="conn-state"><div class="conn-spin"></div><div class="conn-lbl">Menunggu konfirmasi…</div></div>`;
   try{
     const accounts=await provider.request({method:'eth_requestAccounts'});
-    if(!accounts?.length)throw new Error('Tidak ada akun dipilih');
-    try{await provider.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x1'}]});}catch(e){if(e.code!==4902)console.warn(e.message);}
     walletAddress=accounts[0];window._rialoProv=provider;
     onConnected();
   }catch(err){
-    let msg='Koneksi gagal.';
-    if(err.code===4001)msg='Kamu menolak permintaan koneksi.';
-    document.getElementById('wallet-area').innerHTML=`<div class="err-box"><div class="err-msg">⚠️ ${msg}</div><button class="retry-btn" onclick="renderPicker()">↩ Kembali</button></div>`;
+    renderPicker();
   }
 }
 
@@ -671,7 +667,7 @@ function switchVM(vm,btn){
   const sc=document.getElementById('stack-card');
   if(sc){
     let h=`<div class="card-lbl">🧱 ${vm} Supermodular Layer Stack</div>`;
-    d.stack.forEach((item,idx)=>{h+=`<div class="layer-item" style="animation:fadein .3s both;animation-delay:${idx*.1}s"><div class="li-n">0${idx+1}</div><div class="li-ico"><img src="${item.logo}" onerror="this.src='https://placehold.co/22x22/1a2a42/4ade80?text=?'" loading="lazy"></div><div class="li-info"><div class="li-name">${item.name}</div></div><span class="li-pill" style="background:${d.color}20;color:${d.color}">${item.status}</span></div>`;});
+    d.stack.forEach((item,idx)=>{h+=`<div class="layer-item"><div class="li-n">0${idx+1}</div><div class="li-info"><div class="li-name">${item.name}</div></div><span class="li-pill" style="background:${d.color}20;color:${d.color}">${item.status}</span></div>`;});
     sc.innerHTML=h;
   }
   document.getElementById('vm-label').textContent=vm;document.getElementById('vm-label').style.color=d.color;
