@@ -50,7 +50,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .btn-ghost:hover{background:rgba(255,255,255,0.09);}
 
 /* EXPLORE MENU */
-.explore-wrap{max-width:600px;margin:0 auto;padding:2.5rem 1.5rem;}
+.explore-wrap{max-width:640px;margin:0 auto;padding:2.5rem 1.5rem;}
 .explore-wrap h2{font-family:var(--font-head);font-size:1.5rem;font-weight:800;margin-bottom:0.3rem;}
 .explore-wrap .sub{color:rgba(255,255,255,0.35);font-size:0.82rem;margin-bottom:1.75rem;}
 .menu-cards{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;}
@@ -63,6 +63,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .card-icon.green{background:rgba(74,222,128,0.15);}
 .card-icon.cyan{background:rgba(34,211,238,0.15);}
 .card-icon.purple{background:rgba(124,92,252,0.15);}
+.card-icon.red{background:rgba(248,113,113,0.15);}
 .card-title{font-weight:600;font-size:0.95rem;}
 .card-desc{font-size:0.75rem;color:rgba(255,255,255,0.35);line-height:1.5;}
 .card-arrow{font-size:.75rem;color:rgba(255,255,255,.22);}
@@ -91,7 +92,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .footer-builders{display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;color:rgba(255,255,255,0.2);}
 .builder-link{color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;}
 .builder-link:hover{color:var(--accent);}
-
 @media(max-width:600px){
   .menu-cards{grid-template-columns:1fr;}
   .footer-inner{grid-template-columns:1fr;}
@@ -100,7 +100,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </head>
 <body>
 <canvas id="net-canvas"></canvas>
-
 <nav class="nav">
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
   <div class="nav-right">
@@ -109,25 +108,23 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <a class="nav-link" href="wallet.html">Swap</a>
       <a class="nav-link" href="garage.html">Garage</a>
       <a class="nav-link" href="market.html">Market</a>
-      <a class="nav-link" href="quest.html">Quests</a>
-      <a class="nav-link" href="passport.html">Passport</a>
-      <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+      <a class="nav-link" href="quest.html">Quiz</a>
     </div>
   </div>
 </nav>
-
 <div class="page">
   <!-- HERO -->
   <div class="landing">
     <div class="badge">Supermodular L1 · 50ms Finality</div>
     <h1>The <span class="accent">Validator</span><br>Garage.</h1>
-    <p class="hero-sub">Mount your Validator Key. Assemble the Supermodular Stack. Monitor live engine telemetry dari Rialo L1 core.</p>
+    <p class="hero-sub">Mount your Validator Key. Assemble the Supermodular Stack. Monitor live engine telemetry from Rialo L1 core.</p>
     <div class="parlay-hook">
-      <span>Supermodular?</span> — Swap execution layers (EVM → SVM → MOVE) tanpa rebuild chain. Sovereignty by design.
+      <span>Supermodular?</span> — Swap execution layers (EVM → SVM → MOVE) without rebuilding the chain. Sovereignty by design.
     </div>
     <div class="cta-group">
       <a class="btn-primary" href="garage.html">Open Garage</a>
-      <a class="btn-ghost"   href="market.html">Live Markets</a>
+      <a class="btn-ghost" href="market.html">Live Markets</a>
+      <a class="btn-ghost" href="quest.html">Take the Quiz</a>
     </div>
   </div>
 
@@ -138,7 +135,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <div class="menu-cards">
       <a class="menu-card" href="wallet.html">
         <div class="card-icon yellow">🔄</div>
-        <div><div class="card-title">Swap</div><div class="card-desc">Swap ETH Sepolia testnet ke RIALO token</div></div>
+        <div><div class="card-title">Swap</div><div class="card-desc">Swap Sepolia ETH to RIALO token</div></div>
         <div class="card-arrow">→</div>
       </a>
       <a class="menu-card" href="garage.html">
@@ -148,27 +145,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       </a>
       <a class="menu-card" href="market.html">
         <div class="card-icon cyan">📊</div>
-        <div><div class="card-title">Market</div><div class="card-desc">Live crypto prices, charts &amp; top movers</div></div>
-        <div class="card-arrow">→</div>
-      </a>
-      <a class="menu-card" href="#about">
-        <div class="card-icon purple">ℹ️</div>
-        <div><div class="card-title">About</div><div class="card-desc">Pelajari Rialo Protocol dan tim di baliknya</div></div>
+        <div><div class="card-title">Market</div><div class="card-desc">Live crypto prices, charts & top movers</div></div>
         <div class="card-arrow">→</div>
       </a>
       <a class="menu-card" href="quest.html">
-        <div class="card-icon green">🎯</div>
-        <div><div class="card-title">Quest Board</div><div class="card-desc">Selesaikan misi, kumpulkan XP, unlock Alpha Operator status.</div></div>
-        <div class="card-arrow">→</div>
-      </a>
-      <a class="menu-card" href="passport.html">
-        <div class="card-icon purple">🪪</div>
-        <div><div class="card-title">Alpha Passport</div><div class="card-desc">Identity card operator kamu di jaringan Rialo.</div></div>
-        <div class="card-arrow">→</div>
-      </a>
-      <a class="menu-card" href="leaderboard.html">
-        <div class="card-icon yellow">🏆</div>
-        <div><div class="card-title">Leaderboard</div><div class="card-desc">Ranking top validators berdasarkan XP di testnet.</div></div>
+        <div class="card-icon red">🧠</div>
+        <div><div class="card-title">Quiz</div><div class="card-desc">Test your Rialo knowledge. Earn XP. Climb the leaderboard.</div></div>
         <div class="card-arrow">→</div>
       </a>
     </div>
@@ -179,10 +161,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <div class="how-label">How it works</div>
     <div class="how-title">Node Ignition Protocol</div>
     <div class="how-grid">
-      <div class="how-card"><div class="how-num">01 / STANDBY</div><h3>Node Disconnected</h3><p>Network jaring neural aktif. Status: NODE_DISCONNECTED. Mesin belum dinyalakan.</p></div>
-      <div class="how-card"><div class="how-num">02 / IGNITION</div><h3>Insert Validator Key</h3><p>Connect wallet = mount validator key. Satu aksi, tiga layer siap diassemble.</p></div>
-      <div class="how-card"><div class="how-num">03 / ASSEMBLY</div><h3>Modular Stack Loaded</h3><p>RISC-V Engine → Ethereum Settlement → DA Layer. Semua terpasang otomatis.</p></div>
-      <div class="how-card"><div class="how-num">04 / TELEMETRY</div><h3>50ms Dashboard</h3><p>Engine hidup. Monitor gas, VM aktif, finality gauge, dan layer stack secara real-time.</p></div>
+      <div class="how-card"><div class="how-num">01 / STANDBY</div><h3>Node Disconnected</h3><p>Neural mesh network active. Status: NODE_DISCONNECTED. Engine not yet ignited.</p></div>
+      <div class="how-card"><div class="how-num">02 / IGNITION</div><h3>Insert Validator Key</h3><p>Connect wallet = mount validator key. One action, three layers ready to assemble.</p></div>
+      <div class="how-card"><div class="how-num">03 / ASSEMBLY</div><h3>Modular Stack Loaded</h3><p>RISC-V Engine → Ethereum Settlement → DA Layer. All assembled automatically.</p></div>
+      <div class="how-card"><div class="how-num">04 / TELEMETRY</div><h3>50ms Dashboard</h3><p>Engine live. Monitor gas, active VM, finality gauge, and layer stack in real-time.</p></div>
     </div>
   </div>
 
@@ -198,9 +180,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
           <a href="garage.html">Validator Garage</a>
           <a href="wallet.html">Swap</a>
           <a href="market.html">Markets</a>
-          <a href="quest.html">Quests</a>
-          <a href="passport.html">Alpha Passport</a>
-          <a href="leaderboard.html">Leaderboard</a>
+          <a href="quest.html">Quiz</a>
         </div>
       </div>
       <div class="footer-col">
@@ -227,12 +207,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 (function(){
   const canvas = document.getElementById('net-canvas');
   const ctx = canvas.getContext('2d');
-  const NODE_COUNT = 90, MAX_DIST = 160;
+  const NODE_COUNT = 160, MAX_DIST = 150;
   let W, H, angle = 0;
   const nodes = Array.from({length: NODE_COUNT}, () => ({
-    bx: (Math.random()-0.5)*2200, by: (Math.random()-0.5)*1400,
+    bx: (Math.random()-0.5)*2400, by: (Math.random()-0.5)*1600,
     vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4,
-    r: Math.random()*2+1
+    r: Math.random()*2+0.8
   }));
   function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
   window.addEventListener('resize', resize); resize();
@@ -242,15 +222,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     const cos = Math.cos(angle), sin = Math.sin(angle), cx = W/2, cy = H/2;
     nodes.forEach(n => {
       n.bx += n.vx; n.by += n.vy;
-      if(n.bx < -1200) n.bx = 1200; if(n.bx > 1200) n.bx = -1200;
-      if(n.by < -800) n.by = 800; if(n.by > 800) n.by = -800;
+      if(n.bx < -1300) n.bx = 1300; if(n.bx > 1300) n.bx = -1300;
+      if(n.by < -900) n.by = 900; if(n.by > 900) n.by = -900;
     });
     const pts = nodes.map(n => ({ x: cx + n.bx*cos - n.by*sin, y: cy + n.bx*sin + n.by*cos, r: n.r }));
     for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
       const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
-      if(d<MAX_DIST){ ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.strokeStyle=`rgba(74,222,128,${(1-d/MAX_DIST)*0.45})`; ctx.lineWidth=0.7; ctx.stroke(); }
+      if(d<MAX_DIST){ ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.strokeStyle=`rgba(74,222,128,${(1-d/MAX_DIST)*0.5})`; ctx.lineWidth=0.6; ctx.stroke(); }
     }
-    pts.forEach(p => { ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(74,222,128,0.7)'; ctx.fill(); });
+    pts.forEach(p => { ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(74,222,128,0.75)'; ctx.fill(); });
     requestAnimationFrame(draw);
   }
   draw();
