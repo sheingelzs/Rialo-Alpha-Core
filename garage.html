@@ -339,9 +339,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
                 <span class="vpack-name">💎 Stake ETH</span>
                 <span class="vpack-fee">Fee: 0.000001 ETH</span>
               </div>
-              <div class="vpack-desc">Deposit ETH ke Validator Contract. Minimum 0.01 ETH. Transaksi nyata di Ethereum Mainnet.</div>
+              <div class="vpack-desc">Deposit ETH ke Validator Contract. Minimum 0.000001 ETH. Transaksi nyata di Ethereum Mainnet.</div>
               <div class="vpack-input">
-                <input class="vpack-field" id="stake-amount" type="number" placeholder="0.01 ETH" min="0.01" step="0.001"/>
+                <input class="vpack-field" id="stake-amount" type="number" placeholder="0.000001 ETH" min="0.000001" step="0.000001"/>
                 <button class="vpack-btn" id="stake-btn" onclick="doStake()">Stake →</button>
               </div>
             </div>
@@ -353,7 +353,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
               <div class="vpack-desc">Kirim ETH ke address lain langsung dari Garage.</div>
               <div class="vpack-input">
                 <input class="vpack-field" id="send-addr" type="text" placeholder="Address 0x…"/>
-                <input class="vpack-field" id="send-amount" type="number" placeholder="ETH" min="0.0001" step="0.0001" style="max-width:90px;"/>
+                <input class="vpack-field" id="send-amount" type="number" placeholder="ETH" min="0.000001" step="0.000001" style="max-width:90px;"/>
                 <button class="vpack-btn" id="send-btn" onclick="doSend()">Send →</button>
               </div>
             </div>
@@ -482,7 +482,6 @@ function showToast(id,type,msg){
 }
 
 /* ── ABI ENCODE ── */
-// approve(address spender, uint256 amount) → selector 0x095ea7b3
 function encodeApprove(spender,amountHex){
   const sel='095ea7b3';
   const addr=spender.toLowerCase().replace('0x','').padStart(64,'0');
@@ -502,12 +501,12 @@ function getProvider(type){
 const AP=()=>window._rialoProv||window.ethereum;
 
 /* ── TRANSACTIONS ── */
-function toHex(eth){return'0x'+BigInt(Math.round(eth*1e15)).toString(16)+'000';}
+function toHex(eth){return'0x'+BigInt(Math.round(eth*1e18)).toString(16);}
 
 async function doStake(){
   const prov=AP();if(!prov||!walletAddress){showToast('stake','error','Wallet tidak terkoneksi.');return;}
   const amt=parseFloat(document.getElementById('stake-amount').value);
-  if(!amt||amt<0.01){showToast('stake','error','Minimum stake 0.01 ETH.');return;}
+  if(!amt||amt<0.000001){showToast('stake','error','Minimum stake 0.000001 ETH.');return;}
   const btn=document.getElementById('stake-btn');btn.disabled=true;btn.textContent='Waiting…';
   showToast('stake','pending','Menunggu konfirmasi stake di wallet kamu…');
   try{
@@ -522,7 +521,7 @@ async function doSend(){
   const prov=AP();if(!prov||!walletAddress){showToast('send','error','Wallet tidak terkoneksi.');return;}
   const to=document.getElementById('send-addr').value.trim();
   const amt=parseFloat(document.getElementById('send-amount').value);
-  if(!to||!to.startsWith('0x')||to.length!==42){showToast('send','error','Address tidak valid (harus 42 karakter mulai 0x).');return;}
+  if(!to||!to.startsWith('0x')||to.length!==42){showToast('send','error','Address tidak valid.');return;}
   if(!amt||amt<=0){showToast('send','error','Masukkan jumlah ETH.');return;}
   const btn=document.getElementById('send-btn');btn.disabled=true;btn.textContent='Waiting…';
   showToast('send','pending','Menunggu konfirmasi send di wallet kamu…');
@@ -610,9 +609,8 @@ function renderPicker(){
           <div class="winfo"><div class="wname">OKX Wallet</div><div class="wsub">Extension / OKX App · Ethereum Mainnet</div></div>
           <span class="wbadge ${hasOKX?'ok':'no'}">${hasOKX?'● Detected':'○ Not Found'}</span>
         </div>
-        ${!anyFound?`<div class="no-wallet-warn">⚠️ Tidak ada wallet terdeteksi.<br>Jika di HP, buka dari <strong>browser bawaan wallet</strong> kamu (MetaMask, OKX, Phantom Browser).</div>`:''}
+        ${!anyFound?`<div class="no-wallet-warn">⚠️ Tidak ada wallet terdeteksi.</div>`:''}
         <a class="mobile-link" href="https://metamask.app.link/dapp/${pageUrl}">📱 Buka di MetaMask Mobile →</a>
-        <a class="mobile-link" href="https://okx.com/download?deeplink=${pageUrl}" style="color:rgba(255,255,255,.3);">📱 Buka di OKX App →</a>
       </div>
     </div>`;
 }
@@ -631,8 +629,6 @@ async function connectWallet(type){
   }catch(err){
     let msg='Koneksi gagal.';
     if(err.code===4001)msg='Kamu menolak permintaan koneksi.';
-    else if(err.code===-32002)msg='Ada request pending. Buka wallet dan setujui dulu.';
-    else if(err.message)msg=err.message;
     document.getElementById('wallet-area').innerHTML=`<div class="err-box"><div class="err-msg">⚠️ ${msg}</div><button class="retry-btn" onclick="renderPicker()">↩ Kembali</button></div>`;
   }
 }
@@ -686,5 +682,4 @@ function switchVM(vm,btn){
 renderPicker();
 </script>
 </body>
-</html>
 </html>
