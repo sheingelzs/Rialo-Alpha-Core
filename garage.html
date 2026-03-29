@@ -11,21 +11,24 @@
   --accent:#4ade80;--accent2:#7c5cfc;--red:#f87171;--green:#4ade80;
   --amber:#facc15;--cyan:#22d3ee;
   --text:#e8eaf0;--muted:#5a7090;
-  --font:'Space Grotesk',sans-serif;--font-head:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
+  --font:'Space Grotesk',sans-serif;
+  --font-head:'Syne',sans-serif;
+  --font-mono:'Space Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
 #net-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh;}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes logopulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.5)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-@keyframes valPulse{0%,100%{opacity:1}50%{opacity:0.6}}
+
+@keyframes spin      {to{transform:rotate(360deg)}}
+@keyframes logopulse {0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.5)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
+@keyframes blink     {0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes fadeIn    {from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes valPulse  {0%,100%{opacity:1}50%{opacity:0.6}}
 
 /* NAV */
 .nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,0.95);backdrop-filter:blur(16px);}
-.nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;}
+.nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
 .logo-dot{width:9px;height:9px;background:var(--accent);border-radius:50%;animation:logopulse 2s infinite;}
 .nav-right{display:flex;align-items:center;gap:0.6rem;}
 .nav-links{display:flex;gap:0.2rem;background:rgba(255,255,255,0.05);border-radius:9px;padding:3px;}
@@ -37,44 +40,46 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .wdot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
 
 /* PAGE */
-.page{position:relative;z-index:1;animation:fadeIn 0.25s ease;}
+.page{position:relative;z-index:1;}
 
 /* STANDBY */
-.garage-standby{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:88vh;text-align:center;padding:2rem;}
-.node-status-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:var(--red);padding:0.35rem 1rem;border-radius:999px;font-family:var(--font-mono);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;margin-bottom:2rem;}
+.garage-standby{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:88vh;text-align:center;padding:2rem;animation:fadeIn 0.3s ease;}
+.node-status-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:var(--red);padding:0.35rem 1rem;border-radius:999px;font-family:var(--font-mono);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;margin-bottom:2rem;transition:all 0.4s;}
 .node-status-badge.online{background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.25);color:var(--accent);}
-.node-status-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1.5s infinite;}
+.node-status-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:blink 1.5s infinite;flex-shrink:0;}
 .node-status-badge.online .node-status-dot{background:var(--accent);}
 .garage-standby h2{font-family:var(--font-head);font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:0.75rem;line-height:1.1;}
 .garage-standby h2 .dim{color:rgba(255,255,255,0.25);}
-.garage-standby p{font-size:0.88rem;color:var(--muted);max-width:420px;line-height:1.7;margin-bottom:2rem;}
+.garage-standby p{font-size:0.88rem;color:var(--muted);max-width:420px;line-height:1.7;margin-bottom:0.75rem;}
+.readonly-notice{display:inline-flex;align-items:center;gap:6px;background:rgba(124,92,252,0.08);border:1px solid rgba(124,92,252,0.25);color:rgba(200,180,255,0.75);padding:0.4rem 1rem;border-radius:8px;font-size:0.75rem;font-family:var(--font-mono);margin-bottom:1.75rem;}
 .ignition-btn{display:inline-flex;align-items:center;gap:10px;padding:0.9rem 2rem;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.4);color:var(--accent);font-family:var(--font-mono);font-size:0.85rem;font-weight:700;letter-spacing:0.08em;border-radius:12px;cursor:pointer;transition:all 0.2s;}
 .ignition-btn:hover{background:rgba(74,222,128,0.15);box-shadow:0 0 24px rgba(74,222,128,0.15);}
 .ignition-btn svg{width:16px;height:16px;flex-shrink:0;}
 
 /* ASSEMBLY */
-.assembly-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:88vh;padding:2rem;text-align:center;}
+.assembly-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:88vh;padding:2rem;text-align:center;animation:fadeIn 0.3s ease;}
 .assembly-title{font-family:var(--font-head);font-size:1.4rem;font-weight:800;margin-bottom:2.5rem;letter-spacing:-0.02em;}
 .assembly-layers{display:flex;flex-direction:column;gap:0.75rem;width:100%;max-width:420px;margin-bottom:2rem;}
 .asm-layer{display:flex;align-items:center;gap:1rem;padding:0.85rem 1.1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;opacity:0;transform:translateX(-16px);transition:all 0.5s ease;}
 .asm-layer.loaded{opacity:1;transform:translateX(0);border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.04);}
 .asm-layer-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-.asm-layer-icon.exec{background:rgba(74,222,128,0.12);}
+.asm-layer-icon.exec  {background:rgba(74,222,128,0.12);}
 .asm-layer-icon.settle{background:rgba(98,126,234,0.12);}
-.asm-layer-icon.da{background:rgba(124,92,252,0.12);}
+.asm-layer-icon.da    {background:rgba(124,92,252,0.12);}
 .asm-layer-text{flex:1;text-align:left;}
 .asm-layer-label{font-family:var(--font-mono);font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;}
 .asm-layer-status{font-size:0.85rem;font-weight:700;}
 .asm-layer-status.pending{color:rgba(255,255,255,0.2);}
 .asm-layer-status.loading{color:var(--amber);}
-.asm-layer-status.done{color:var(--accent);}
+.asm-layer-status.done  {color:var(--accent);}
 .asm-check{font-size:1rem;opacity:0;transition:opacity 0.3s;}
 .asm-layer.loaded .asm-check{opacity:1;}
 .asm-progress-bar{width:100%;max-width:420px;height:2px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;}
 .asm-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));width:0%;transition:width 0.4s ease;border-radius:99px;}
+#asm-log{font-size:0.72rem;color:var(--muted);margin-top:1rem;font-family:var(--font-mono);}
 
 /* DASHBOARD */
-.garage-dashboard{display:none;position:relative;z-index:1;padding:1.5rem 2rem;max-width:1100px;margin:0 auto;}
+.garage-dashboard{display:none;position:relative;z-index:1;padding:1.5rem 2rem;max-width:1100px;margin:0 auto;animation:fadeIn 0.3s ease;}
 .garage-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
 .garage-label{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.35rem;}
 .garage-title{font-family:var(--font-head);font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:0.4rem;}
@@ -82,6 +87,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .garage-key-badge{display:flex;align-items:center;gap:8px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:10px;padding:0.55rem 0.85rem;}
 .gkb-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:logopulse 2s infinite;flex-shrink:0;}
 .gkb-label{font-size:0.6rem;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
+.gkb-ro{font-size:0.58rem;font-family:var(--font-mono);color:var(--accent2);background:rgba(124,92,252,0.1);border:1px solid rgba(124,92,252,0.25);padding:1px 6px;border-radius:99px;margin-left:4px;}
 .gkb-addr{font-family:var(--font-mono);font-size:0.75rem;color:var(--text);font-weight:700;}
 .gkb-disconnect{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.68rem;font-family:var(--font);margin-left:0.5rem;transition:color 0.2s;}
 .gkb-disconnect:hover{color:var(--red);}
@@ -92,27 +98,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .telemetry-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;}
 .tele-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;position:relative;overflow:hidden;}
 .tele-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.tele-card.green::before{background:linear-gradient(90deg,var(--accent),transparent);}
+.tele-card.green ::before,.tele-card.green::before{background:linear-gradient(90deg,var(--accent),transparent);}
 .tele-card.purple::before{background:linear-gradient(90deg,var(--accent2),transparent);}
-.tele-card.cyan::before{background:linear-gradient(90deg,var(--cyan),transparent);}
-.tele-card.amber::before{background:linear-gradient(90deg,var(--amber),transparent);}
+.tele-card.cyan::before  {background:linear-gradient(90deg,var(--cyan),transparent);}
+.tele-card.amber::before {background:linear-gradient(90deg,var(--amber),transparent);}
 .tele-label{font-family:var(--font-mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.6rem;}
 .tele-value{font-family:var(--font-head);font-size:1.6rem;font-weight:800;line-height:1;margin-bottom:0.3rem;}
-.tele-value.accent{color:var(--accent);}
-.tele-value.cyan{color:var(--cyan);}
-.tele-value.amber{color:var(--amber);}
-.tele-value.pulse-val{animation:valPulse 1.2s ease-in-out infinite;}
+.c-accent{color:var(--accent);}
+.c-cyan  {color:var(--cyan);}
+.c-amber {color:var(--amber);}
+.c-purple{color:var(--accent2);}
+.pulse-val{animation:valPulse 1.2s ease-in-out infinite;}
 .tele-sub{font-size:0.7rem;color:var(--muted);}
 .tele-tag{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:0.62rem;padding:2px 8px;border-radius:99px;margin-top:0.5rem;}
-.tele-tag.ok{background:rgba(74,222,128,0.1);color:var(--accent);}
+.tele-tag.ok    {background:rgba(74,222,128,0.1);color:var(--accent);}
 .tele-tag.active{background:rgba(34,211,238,0.1);color:var(--cyan);}
+.tele-tag.mod   {background:rgba(124,92,252,0.1);color:var(--accent2);}
 
 /* MODULAR STACK */
 .modular-stack{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:1.5rem;}
 .vm-card,.gas-card,.finality-card,.layer-stack-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;}
-.vm-card-title,.gas-card-title,.finality-card-title,.layer-stack-title{font-family:var(--font-mono);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem;}
+.card-inner-title{font-family:var(--font-mono);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem;}
 .finality-card{display:flex;flex-direction:column;align-items:center;}
-.finality-card-title{align-self:flex-start;}
+.finality-card .card-inner-title{align-self:flex-start;}
 .finality-unit{font-size:0.7rem;color:var(--muted);text-align:center;margin-top:2px;}
 .finality-pantera{font-size:0.65rem;color:rgba(255,255,255,0.2);text-align:center;margin-top:0.5rem;font-family:var(--font-mono);}
 .finality-pantera span{color:rgba(255,255,255,0.4);}
@@ -126,10 +134,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .gas-rows{display:flex;flex-direction:column;gap:0.5rem;}
 .gas-row{display:flex;align-items:center;justify-content:space-between;padding:0.55rem 0.75rem;border-radius:9px;border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.03);}
 .gas-row-label{font-size:0.75rem;color:rgba(255,255,255,0.45);}
-.gas-row-val{font-family:var(--font-mono);font-size:0.75rem;font-weight:700;}
-.gas-row-val.ok{color:var(--accent);}
+.gas-row-val{font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--accent);}
 .gas-subsidy{margin-top:0.75rem;display:flex;align-items:center;gap:8px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:9px;padding:0.55rem 0.75rem;}
-.gas-subsidy-icon{font-size:1rem;}
 .gas-subsidy-text{font-size:0.72rem;color:rgba(255,255,255,0.5);line-height:1.5;}
 .gas-subsidy-text strong{color:var(--accent);}
 .layer-item{display:flex;align-items:center;gap:0.85rem;padding:0.65rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
@@ -139,46 +145,53 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .layer-info{flex:1;}
 .layer-name{font-size:0.82rem;font-weight:700;margin-bottom:2px;}
 .layer-desc{font-size:0.68rem;color:var(--muted);}
-.layer-status-pill{font-family:var(--font-mono);font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
-.layer-status-pill.ok{background:rgba(74,222,128,0.1);color:var(--accent);}
-.layer-status-pill.modular{background:rgba(34,211,238,0.1);color:var(--cyan);}
+.layer-pill{font-family:var(--font-mono);font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+.layer-pill.ok     {background:rgba(74,222,128,0.1);color:var(--accent);}
+.layer-pill.modular{background:rgba(34,211,238,0.1);color:var(--cyan);}
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:none;align-items:center;justify-content:center;padding:1rem;}
 .modal-overlay.open{display:flex;animation:fadeIn 0.2s ease;}
 .modal{background:#0d1117;border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:1.75rem;width:100%;max-width:420px;position:relative;}
-.modal-close{position:absolute;top:0.9rem;right:0.9rem;background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.1rem;cursor:pointer;}
+.modal-close{position:absolute;top:0.9rem;right:0.9rem;background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.1rem;cursor:pointer;line-height:1;}
 .modal-close:hover{color:#fff;}
 .modal-title{font-family:var(--font-head);font-size:1.15rem;font-weight:800;margin-bottom:0.3rem;}
-.modal-sub{font-size:0.8rem;color:rgba(255,255,255,0.38);margin-bottom:1.35rem;}
+.modal-sub  {font-size:0.8rem;color:rgba(255,255,255,0.38);margin-bottom:1rem;line-height:1.5;}
+.modal-ro-notice{display:flex;align-items:flex-start;gap:8px;background:rgba(124,92,252,0.08);border:1px solid rgba(124,92,252,0.2);border-radius:10px;padding:0.75rem;margin-bottom:1rem;font-size:0.75rem;color:rgba(200,185,255,0.7);line-height:1.55;}
+.ro-icon{font-size:1rem;flex-shrink:0;margin-top:1px;}
 .wallet-list{display:flex;flex-direction:column;gap:0.55rem;}
 .wallet-item{display:flex;align-items:center;gap:0.85rem;padding:0.85rem 0.95rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;cursor:pointer;transition:all 0.2s;}
-.wallet-item:hover{background:rgba(255,255,255,0.08);border-color:rgba(74,222,128,0.3);}
-.wallet-item.not-installed{opacity:0.5;cursor:not-allowed;}
-.wallet-item.not-installed:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08);}
+.wallet-item:hover:not(.not-installed){background:rgba(255,255,255,0.08);border-color:rgba(74,222,128,0.3);}
+.wallet-item.not-installed{opacity:0.45;cursor:default;}
 .wallet-logo{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
 .wallet-info-block{flex:1;}
 .wallet-name{font-weight:600;font-size:0.88rem;}
 .wallet-type{font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:1px;}
-.wallet-status{font-size:0.72rem;font-weight:600;}
-.wallet-status.installed{color:var(--accent);}
-.wallet-status.not-found{color:var(--red);}
+.wallet-badge{font-size:0.7rem;font-weight:700;}
+.wallet-badge.ok{color:var(--accent);}
+.wallet-badge.no{color:var(--red);}
 .install-hint{font-size:0.65rem;color:var(--muted);margin-top:0.75rem;text-align:center;line-height:1.6;}
 .spinner{width:44px;height:44px;border:3px solid rgba(74,222,128,0.15);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem;}
 .center-modal{text-align:center;padding:0.5rem 0;}
-.modal-big-title{font-family:var(--font-head);font-size:1.1rem;font-weight:800;margin-bottom:0.35rem;}
-.modal-desc{font-size:0.8rem;color:rgba(255,255,255,0.38);line-height:1.6;margin-bottom:1.25rem;}
+.big-title{font-family:var(--font-head);font-size:1.1rem;font-weight:800;margin-bottom:0.35rem;}
+.modal-desc{font-size:0.8rem;color:rgba(255,255,255,0.38);line-height:1.6;margin-bottom:1rem;}
+.modal-btn{display:block;width:100%;padding:0.65rem;margin-top:0.5rem;background:var(--accent);color:#050810;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:0.88rem;transition:all 0.2s;}
+.modal-btn:hover{background:#86efac;}
+.modal-btn-ghost{background:transparent;color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.12);}
+.modal-btn-ghost:hover{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.8);}
 
 @media(max-width:700px){
   .telemetry-grid{grid-template-columns:1fr 1fr;}
   .modular-stack{grid-template-columns:1fr;}
   .garage-dashboard{padding:1rem;}
+  .nav-links{display:none;}
 }
 </style>
 </head>
 <body>
 <canvas id="net-canvas"></canvas>
 
+<!-- NAV -->
 <nav class="nav">
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
   <div class="nav-right">
@@ -193,22 +206,31 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </nav>
 
 <div class="page">
+
   <!-- STANDBY -->
-  <div class="garage-standby" id="garage-standby">
+  <div id="garage-standby" class="garage-standby">
     <div class="node-status-badge" id="node-badge">
       <div class="node-status-dot"></div>NODE_STATUS: DISCONNECTED
     </div>
     <h2>Rialo Alpha Core<br><span class="dim">// Validator Garage</span></h2>
     <p>Mesin modular belum aktif. Mount Validator Key untuk memulai proses assembly dan mengakses Engine Telemetry Dashboard.</p>
+    <div class="readonly-notice">
+      🔒 Read-only connection — tidak ada transaksi atau saldo yang digunakan
+    </div>
     <button class="ignition-btn" onclick="startIgnition()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+      </svg>
       [INSERT VALIDATOR KEY]
     </button>
   </div>
 
   <!-- ASSEMBLY -->
-  <div class="assembly-screen" id="assembly-screen">
-    <div class="assembly-title">Mounting Validator Key…<br><span style="color:var(--muted);font-size:0.9rem;font-family:var(--font-mono)">Assembling Supermodular Stack</span></div>
+  <div id="assembly-screen" class="assembly-screen">
+    <div class="assembly-title">
+      Mounting Validator Key…<br>
+      <span style="color:var(--muted);font-size:0.9rem;font-family:var(--font-mono)">Assembling Supermodular Stack</span>
+    </div>
     <div class="assembly-layers">
       <div class="asm-layer" id="asm-l1">
         <div class="asm-layer-icon exec">⚙️</div>
@@ -235,313 +257,434 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
         <span class="asm-check">✓</span>
       </div>
     </div>
-    <div class="asm-progress-bar"><div class="asm-progress-fill" id="asm-progress"></div></div>
-    <p style="font-size:0.72rem;color:var(--muted);margin-top:1rem;font-family:var(--font-mono)" id="asm-log">Initializing…</p>
+    <div class="asm-progress-bar">
+      <div class="asm-progress-fill" id="asm-progress"></div>
+    </div>
+    <p id="asm-log">Initializing…</p>
   </div>
 
   <!-- DASHBOARD -->
-  <div class="garage-dashboard" id="garage-dashboard">
+  <div id="garage-dashboard" class="garage-dashboard">
     <div class="garage-header">
       <div>
         <div class="garage-label">Engine Telemetry</div>
         <div class="garage-title">Validator Dashboard</div>
         <div class="garage-subtitle">Rialo Alpha Core · Supermodular Stack Active</div>
       </div>
-      <div class="garage-key-badge" id="garage-key-badge">
+      <div class="garage-key-badge">
         <div class="gkb-dot"></div>
         <div>
-          <div class="gkb-label">Validator Key</div>
+          <div class="gkb-label">Validator Key <span class="gkb-ro">READ-ONLY</span></div>
           <div class="gkb-addr" id="gkb-addr">—</div>
         </div>
-        <button class="gkb-disconnect" onclick="disconnectGarage()">Eject ↗</button>
+        <button class="gkb-disconnect" onclick="doDisconnect()">Eject ↗</button>
       </div>
     </div>
+
     <div class="garage-section-title">Live Engine Telemetry</div>
     <div class="telemetry-grid">
       <div class="tele-card green">
         <div class="tele-label">Time to Finality</div>
-        <div class="tele-value accent pulse-val">50<span style="font-size:1rem">ms</span></div>
+        <div class="tele-value c-accent pulse-val">50<span style="font-size:1rem">ms</span></div>
         <div class="tele-sub">Confirmed on Rialo L1</div>
         <div class="tele-tag ok">● OPTIMAL</div>
       </div>
       <div class="tele-card cyan">
         <div class="tele-label">Gas Fees</div>
-        <div class="tele-value cyan" style="font-size:1.2rem;letter-spacing:-0.02em">SUBSIDIZED</div>
+        <div class="tele-value c-cyan" style="font-size:1.2rem;letter-spacing:-0.02em">SUBSIDIZED</div>
         <div class="tele-sub">Fuel-Injection Protocol Active</div>
         <div class="tele-tag ok">● GAS-LESS</div>
       </div>
       <div class="tele-card amber">
         <div class="tele-label">Active VM</div>
-        <div class="tele-value" style="color:var(--amber);font-size:1.3rem" id="dash-vm-label">EVM</div>
+        <div class="tele-value c-amber" style="font-size:1.3rem" id="dash-vm-label">EVM</div>
         <div class="tele-sub">Swappable without chain rebuild</div>
         <div class="tele-tag active">● MODULAR</div>
       </div>
       <div class="tele-card purple">
         <div class="tele-label">Stack Integrity</div>
-        <div class="tele-value" style="color:var(--accent2);font-size:1.2rem">3 / 3</div>
+        <div class="tele-value c-purple" style="font-size:1.2rem">3 / 3</div>
         <div class="tele-sub">All layers operational</div>
-        <div class="tele-tag ok">● VERIFIED</div>
+        <div class="tele-tag mod">● VERIFIED</div>
       </div>
     </div>
+
     <div class="garage-section-title">Supermodular Diagnostic Suite</div>
     <div class="modular-stack">
+
       <div class="vm-card">
-        <div class="vm-card-title">⚙ Modular VM Interface</div>
+        <div class="card-inner-title">⚙ Modular VM Interface</div>
         <div class="vm-tabs">
           <button class="vm-tab active" onclick="switchVM('EVM',this)">EVM</button>
-          <button class="vm-tab" onclick="switchVM('SVM',this)">SVM</button>
-          <button class="vm-tab" onclick="switchVM('MOVE',this)">MOVE</button>
+          <button class="vm-tab"        onclick="switchVM('SVM',this)">SVM</button>
+          <button class="vm-tab"        onclick="switchVM('MOVE',this)">MOVE</button>
         </div>
-        <div class="vm-status" id="vm-status-text">Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Gas model: SUBSIDIZED.</div>
+        <div class="vm-status" id="vm-status-text">
+          Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Gas model: SUBSIDIZED.
+        </div>
         <div class="vm-swap-hint">// Swap VM without chain rebuild · Supermodular by design</div>
       </div>
+
       <div class="gas-card">
-        <div class="gas-card-title">⛽ Cruise Monitor — Gas System</div>
+        <div class="card-inner-title">⛽ Cruise Monitor — Gas System</div>
         <div class="gas-rows">
-          <div class="gas-row"><span class="gas-row-label">Base Fee</span><span class="gas-row-val ok">0 GWEI</span></div>
-          <div class="gas-row"><span class="gas-row-label">Priority Fee</span><span class="gas-row-val ok">0 GWEI</span></div>
-          <div class="gas-row"><span class="gas-row-label">Tx Cost</span><span class="gas-row-val ok">$0.000</span></div>
-          <div class="gas-row"><span class="gas-row-label">Subsidy Status</span><span class="gas-row-val ok">ACTIVE ⚡</span></div>
+          <div class="gas-row"><span class="gas-row-label">Base Fee</span>    <span class="gas-row-val">0 GWEI</span></div>
+          <div class="gas-row"><span class="gas-row-label">Priority Fee</span><span class="gas-row-val">0 GWEI</span></div>
+          <div class="gas-row"><span class="gas-row-label">Tx Cost</span>     <span class="gas-row-val">$0.000</span></div>
+          <div class="gas-row"><span class="gas-row-label">Subsidy Status</span><span class="gas-row-val">ACTIVE ⚡</span></div>
         </div>
         <div class="gas-subsidy">
-          <div class="gas-subsidy-icon">⚡</div>
+          <span style="font-size:1rem">⚡</span>
           <div class="gas-subsidy-text">Rialo Fuel-Injection Protocol: <strong>Gas fees fully subsidized</strong> during testnet. Zero-cost transactions.</div>
         </div>
       </div>
+
       <div class="finality-card">
-        <div class="finality-card-title">🏁 Finality Gauge</div>
+        <div class="card-inner-title">🏁 Finality Gauge</div>
         <svg viewBox="0 0 140 80" style="width:160px;height:90px">
-          <defs><linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#4ade80"/><stop offset="100%" style="stop-color:#22d3ee"/></linearGradient></defs>
+          <defs>
+            <linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   style="stop-color:#4ade80"/>
+              <stop offset="100%" style="stop-color:#22d3ee"/>
+            </linearGradient>
+          </defs>
           <path d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10" stroke-linecap="round"/>
-          <path d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="url(#gGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="20"/>
-          <text x="70" y="60" text-anchor="middle" font-family="Syne" font-size="26" font-weight="800" fill="#4ade80">50</text>
-          <text x="70" y="74" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#5a7090">ms</text>
+          <path d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="url(#gGrad)"            stroke-width="10" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="20"/>
+          <text x="70" y="60" text-anchor="middle" font-family="Syne"       font-size="26" font-weight="800" fill="#4ade80">50</text>
+          <text x="70" y="74" text-anchor="middle" font-family="Space Mono" font-size="9"  fill="#5a7090">ms</text>
         </svg>
         <div class="finality-unit">Time to Finality · Rialo L1</div>
         <div class="finality-pantera">Backed by <span>Pantera Capital</span> · 2025</div>
       </div>
+
       <div class="layer-stack-card">
-        <div class="layer-stack-title">🧱 Supermodular Layer Stack</div>
+        <div class="card-inner-title">🧱 Supermodular Layer Stack</div>
         <div class="layer-item">
           <div class="layer-num">L1</div>
           <div class="layer-icon" style="background:rgba(74,222,128,0.12)">⚙️</div>
           <div class="layer-info"><div class="layer-name">RISC-V Engine</div><div class="layer-desc">Execution · Lightweight, portable compute</div></div>
-          <span class="layer-status-pill ok">LOADED</span>
+          <span class="layer-pill ok">LOADED</span>
         </div>
         <div class="layer-item">
           <div class="layer-num">L2</div>
           <div class="layer-icon" style="background:rgba(98,126,234,0.12)">🔷</div>
           <div class="layer-info"><div class="layer-name">Ethereum Settlement</div><div class="layer-desc">Settlement · Proven security model</div></div>
-          <span class="layer-status-pill ok">VERIFIED</span>
+          <span class="layer-pill ok">VERIFIED</span>
         </div>
         <div class="layer-item">
           <div class="layer-num">L3</div>
           <div class="layer-icon" style="background:rgba(124,92,252,0.12)">🗄️</div>
           <div class="layer-info"><div class="layer-name">Data Availability</div><div class="layer-desc">DA · Always accessible, always on</div></div>
-          <span class="layer-status-pill modular">SYNCED</span>
+          <span class="layer-pill modular">SYNCED</span>
         </div>
       </div>
+
     </div>
   </div>
+
 </div>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="wallet-modal" onclick="handleOverlayClick(event)">
-  <div class="modal">
+<div id="wallet-modal" class="modal-overlay">
+  <div class="modal" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div id="modal-content"></div>
   </div>
 </div>
 
 <script>
-// ── NETWORK CANVAS ──
+/* ── NETWORK CANVAS ── */
 (function(){
-  const canvas = document.getElementById('net-canvas');
-  const ctx = canvas.getContext('2d');
-  const NODE_COUNT = 90, MAX_DIST = 160;
-  let W, H, angle = 0;
-  const nodes = Array.from({length: NODE_COUNT}, () => ({
-    bx: (Math.random()-0.5)*2200, by: (Math.random()-0.5)*1400,
-    vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4,
-    r: Math.random()*2+1
-  }));
-  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resize); resize();
-  function draw(){
-    ctx.clearRect(0,0,W,H); angle += 0.0008;
-    const cos = Math.cos(angle), sin = Math.sin(angle), cx = W/2, cy = H/2;
-    nodes.forEach(n => { n.bx += n.vx; n.by += n.vy; if(n.bx<-1200)n.bx=1200; if(n.bx>1200)n.bx=-1200; if(n.by<-800)n.by=800; if(n.by>800)n.by=-800; });
-    const pts = nodes.map(n => ({ x:cx+n.bx*cos-n.by*sin, y:cy+n.bx*sin+n.by*cos, r:n.r }));
-    for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){ const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy); if(d<MAX_DIST){ ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/MAX_DIST)*0.45})`;ctx.lineWidth=0.7;ctx.stroke(); } }
-    pts.forEach(p => { ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(74,222,128,0.7)';ctx.fill(); });
+  const cv=document.getElementById('net-canvas'),ctx=cv.getContext('2d');
+  const N=90,MAX=160;let W,H,ang=0;
+  const nodes=Array.from({length:N},()=>({bx:(Math.random()-.5)*2200,by:(Math.random()-.5)*1400,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+1}));
+  function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
+  addEventListener('resize',resize);resize();
+  (function draw(){
+    ctx.clearRect(0,0,W,H);ang+=.0008;
+    const cs=Math.cos(ang),sn=Math.sin(ang),cx=W/2,cy=H/2;
+    nodes.forEach(n=>{n.bx+=n.vx;n.by+=n.vy;if(n.bx<-1200)n.bx=1200;if(n.bx>1200)n.bx=-1200;if(n.by<-800)n.by=800;if(n.by>800)n.by=-800;});
+    const pts=nodes.map(n=>({x:cx+n.bx*cs-n.by*sn,y:cy+n.bx*sn+n.by*cs,r:n.r}));
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);if(d<MAX){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/MAX)*.45})`;ctx.lineWidth=.7;ctx.stroke();}}
+    pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(74,222,128,0.7)';ctx.fill();});
     requestAnimationFrame(draw);
-  }
-  draw();
+  })();
 })();
 
-// ── WALLET STATE ──
-let globalWallet = null, globalChainId = null, activeProvider = null;
+/* ════════════════════════════════════════════
+   STATE
+   connectedAddr  = wallet address string | null
+   activeProvider = EIP-1193 provider     | null
 
-function detectProviders(){
-  const eth = window.ethereum; if(!eth) return { metamask:null, phantom:null, okx:null, coinbase:null };
-  const providers = eth.providers || [eth];
-  const find = flag => providers.find(p=>p&&p[flag]) || null;
-  return {
-    metamask: find('isMetaMask') ? providers.find(p=>p.isMetaMask&&!p.isPhantom) : null,
-    phantom: find('isPhantom') || null,
-    okx: (window.okxwallet || find('isOKExWallet') || find('isOKXWallet')) || null,
-    coinbase: find('isCoinbaseWallet') || find('isCoinbaseBrowser') || null,
+   IMPORTANT: This page ONLY calls eth_requestAccounts.
+   No eth_sendTransaction. No personal_sign. No fees.
+════════════════════════════════════════════ */
+let connectedAddr  = null;
+let activeProvider = null;
+
+/* ── provider helpers ── */
+function getProviderList(){
+  const eth=window.ethereum;
+  if(!eth) return [];
+  return eth.providers||[eth];
+}
+function findProvider(key){
+  const list=getProviderList();
+  if(key==='okx')      return window.okxwallet||list.find(p=>p.isOKExWallet||p.isOKXWallet)||null;
+  if(key==='metamask') return list.find(p=>p.isMetaMask&&!p.isPhantom)||null;
+  if(key==='phantom')  return list.find(p=>p.isPhantom)||null;
+  if(key==='coinbase') return list.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;
+  return window.ethereum||null;
+}
+function detectInstalled(){
+  const list=getProviderList();
+  return{
+    metamask:!!(list.find(p=>p.isMetaMask&&!p.isPhantom)),
+    phantom :!!(list.find(p=>p.isPhantom)),
+    okx     :!!(window.okxwallet||list.find(p=>p.isOKExWallet||p.isOKXWallet)),
+    coinbase:!!(list.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)),
   };
 }
-function getProviderFor(k){
-  const eth = window.ethereum; if(!eth) return null;
-  const providers = eth.providers || [eth];
-  if(k==='okx' && window.okxwallet) return window.okxwallet;
-  if(k==='metamask') return providers.find(p=>p.isMetaMask&&!p.isPhantom)||eth;
-  if(k==='phantom') return providers.find(p=>p.isPhantom)||eth;
-  if(k==='coinbase') return providers.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||eth;
-  return eth;
+function bindProvider(p){
+  if(!p?.on)return;
+  p.on('accountsChanged',accs=>{
+    if(!accs?.length){doDisconnect();return;}
+    connectedAddr=accs[0];
+    updateNavBtn(connectedAddr);
+    const el=document.getElementById('gkb-addr');
+    if(el)el.textContent=longAddr(connectedAddr);
+  });
+  // chain changes are ignored — read-only
 }
-function bindProviderEvents(provider){
-  if(!provider) return;
-  provider.on && provider.on('accountsChanged', accounts => { if(!accounts||!accounts.length){ disconnectAll(); return; } globalWallet=accounts[0]; updateNavWalletBtn(globalWallet); });
-  provider.on && provider.on('chainChanged', chainId => { globalChainId = chainId; });
-}
-function updateNavWalletBtn(addr){
-  const btn = document.getElementById('nav-wallet-btn');
+
+/* ── address formatting ── */
+function shortAddr(a){return a.slice(0,6)+'…'+a.slice(-4);}
+function longAddr (a){return a.slice(0,10)+'…'+a.slice(-6);}
+
+/* ── nav button ── */
+function updateNavBtn(addr){
+  const btn=document.getElementById('nav-wallet-btn');
   btn.classList.add('connected');
-  btn.innerHTML = `<span class="wdot"></span> ${addr.slice(0,6)}…${addr.slice(-4)}`;
+  btn.innerHTML=`<span class="wdot"></span>${shortAddr(addr)}`;
 }
-function handleNavWallet(){ globalWallet ? disconnectAll() : openWalletModal(); }
-function disconnectAll(){
-  globalWallet = null; globalChainId = null; activeProvider = null;
-  const btn = document.getElementById('nav-wallet-btn');
-  btn.classList.remove('connected'); btn.innerHTML = 'Insert Validator Key';
-  resetGarageToStandby();
+function resetNavBtn(){
+  const btn=document.getElementById('nav-wallet-btn');
+  btn.classList.remove('connected');
+  btn.textContent='Insert Validator Key';
 }
-function resetGarageToStandby(){
-  document.getElementById('garage-standby').style.display = 'flex';
-  document.getElementById('assembly-screen').style.display = 'none';
-  document.getElementById('garage-dashboard').style.display = 'none';
-  const badge = document.getElementById('node-badge');
+function handleNavWallet(){
+  connectedAddr?doDisconnect():openWalletModal();
+}
+
+/* ── disconnect / standby ── */
+function doDisconnect(){
+  connectedAddr=null;activeProvider=null;
+  resetNavBtn();showStandby();
+}
+function showStandby(){
+  document.getElementById('garage-standby')  .style.display='flex';
+  document.getElementById('assembly-screen') .style.display='none';
+  document.getElementById('garage-dashboard').style.display='none';
+  const badge=document.getElementById('node-badge');
   badge.classList.remove('online');
-  badge.innerHTML = '<div class="node-status-dot"></div>NODE_STATUS: DISCONNECTED';
+  badge.innerHTML='<div class="node-status-dot"></div>NODE_STATUS: DISCONNECTED';
 }
 
-// ── MODAL ──
-function closeModal(){ document.getElementById('wallet-modal').classList.remove('open'); }
-function handleOverlayClick(e){ if(e.target===document.getElementById('wallet-modal')) closeModal(); }
-
+/* ════════════════════════════════════════════
+   MODAL
+════════════════════════════════════════════ */
 function openWalletModal(){
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  if(typeof window.ethereum==='undefined' && !window.okxwallet){ isMobile ? showMobileModal() : showNoWalletModal(); return; }
-  isMobile ? showMobileModal() : showDesktopModal();
+  const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const hasAny=!!(window.ethereum||window.okxwallet);
+  if(!hasAny){showModalNoWallet();return;}
+  isMobile?showModalMobile():showModalDesktop();
 }
+function closeModal(){
+  document.getElementById('wallet-modal').classList.remove('open');
+}
+/* close on backdrop click */
+document.getElementById('wallet-modal').addEventListener('click',function(e){
+  if(e.target===this)closeModal();
+});
 
-function showDesktopModal(){
-  const d = detectProviders();
-  const wallets = [
-    { key:'metamask', icon:'🦊', bg:'rgba(247,147,26,0.15)', name:'MetaMask',       type:'Browser Extension',      detected:!!d.metamask, url:'https://metamask.io/download/' },
-    { key:'phantom',  icon:'👻', bg:'rgba(153,69,255,0.15)', name:'Phantom',        type:'Solana & EVM · Extension',detected:!!d.phantom,  url:'https://phantom.app/download' },
-    { key:'okx',      icon:'⬛', bg:'rgba(0,0,0,0.3)',        name:'OKX Wallet',    type:'Extension & Mobile',     detected:!!(window.okxwallet||d.okx), url:'https://www.okx.com/web3' },
-    { key:'coinbase', icon:'🔵', bg:'rgba(22,82,240,0.15)',   name:'Coinbase Wallet',type:'Extension · Mobile',    detected:!!d.coinbase, url:'https://www.coinbase.com/wallet' },
+function showModalDesktop(){
+  const d=detectInstalled();
+  const wallets=[
+    {key:'metamask',icon:'🦊',bg:'rgba(247,147,26,0.15)',name:'MetaMask',       sub:'Browser Extension',         ok:d.metamask,url:'https://metamask.io/download/'},
+    {key:'phantom', icon:'👻',bg:'rgba(153,69,255,0.15)',name:'Phantom',        sub:'Solana & EVM · Extension',  ok:d.phantom, url:'https://phantom.app/download'},
+    {key:'okx',     icon:'⬛',bg:'rgba(0,0,0,0.35)',     name:'OKX Wallet',    sub:'Extension & Mobile',        ok:d.okx,    url:'https://www.okx.com/web3'},
+    {key:'coinbase',icon:'🔵',bg:'rgba(22,82,240,0.15)', name:'Coinbase Wallet',sub:'Extension · Mobile',       ok:d.coinbase,url:'https://www.coinbase.com/wallet'},
   ];
-  const items = wallets.map(w => w.detected
-    ? `<div class="wallet-item" onclick="connectWallet('${w.key}','${w.name}')"><div class="wallet-logo" style="background:${w.bg}">${w.icon}</div><div class="wallet-info-block"><div class="wallet-name">${w.name}</div><div class="wallet-type">${w.type}</div></div><div class="wallet-status installed">● Detected</div></div>`
-    : `<div class="wallet-item not-installed" onclick="window.open('${w.url}','_blank')"><div class="wallet-logo" style="background:${w.bg};opacity:.5">${w.icon}</div><div class="wallet-info-block"><div class="wallet-name">${w.name}</div><div class="wallet-type">${w.type}</div></div><div class="wallet-status not-found">Install ↗</div></div>`
+  const rows=wallets.map(w=>w.ok
+    ?`<div class="wallet-item" onclick="connectWallet('${w.key}','${w.name}')"><div class="wallet-logo" style="background:${w.bg}">${w.icon}</div><div class="wallet-info-block"><div class="wallet-name">${w.name}</div><div class="wallet-type">${w.sub}</div></div><span class="wallet-badge ok">● Detected</span></div>`
+    :`<div class="wallet-item not-installed" onclick="window.open('${w.url}','_blank')"><div class="wallet-logo" style="background:${w.bg};opacity:.5">${w.icon}</div><div class="wallet-info-block"><div class="wallet-name">${w.name}</div><div class="wallet-type">${w.sub}</div></div><span class="wallet-badge no">Install ↗</span></div>`
   ).join('');
-  document.getElementById('modal-content').innerHTML = `<div class="modal-title">Insert Validator Key</div><div class="modal-sub">Connect wallet untuk mount Validator Key dan akses Garage.</div><div class="wallet-list">${items}</div><p class="install-hint">Hanya wallet bertanda <span style="color:var(--accent)">● Detected</span> yang terinstall.</p>`;
+  document.getElementById('modal-content').innerHTML=`
+    <div class="modal-title">Insert Validator Key</div>
+    <div class="modal-sub">Hubungkan wallet kamu sebagai Validator Key.</div>
+    <div class="modal-ro-notice"><span class="ro-icon">🔒</span><span><strong style="color:rgba(200,185,255,0.9)">Read-only connection</strong> — hanya meminta alamat wallet. Tidak ada transaksi, tanda tangan, atau biaya gas apapun.</span></div>
+    <div class="wallet-list">${rows}</div>
+    <p class="install-hint">Hanya wallet bertanda <span style="color:var(--accent)">● Detected</span> yang terinstall.</p>`;
   document.getElementById('wallet-modal').classList.add('open');
 }
-function showNoWalletModal(){
-  document.getElementById('modal-content').innerHTML = `<div class="center-modal"><div style="font-size:2.5rem;margin-bottom:1rem">🔑</div><div class="modal-big-title">No Wallet Detected</div><div class="modal-desc">Install browser wallet extension terlebih dahulu.</div><div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem"><a href="https://metamask.io/download/" target="_blank" style="display:block;padding:.75rem 1.25rem;background:rgba(247,147,26,0.1);border:1px solid rgba(247,147,26,0.3);color:#f7931a;text-decoration:none;font-family:var(--font);font-weight:600;border-radius:10px;font-size:.88rem;text-align:center">🦊 Install MetaMask</a><a href="https://phantom.app/download" target="_blank" style="display:block;padding:.75rem 1.25rem;background:rgba(153,69,255,0.1);border:1px solid rgba(153,69,255,0.3);color:#9945ff;text-decoration:none;font-family:var(--font);font-weight:600;border-radius:10px;font-size:.88rem;text-align:center">👻 Install Phantom</a></div><p style="font-size:.72rem;color:var(--muted);margin-top:1rem">Refresh setelah install.</p></div>`;
+function showModalNoWallet(){
+  document.getElementById('modal-content').innerHTML=`
+    <div class="center-modal">
+      <div style="font-size:2.5rem;margin-bottom:1rem">🔑</div>
+      <div class="big-title">No Wallet Detected</div>
+      <div class="modal-desc">Install browser wallet extension terlebih dahulu, lalu refresh halaman ini.</div>
+      <a href="https://metamask.io/download/" target="_blank" style="display:block;padding:.75rem;background:rgba(247,147,26,0.1);border:1px solid rgba(247,147,26,0.3);color:#f7931a;text-decoration:none;font-weight:600;border-radius:10px;text-align:center;margin-top:.5rem">🦊 Install MetaMask</a>
+      <a href="https://phantom.app/download"  target="_blank" style="display:block;padding:.75rem;background:rgba(153,69,255,0.1);border:1px solid rgba(153,69,255,0.3);color:#9945ff;text-decoration:none;font-weight:600;border-radius:10px;text-align:center;margin-top:.5rem">👻 Install Phantom</a>
+    </div>`;
   document.getElementById('wallet-modal').classList.add('open');
 }
-function showMobileModal(){
-  const cur = encodeURIComponent(window.location.href);
-  const links = [
-    { icon:'🦊', name:'MetaMask',        href:`https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}` },
-    { icon:'👻', name:'Phantom',         href:`https://phantom.app/ul/browse/${cur}?ref=${cur}` },
-    { icon:'⬛', name:'OKX Wallet',      href:`okx://wallet/dapp/url?dappUrl=${cur}` },
-    { icon:'🔵', name:'Coinbase Wallet', href:`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(window.location.href)}` },
+function showModalMobile(){
+  const cur=encodeURIComponent(location.href);
+  const links=[
+    {icon:'🦊',name:'MetaMask',       href:`https://metamask.app.link/dapp/${location.host}${location.pathname}`},
+    {icon:'👻',name:'Phantom',        href:`https://phantom.app/ul/browse/${cur}?ref=${cur}`},
+    {icon:'⬛',name:'OKX Wallet',     href:`okx://wallet/dapp/url?dappUrl=${cur}`},
+    {icon:'🔵',name:'Coinbase Wallet',href:`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(location.href)}`},
   ];
-  const items = links.map(l=>`<div class="wallet-item" onclick="window.location.href='${l.href}'"><div class="wallet-logo" style="background:rgba(255,255,255,.06)">${l.icon}</div><div class="wallet-info-block"><div class="wallet-name">${l.name}</div><div class="wallet-type">Open in ${l.name} Browser</div></div><div class="wallet-status installed">Open ↗</div></div>`).join('');
-  document.getElementById('modal-content').innerHTML = `<div class="modal-title">Open with Wallet App</div><div class="modal-sub">Pilih wallet untuk membuka dApp.</div><div class="wallet-list">${items}</div>`;
+  const rows=links.map(l=>`<div class="wallet-item" onclick="location.href='${l.href}'"><div class="wallet-logo" style="background:rgba(255,255,255,.06)">${l.icon}</div><div class="wallet-info-block"><div class="wallet-name">${l.name}</div><div class="wallet-type">Open in ${l.name} Browser</div></div><span class="wallet-badge ok">Open ↗</span></div>`).join('');
+  document.getElementById('modal-content').innerHTML=`
+    <div class="modal-title">Open with Wallet App</div>
+    <div class="modal-sub">Pilih wallet untuk membuka dApp ini.</div>
+    <div class="modal-ro-notice"><span class="ro-icon">🔒</span><span>Read-only — tidak ada transaksi atau biaya gas.</span></div>
+    <div class="wallet-list">${rows}</div>`;
   document.getElementById('wallet-modal').classList.add('open');
 }
 
-async function connectWallet(walletKey, walletName){
-  document.getElementById('modal-content').innerHTML = `<div class="center-modal"><div class="spinner"></div><div class="modal-big-title">Mounting ${walletName}…</div><div class="modal-desc">Approve di wallet kamu.</div></div>`;
-  const provider = getProviderFor(walletKey);
-  if(!provider){ document.getElementById('modal-content').innerHTML=`<div class="center-modal"><div style="font-size:2rem;margin-bottom:.75rem">⚠️</div><div class="modal-big-title">${walletName} Not Available</div><button onclick="showDesktopModal()" style="margin-top:1rem;padding:.6rem 1.5rem;background:var(--accent);color:#050810;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font)">Back</button></div>`; return; }
+/* ════════════════════════════════════════════
+   CONNECT — read-only
+   Hanya eth_requestAccounts.
+   Tidak ada eth_sendTransaction sama sekali.
+════════════════════════════════════════════ */
+async function connectWallet(key,name){
+  document.getElementById('modal-content').innerHTML=`
+    <div class="center-modal">
+      <div class="spinner"></div>
+      <div class="big-title">Connecting ${name}…</div>
+      <div class="modal-desc">Approve the connection in your wallet.<br>
+        <span style="color:rgba(200,185,255,0.65);font-size:0.73rem;display:block;margin-top:.35rem">🔒 No transaction will be sent. No gas fees.</span>
+      </div>
+    </div>`;
+
+  const provider=findProvider(key);
+  if(!provider){
+    document.getElementById('modal-content').innerHTML=`
+      <div class="center-modal">
+        <div style="font-size:2rem;margin-bottom:.75rem">⚠️</div>
+        <div class="big-title">${name} Not Found</div>
+        <div class="modal-desc">Provider tidak ditemukan. Pastikan extension aktif dan refresh halaman.</div>
+        <button class="modal-btn" onclick="showModalDesktop()">← Back</button>
+      </div>`;
+    return;
+  }
+
   try{
-    const accounts = await provider.request({ method:'eth_requestAccounts' });
-    if(!accounts||!accounts.length) throw new Error('No accounts');
-    globalWallet = accounts[0]; activeProvider = provider;
-    globalChainId = await provider.request({ method:'eth_chainId' });
-    bindProviderEvents(provider);
-    updateNavWalletBtn(globalWallet);
+    /* ── The only call we make ── */
+    const accounts=await provider.request({method:'eth_requestAccounts'});
+
+    if(!accounts||accounts.length===0) throw new Error('No accounts returned.');
+
+    connectedAddr =accounts[0];
+    activeProvider=provider;
+    bindProvider(provider);
+
     closeModal();
-    runAssembly(globalWallet);
-  }catch(e){
-    const msg = e.code===4001 ? 'Connection rejected.' : (e.message||'Unknown error');
-    document.getElementById('modal-content').innerHTML=`<div class="center-modal"><div style="font-size:2rem;margin-bottom:.75rem">⚠️</div><div class="modal-big-title">Connection Failed</div><div class="modal-desc">${msg}</div><button onclick="showDesktopModal()" style="margin-top:1rem;padding:.6rem 1.5rem;background:var(--accent);color:#050810;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font)">Try Again</button></div>`;
+    updateNavBtn(connectedAddr);
+    runAssembly(connectedAddr);   // start the visual sequence
+
+  }catch(err){
+    const msg=err.code===4001
+      ?'Connection cancelled.'
+      :(err.message||'Unknown error.');
+    document.getElementById('modal-content').innerHTML=`
+      <div class="center-modal">
+        <div style="font-size:2rem;margin-bottom:.75rem">⚠️</div>
+        <div class="big-title">Connection Failed</div>
+        <div class="modal-desc">${msg}</div>
+        <button class="modal-btn" onclick="showModalDesktop()">Try Again</button>
+        <button class="modal-btn modal-btn-ghost" onclick="closeModal()" style="margin-top:.4rem">Cancel</button>
+      </div>`;
   }
 }
 
-// ── GARAGE LOGIC ──
-function startIgnition(){ globalWallet ? runAssembly(globalWallet) : openWalletModal(); }
+/* ════════════════════════════════════════════
+   IGNITION → ASSEMBLY → DASHBOARD
+════════════════════════════════════════════ */
+function startIgnition(){
+  if(connectedAddr){
+    runAssembly(connectedAddr);
+  }else{
+    openWalletModal();
+  }
+}
 
 function runAssembly(addr){
-  document.getElementById('garage-standby').style.display = 'none';
-  document.getElementById('assembly-screen').style.display = 'flex';
-  document.getElementById('garage-dashboard').style.display = 'none';
-  ['asm-l1','asm-l2','asm-l3'].forEach(id => { const el=document.getElementById(id); if(el) el.classList.remove('loaded'); });
-  ['asm-s1','asm-s2','asm-s3'].forEach(id => { const el=document.getElementById(id); if(el){ el.className='asm-layer-status pending'; el.textContent='Waiting…'; } });
-  const prog = document.getElementById('asm-progress'); if(prog) prog.style.width='0%';
-  const log = document.getElementById('asm-log'); if(log) log.textContent='Initializing…';
-  const steps = [
-    { layerId:'asm-l1', statusId:'asm-s1', text:'RISC-V Engine Loaded',        progress:'33%',  log:'[L1] Mounting RISC-V execution engine…' },
-    { layerId:'asm-l2', statusId:'asm-s2', text:'Ethereum Integrity Verified', progress:'66%',  log:'[L2] Verifying Ethereum settlement layer…' },
-    { layerId:'asm-l3', statusId:'asm-s3', text:'Data Availability Synced',    progress:'100%', log:'[L3] Syncing DA layer… Finality: 50ms ✓' },
+  document.getElementById('garage-standby')  .style.display='none';
+  document.getElementById('assembly-screen') .style.display='flex';
+  document.getElementById('garage-dashboard').style.display='none';
+
+  /* reset layers */
+  ['asm-l1','asm-l2','asm-l3'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.remove('loaded');
+  });
+  [['asm-s1','Waiting…'],['asm-s2','Waiting…'],['asm-s3','Waiting…']].forEach(([id,txt])=>{
+    const el=document.getElementById(id);
+    if(el){el.className='asm-layer-status pending';el.textContent=txt;}
+  });
+  const progEl=document.getElementById('asm-progress');
+  if(progEl)progEl.style.width='0%';
+  const logEl=document.getElementById('asm-log');
+  if(logEl)logEl.textContent='Initializing…';
+
+  const STEPS=[
+    {layer:'asm-l1',status:'asm-s1',done:'RISC-V Engine Loaded',       pct:'33%', log:'[L1] Mounting RISC-V execution engine…'},
+    {layer:'asm-l2',status:'asm-s2',done:'Ethereum Integrity Verified',pct:'66%', log:'[L2] Verifying Ethereum settlement layer…'},
+    {layer:'asm-l3',status:'asm-s3',done:'Data Availability Synced',   pct:'100%',log:'[L3] Syncing DA layer… Finality: 50ms ✓'},
   ];
-  let i = 0;
-  function nextStep(){
-    if(i>=steps.length){ setTimeout(() => showDashboard(addr), 600); return; }
-    const s = steps[i];
-    const logEl = document.getElementById('asm-log'); if(logEl) logEl.textContent = s.log;
-    const stEl = document.getElementById(s.statusId); if(stEl){ stEl.className='asm-layer-status loading'; stEl.textContent='Loading…'; }
-    setTimeout(() => {
-      const layer = document.getElementById(s.layerId); if(layer) layer.classList.add('loaded');
-      if(stEl){ stEl.className='asm-layer-status done'; stEl.textContent=s.text; }
-      const progEl = document.getElementById('asm-progress'); if(progEl) progEl.style.width=s.progress;
-      i++; setTimeout(nextStep, 700);
-    }, 900);
+
+  let idx=0;
+  function tick(){
+    if(idx>=STEPS.length){setTimeout(()=>showDashboard(addr),700);return;}
+    const s=STEPS[idx];
+    const lg=document.getElementById('asm-log');if(lg)lg.textContent=s.log;
+    const st=document.getElementById(s.status);if(st){st.className='asm-layer-status loading';st.textContent='Loading…';}
+    setTimeout(()=>{
+      const lay=document.getElementById(s.layer);if(lay)lay.classList.add('loaded');
+      if(st){st.className='asm-layer-status done';st.textContent=s.done;}
+      const pe=document.getElementById('asm-progress');if(pe)pe.style.width=s.pct;
+      idx++;setTimeout(tick,650);
+    },900);
   }
-  setTimeout(nextStep, 400);
+  setTimeout(tick,500);
 }
 
 function showDashboard(addr){
-  document.getElementById('assembly-screen').style.display = 'none';
-  document.getElementById('garage-dashboard').style.display = 'block';
-  document.getElementById('gkb-addr').textContent = addr.slice(0,10)+'…'+addr.slice(-6);
-  const badge = document.getElementById('node-badge');
+  document.getElementById('assembly-screen') .style.display='none';
+  document.getElementById('garage-dashboard').style.display='block';
+  document.getElementById('gkb-addr').textContent=longAddr(addr);
+  const badge=document.getElementById('node-badge');
   badge.classList.add('online');
-  badge.innerHTML = '<div class="node-status-dot"></div>NODE_STATUS: ONLINE';
+  badge.innerHTML='<div class="node-status-dot"></div>NODE_STATUS: ONLINE';
 }
 
-function disconnectGarage(){ disconnectAll(); }
-
-const vmDescriptions = {
-  EVM:  'Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Gas model: SUBSIDIZED.',
-  SVM:  'Active: <strong>SVM</strong> — Solana Virtual Machine. Parallel transaction processing. Rust-based programs.',
-  MOVE: 'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset management. Aptos/Sui compatible.'
+/* ════════════════════════════════════════════
+   VM SWITCHER
+════════════════════════════════════════════ */
+const VM_DESC={
+  EVM :'Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Gas model: SUBSIDIZED.',
+  SVM :'Active: <strong>SVM</strong> — Solana Virtual Machine. Parallel transaction processing. Rust-based programs.',
+  MOVE:'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset management. Aptos/Sui compatible.',
 };
-function switchVM(vm, btn){
-  document.querySelectorAll('.vm-tab').forEach(t => t.classList.remove('active'));
+function switchVM(vm,btn){
+  document.querySelectorAll('.vm-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('vm-status-text').innerHTML = vmDescriptions[vm];
-  document.getElementById('dash-vm-label').textContent = vm;
+  document.getElementById('vm-status-text').innerHTML=VM_DESC[vm];
+  document.getElementById('dash-vm-label').textContent=vm;
 }
 </script>
 </body>
