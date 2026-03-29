@@ -8,113 +8,204 @@
 <style>
 :root{
   --bg:#050810;--card:#0f1929;--border:#1a2a42;
-  --accent:#4ade80;--text:#e8eaf0;--muted:#5a7090;
-  --font:'Space Grotesk',sans-serif;--font-head:'Syne',sans-serif;
+  --accent:#4ade80;--accent2:#7c5cfc;--red:#f87171;--amber:#facc15;--cyan:#22d3ee;
+  --text:#e8eaf0;--muted:#5a7090;
+  --font:'Space Grotesk',sans-serif;--font-head:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;}
-.nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(5,8,16,.95);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100;}
-.nav-logo{font-family:var(--font-head);font-size:1.2rem;font-weight:800;color:#fff;}
-.nav-btn{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--accent);background:rgba(74,222,128,.1);color:var(--accent);cursor:pointer;font-weight:600;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
+#net-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+@keyframes lpulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-.container{max-width:500px;margin:2rem auto;padding:0 1.5rem;}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1rem;}
-.label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;display:block;}
-.val-big{font-size:1.8rem;font-family:var(--font-head);font-weight:800;margin-bottom:0.5rem;}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,.95);backdrop-filter:blur(16px);}
+.nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logo-dot{width:9px;height:9px;background:var(--accent);border-radius:50%;animation:lpulse 2s infinite;}
+.nav-btn{padding:.4rem .9rem;border-radius:8px;border:1px solid rgba(74,222,128,.35);background:rgba(74,222,128,.08);color:var(--accent);font-family:var(--font);font-size:.77rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.nav-btn.on{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.75);}
 
-.input-group{margin-top:1.5rem;}
-.input-field{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:.8rem;border-radius:10px;color:#fff;font-family:monospace;margin-bottom:1rem;outline:none;}
-.btn-send{width:100%;padding:1rem;background:var(--accent);color:#000;border:none;border-radius:10px;font-weight:800;cursor:pointer;transition:0.2s;}
-.btn-send:hover{opacity:0.9;}
+.page{position:relative;z-index:1;}
+.status-row{display:flex;justify-content:center;padding:1.5rem 0 0;}
+.node-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:var(--red);padding:.35rem 1rem;border-radius:999px;font-family:var(--font-mono);font-size:.7rem;font-weight:700;}
+.node-badge.online{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.25);color:var(--accent);}
+.nbdot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1.5s infinite;}
 
-.status-tag{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;color:var(--accent);background:rgba(74,222,128,.1);padding:4px 10px;border-radius:20px;margin-bottom:1rem;}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--accent);padding:.8rem 1.2rem;border-radius:10px;font-size:.8rem;z-index:1000;animation:fadeup 0.3s ease;}
-@keyframes fadeup{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
+.screen{display:none;position:relative;z-index:1;}
+#scr-standby{flex-direction:column;align-items:center;text-align:center;padding:2rem 1.5rem;animation:fadein .3s ease;}
+#scr-standby h2{font-family:var(--font-head);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:.75rem;}
+#scr-standby p{font-size:.88rem;color:var(--muted);max-width:400px;margin-bottom:.75rem;}
+.tx-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);color:rgba(150,255,180,.75);padding:.4rem 1rem;border-radius:8px;font-size:.72rem;font-family:var(--font-mono);margin-bottom:.6rem;}
+
+.wpicker-wrap{width:100%;max-width:420px;margin-top:1rem;}
+.witem{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;transition:all .2s;margin-bottom:0.5rem;}
+.witem:hover{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.3);}
+.winfo{text-align:left;flex:1;}
+.wname{font-weight:600;font-size:.85rem;}
+.wsub{font-size:.66rem;color:var(--muted);}
+
+#scr-assembly{flex-direction:column;align-items:center;justify-content:center;min-height:80vh;animation:fadein .3s ease;}
+.asm-bar{width:300px;height:2px;background:rgba(255,255,255,.06);margin-top:1rem;}
+.asm-fill{height:100%;background:var(--accent);width:0%;transition:width .4s;}
+
+#scr-dashboard{flex-direction:column;padding:2rem;max-width:1100px;margin:0 auto;animation:fadein .3s ease;}
+.tele-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-top:1.5rem;}
+.tele-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;}
+.tele-lbl{font-family:var(--font-mono);font-size:.62rem;color:var(--muted);text-transform:uppercase;}
+.tele-val{font-family:var(--font-head);font-size:1.5rem;font-weight:800;margin-top:0.5rem;}
+
+.mod-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-top:1rem;}
+.vpack-action{background:rgba(255,255,255,.03);padding:1rem;border-radius:12px;border:1px solid var(--border);}
+.vpack-input{display:flex;gap:.5rem;margin-top:0.8rem;}
+.vpack-field{flex:1;background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:8px;padding:.5rem;color:#fff;font-family:var(--font-mono);}
+.vpack-btn{padding:.5rem 1rem;background:var(--accent);color:#000;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
+
+.tx-toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;display:flex;flex-direction:column;gap:.5rem;}
+.toast{padding:.75rem 1rem;border-radius:12px;font-size:.75rem;border:1px solid;animation:slideup .3s ease;}
+.toast.pending{background:rgba(250,204,21,.1);border-color:var(--amber);color:var(--amber);}
+.toast.success{background:rgba(74,222,128,.1);border-color:var(--accent);color:var(--accent);}
+.toast.error{background:rgba(248,113,113,.1);border-color:var(--red);color:var(--red);}
 </style>
 </head>
 <body>
+<canvas id="net-canvas"></canvas>
+<div id="tx-toast" class="tx-toast"></div>
 
 <nav class="nav">
-  <div class="nav-logo">RIALO CORE</div>
-  <button class="nav-btn" id="connect-btn" onclick="connect()">Connect Wallet</button>
+  <div class="nav-logo"><div class="logo-dot"></div>RIALO</div>
+  <button class="nav-btn" id="nav-btn" onclick="navClick()">Insert Validator Key</button>
 </nav>
 
-<div class="container" id="main-content" style="display:none;">
-    <div class="status-tag">● VALIDATOR ACTIVE</div>
-    
-    <div class="card">
-        <span class="label">Balance Context</span>
-        <div class="val-big">$0.63 <span style="font-size:1rem; color:var(--muted)">ETH</span></div>
-        <p style="font-size:.7rem; color:var(--muted)">Simulator Mode: Low-Cost Enabled</p>
+<div class="page">
+  <div class="status-row">
+    <div class="node-badge" id="node-badge"><div class="nbdot"></div><span id="badge-txt">NODE_STATUS: DISCONNECTED</span></div>
+  </div>
+
+  <div id="scr-standby" class="screen" style="display:flex;">
+    <h2>Rialo Alpha Core<br><span style="color:rgba(255,255,255,.2)">// Validator Garage</span></h2>
+    <p>Simulator Aktif. Saldo terdeteksi $0,63. Gunakan nominal kecil untuk testing.</p>
+    <div class="tx-pill">⚡ Low-Fee Mode: 0.000001 ETH</div>
+    <div id="wallet-area"></div>
+  </div>
+
+  <div id="scr-assembly" class="screen">
+    <h3 style="font-family:var(--font-head)">Mounting Validator...</h3>
+    <div class="asm-bar"><div class="asm-fill" id="asm-fill"></div></div>
+  </div>
+
+  <div id="scr-dashboard" class="screen">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2 style="font-family:var(--font-head)">Validator Dashboard</h2>
+      <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--accent)" id="kbd-addr">0x...</div>
     </div>
 
-    <div class="card">
-        <span class="label">Stake Transaction</span>
-        <div class="input-group">
-            <input type="number" id="tx-amount" class="input-field" value="0.000001" step="0.000001">
-            <button class="btn-send" onclick="sendTinyTx()">Stake Now →</button>
+    <div class="tele-grid">
+      <div class="tele-card">
+        <div class="tele-lbl">Gas Fee Simulator</div>
+        <div class="tele-val">0.000001 <span style="font-size:0.8rem">ETH</span></div>
+      </div>
+      <div class="tele-card">
+        <div class="tele-lbl">Network Status</div>
+        <div class="tele-val" style="color:var(--accent);font-size:1.2rem">OPTIMAL ●</div>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="tele-lbl" style="margin-bottom:1rem">Stake & Send Simulator</div>
+      <div class="vpack-action">
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;">
+          <span style="font-weight:bold">💎 Stake ETH</span>
+          <span style="color:var(--muted)">Simulated Fee: 0.000001 ETH</span>
         </div>
-        <div style="margin-top:1rem; display:flex; justify-content:space-between; font-size:.65rem; color:var(--muted)">
-            <span>Est. Cost: ~$0.003</span>
-            <span>Est. Clicks: ~200x</span>
+        <div class="vpack-input">
+          <input class="vpack-field" id="stake-amount" type="number" placeholder="0.00001" step="0.000001"/>
+          <button class="vpack-btn" id="stake-btn" onclick="doStake()">Stake →</button>
         </div>
+      </div>
     </div>
+  </div>
 </div>
-
-<div class="container" id="login-prompt">
-    <div class="card" style="text-align:center; padding:3rem 1.5rem;">
-        <h2 style="margin-bottom:1rem">Akses Validator</h2>
-        <p style="color:var(--muted); font-size:.9rem; margin-bottom:2rem;">Silakan koneksikan dompet untuk masuk ke Garage.</p>
-        <button class="btn-send" onclick="connect()">Connect OKX Wallet</button>
-    </div>
-</div>
-
-<div id="toast-box"></div>
 
 <script>
-let userAddress = null;
+let walletAddress = null;
+const FIXED_FEE_ETH = 0.000001; // Fee simulator diturunkan agar saldo $0,63 cukup
+const DEPOSIT_CONTRACT = '0x00000000219ab540356cBB839Cbe05303d7705Fa';
 
-async function connect() {
-    if(!window.ethereum) return alert("Gunakan OKX Wallet!");
-    try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        userAddress = accounts[0];
-        document.getElementById('connect-btn').innerText = userAddress.slice(0,6)+'...';
-        document.getElementById('login-prompt').style.display = 'none';
-        document.getElementById('main-content').style.display = 'block';
-        showToast("Wallet Connected!");
-    } catch (e) { console.error(e); }
+function toHex(eth) {
+  // Konversi ETH ke Wei (BigInt) lalu ke Hex
+  return '0x' + BigInt(Math.round(eth * 1e18)).toString(16);
 }
 
-async function sendTinyTx() {
-    const amountInput = document.getElementById('tx-amount').value;
-    // Konversi ke Hex
-    const hexValue = "0x" + BigInt(Math.floor(parseFloat(amountInput) * 1e18)).toString(16);
-    
-    showToast("Membuka OKX Wallet...");
+async function connectWallet() {
+  if (!window.ethereum) { alert('Install OKX Wallet!'); return; }
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    walletAddress = accounts[0];
+    document.getElementById('nav-btn').textContent = walletAddress.slice(0,6) + '...' + walletAddress.slice(-4);
+    runAssembly();
+  } catch (e) { console.error(e); }
+}
 
-    try {
-        const tx = await window.ethereum.request({
-            method: 'eth_sendTransaction',
-            params: [{
-                from: userAddress,
-                to: '0x00000000219ab540356cBB839Cbe05303d7705Fa', // Contract Stake
-                value: hexValue,
-                gas: '0x5208', // Paksa Gas Limit ke 21.000 (Paling murah)
-            }]
-        });
-        showToast("Sukses! Sisa saldo masih aman.");
-    } catch (e) {
-        showToast("Gagal atau Dibatalkan");
-        console.error(e);
+function runAssembly() {
+  document.getElementById('scr-standby').style.display = 'none';
+  document.getElementById('scr-assembly').style.display = 'flex';
+  let fill = document.getElementById('asm-fill');
+  let p = 0;
+  let int = setInterval(() => {
+    p += 10; fill.style.width = p + '%';
+    if (p >= 100) {
+      clearInterval(int);
+      document.getElementById('scr-assembly').style.display = 'none';
+      document.getElementById('scr-dashboard').style.display = 'flex';
+      document.getElementById('node-badge').classList.add('online');
+      document.getElementById('badge-txt').textContent = 'NODE_STATUS: ONLINE';
+      document.getElementById('kbd-addr').textContent = walletAddress;
     }
+  }, 150);
 }
 
-function showToast(msg) {
-    const box = document.getElementById('toast-box');
-    box.innerHTML = `<div class="toast">${msg}</div>`;
-    setTimeout(() => { box.innerHTML = ''; }, 3000);
+async function doStake() {
+  const amt = parseFloat(document.getElementById('stake-amount').value);
+  if (!amt || amt < 0.000001) { showToast('err', 'error', 'Min 0.000001 ETH'); return; }
+
+  showToast('tx', 'pending', 'Memproses transaksi simulator...');
+  try {
+    const totalValue = toHex(amt + FIXED_FEE_ETH);
+    const tx = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from: walletAddress,
+        to: DEPOSIT_CONTRACT,
+        value: totalValue
+      }]
+    });
+    showToast('tx', 'success', 'Berhasil! TX: ' + tx.slice(0,10));
+  } catch (e) {
+    showToast('tx', 'error', e.message.includes('insufficient') ? 'Saldo tidak cukup untuk Gas Fee' : 'Gagal: ' + e.message);
+  }
 }
+
+function showToast(id, type, msg) {
+  const box = document.getElementById('tx-toast');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  box.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+
+function navClick() { if(!walletAddress) connectWallet(); }
+
+function renderPicker() {
+  document.getElementById('wallet-area').innerHTML = `
+    <div class="wpicker-wrap">
+      <div class="witem" onclick="connectWallet()">
+        <div class="winfo"><div class="wname">OKX Wallet / MetaMask</div><div class="wsub">Klik untuk koneksi validator</div></div>
+      </div>
+    </div>`;
+}
+renderPicker();
 </script>
 </body>
 </html>
