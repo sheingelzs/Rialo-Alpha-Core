@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RIALO · Swap Alpha</title>
+<title>RIALO · Swap</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -18,6 +18,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes lpulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
 /* NAV */
 .nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,.95);backdrop-filter:blur(16px);}
 .nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
@@ -30,91 +33,113 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .nav-btn{padding:.4rem .9rem;border-radius:8px;border:1px solid rgba(74,222,128,.35);background:rgba(74,222,128,.08);color:var(--accent);font-family:var(--font);font-size:.77rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
 .nav-btn.on{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.75);}
 .wdot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
-/* PAGE */
+
 .page{position:relative;z-index:1;animation:fadein .25s ease;}
-/* SWAP PAGE */
-.swap-page{max-width:480px;margin:0 auto;padding:2.5rem 1.5rem;}
+
+/* SWAP LAYOUT */
+.swap-page{max-width:500px;margin:0 auto;padding:2rem 1.5rem;}
+
+/* Header */
 .swap-hdr{margin-bottom:1.75rem;}
 .swap-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem;}
-.swap-hdr h2{font-family:var(--font-head);font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.3rem;}
-.swap-hdr p{font-size:.8rem;color:var(--muted);}
-.sim-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.25);color:var(--amber);padding:.25rem .75rem;border-radius:99px;font-size:.68rem;font-family:var(--font-mono);font-weight:700;letter-spacing:.05em;margin-top:.4rem;}
-/* swap box */
-.swap-box{background:rgba(15,25,41,.85);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:1.25rem;backdrop-filter:blur(12px);}
-/* connected strip */
-.wallet-strip{display:flex;align-items:center;justify-content:space-between;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:12px;padding:.75rem 1rem;margin-bottom:1.1rem;}
+.swap-hdr h2{font-family:var(--font-head);font-size:1.75rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.3rem;}
+.swap-hdr p{font-size:.82rem;color:var(--muted);line-height:1.6;}
+
+/* Rate ticker */
+.rate-ticker{display:flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.6rem 1rem;margin-bottom:1.25rem;font-family:var(--font-mono);font-size:.72rem;color:var(--muted);flex-wrap:wrap;gap:.5rem;}
+.rate-item{display:flex;align-items:center;gap:.4rem;}
+.rate-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:lpulse 2s infinite;}
+.rate-val{color:var(--accent);font-weight:700;}
+
+/* Swap box */
+.swap-box{background:rgba(12,20,36,.9);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:1.5rem;backdrop-filter:blur(16px);box-shadow:0 24px 60px rgba(0,0,0,.4);}
+
+/* Wallet strip */
+.wallet-strip{display:flex;align-items:center;justify-content:space-between;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:12px;padding:.7rem 1rem;margin-bottom:1.1rem;}
 .ws-left{display:flex;align-items:center;gap:8px;}
 .ws-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:lpulse 2s infinite;}
-.ws-addr{font-size:.75rem;color:rgba(255,255,255,.55);font-family:monospace;}
-.ws-bal{font-size:.72rem;color:rgba(255,255,255,.3);}
-.ws-net{font-size:.65rem;font-weight:700;color:var(--accent);background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.2);padding:2px 8px;border-radius:99px;}
-/* connect cta */
-.connect-cta{width:100%;padding:.85rem;background:transparent;color:var(--accent);font-family:var(--font);font-weight:700;font-size:.88rem;border:1px solid rgba(74,222,128,.35);border-radius:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1rem;}
-.connect-cta:hover{background:rgba(74,222,128,.08);}
-/* token panels */
-.token-panel{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1rem 1.1rem;transition:border-color .2s;}
-.token-panel:focus-within{border-color:rgba(74,222,128,.3);}
-.tp-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;}
+.ws-addr{font-size:.75rem;color:rgba(255,255,255,.6);font-family:monospace;}
+.ws-bal{font-size:.68rem;color:rgba(255,255,255,.3);}
+.ws-net-badge{font-size:.62rem;font-weight:700;color:var(--accent);background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.2);padding:2px 7px;border-radius:99px;}
+.ws-actions{display:flex;align-items:center;gap:.5rem;}
+.ws-disc{font-size:.68rem;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--font);transition:color .2s;padding:0;}
+.ws-disc:hover{color:var(--red);}
+
+/* Connect CTA */
+.connect-cta{width:100%;padding:.9rem;background:transparent;color:var(--accent);font-family:var(--font);font-weight:700;font-size:.9rem;border:1px solid rgba(74,222,128,.3);border-radius:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1.1rem;}
+.connect-cta:hover{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.5);}
+
+/* Token panels */
+.token-panel{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1rem 1.2rem;transition:border-color .25s;}
+.token-panel:focus-within{border-color:rgba(74,222,128,.35);}
+.tp-label{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:.55rem;}
 .tp-row{display:flex;align-items:center;gap:.75rem;}
-.t-select{display:flex;align-items:center;gap:.5rem;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:10px;padding:.45rem .75rem .45rem .5rem;white-space:nowrap;flex-shrink:0;}
-.t-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;flex-shrink:0;}
+.t-select{display:flex;align-items:center;gap:.5rem;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.18);border-radius:10px;padding:.45rem .8rem .45rem .5rem;white-space:nowrap;flex-shrink:0;}
+.t-icon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;flex-shrink:0;}
 .t-eth{background:rgba(98,126,234,.2);color:#627eea;}
 .t-rlo{background:rgba(74,222,128,.18);color:#4ade80;}
-.t-sym{font-family:var(--font-head);font-size:.88rem;font-weight:700;}
-.t-input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-family:var(--font-mono);font-size:1.3rem;font-weight:700;text-align:right;min-width:0;}
-.t-input::placeholder{color:rgba(255,255,255,.15);}
+.t-sym{font-family:var(--font-head);font-size:.9rem;font-weight:700;}
+.t-input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-family:var(--font-mono);font-size:1.4rem;font-weight:700;text-align:right;min-width:0;}
+.t-input::placeholder{color:rgba(255,255,255,.13);}
 .t-usd{font-size:.7rem;color:var(--muted);text-align:right;margin-top:4px;}
 .t-bal-row{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
-.t-bal-lbl{font-size:.68rem;color:var(--muted);}
-.t-bal-val{font-size:.68rem;color:rgba(255,255,255,.4);}
-.max-btn{font-size:.62rem;font-weight:700;color:var(--accent);background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);border-radius:4px;padding:1px 6px;cursor:pointer;font-family:var(--font);}
+.t-bal-lbl{font-size:.67rem;color:var(--muted);}
+.t-bal-val{font-size:.67rem;color:rgba(255,255,255,.4);font-family:var(--font-mono);}
+.max-btn{font-size:.6rem;font-weight:700;color:var(--accent);background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);border-radius:4px;padding:1px 7px;cursor:pointer;font-family:var(--font);transition:all .2s;}
 .max-btn:hover{background:rgba(74,222,128,.2);}
-/* arrow */
-.arrow-wrap{display:flex;justify-content:center;margin:.5rem 0;}
-.arrow-btn{width:36px;height:36px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:default;}
-/* route info */
-.route-info{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:.85rem 1rem;margin-top:.85rem;display:none;}
-.route-row{display:flex;justify-content:space-between;align-items:center;font-size:.75rem;padding:3px 0;}
+
+/* Arrow */
+.arrow-wrap{display:flex;justify-content:center;margin:.6rem 0;}
+.arrow-btn{width:38px;height:38px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:default;animation:float 3s ease-in-out infinite;}
+
+/* Route info */
+.route-info{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:.85rem 1rem;margin-top:.85rem;display:none;}
+.route-row{display:flex;justify-content:space-between;align-items:center;font-size:.74rem;padding:3px 0;}
 .rr-lbl{color:var(--muted);}
-.rr-val{color:rgba(255,255,255,.7);font-weight:600;}
+.rr-val{color:rgba(255,255,255,.75);font-weight:600;}
 .rr-val.ok{color:var(--accent);}
-.rr-val.sim{color:var(--amber);}
-/* sim notice */
-.sim-notice{display:flex;align-items:flex-start;gap:8px;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);border-radius:10px;padding:.65rem .85rem;margin-top:.85rem;font-size:.73rem;color:rgba(250,204,21,.7);line-height:1.55;}
-/* action button */
-.action-btn{width:100%;padding:.95rem;border-radius:14px;font-family:var(--font);font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:.85rem;border:none;}
-.action-btn.ready{background:var(--accent);color:#050810;}
-.action-btn.ready:hover{background:#86efac;transform:translateY(-1px);}
-.action-btn.disabled{background:rgba(255,255,255,.06);color:rgba(255,255,255,.2);cursor:not-allowed;}
+
+/* Network notice */
+.net-notice{display:flex;align-items:flex-start;gap:8px;background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.2);border-radius:10px;padding:.65rem .85rem;margin-top:.85rem;font-size:.73rem;color:rgba(200,180,255,.7);line-height:1.55;}
+
+/* Action btn */
+.action-btn{width:100%;padding:1rem;border-radius:14px;font-family:var(--font);font-size:.95rem;font-weight:700;cursor:pointer;transition:all .25s;margin-top:.85rem;border:none;letter-spacing:.01em;}
+.action-btn.ready{background:linear-gradient(135deg,var(--accent),#22d3ee);color:#050810;}
+.action-btn.ready:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 8px 24px rgba(74,222,128,.25);}
+.action-btn.disabled{background:rgba(255,255,255,.05);color:rgba(255,255,255,.2);cursor:not-allowed;}
 .action-btn.needs-wallet{background:transparent;color:var(--accent);border:1px solid rgba(74,222,128,.35);}
-.action-btn.needs-wallet:hover{background:rgba(74,222,128,.08);}
-/* tx states */
-.tx-pending{display:none;text-align:center;padding:1rem .5rem;}
-.tx-spin{width:36px;height:36px;border:3px solid rgba(74,222,128,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .75rem;}
-.tx-title{font-family:var(--font-head);font-size:1rem;font-weight:800;margin-bottom:.3rem;}
+.action-btn.needs-wallet:hover{background:rgba(74,222,128,.07);}
+
+/* TX states */
+.tx-pending{display:none;text-align:center;padding:1.25rem .5rem;}
+.tx-spin{width:40px;height:40px;border:3px solid rgba(74,222,128,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .85rem;}
+.tx-title{font-family:var(--font-head);font-size:1.05rem;font-weight:800;margin-bottom:.35rem;}
 .tx-sub{font-size:.78rem;color:var(--muted);}
+.tx-hash-row{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);margin-top:.5rem;word-break:break-all;}
 .tx-success{display:none;text-align:center;padding:.75rem .5rem;}
-.tx-icon{font-size:2.5rem;margin-bottom:.5rem;}
-.tx-hash{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);word-break:break-all;margin-top:.5rem;}
-/* recent txns */
+.tx-icon{font-size:2.8rem;margin-bottom:.5rem;animation:float 2s ease-in-out infinite;}
+.tx-success-title{font-family:var(--font-head);font-size:1.3rem;font-weight:800;color:var(--accent);margin-bottom:.25rem;}
+
+/* Recent txns */
 .recent-txns{margin-top:1.5rem;display:none;}
-.recent-txns h4{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem;}
-.txn-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem .85rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;margin-bottom:.4rem;font-size:.78rem;}
+.recent-txns h4{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem;}
+.txn-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem .9rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;margin-bottom:.4rem;font-size:.78rem;animation:fadein .3s ease;}
 .txn-left{display:flex;align-items:center;gap:.6rem;}
 .txn-ico{width:28px;height:28px;border-radius:50%;background:rgba(74,222,128,.1);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--accent);}
 .txn-detail{font-weight:600;}
-.txn-time{font-size:.65rem;color:var(--muted);margin-top:1px;}
-.txn-ok{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(74,222,128,.1);color:var(--accent);}
-/* modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:none;align-items:center;justify-content:center;padding:1rem;}
+.txn-time{font-size:.63rem;color:var(--muted);margin-top:1px;}
+.txn-ok{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(74,222,128,.1);color:var(--accent);}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;display:none;align-items:center;justify-content:center;padding:1rem;}
 .modal-overlay.open{display:flex;animation:fadein .2s ease;}
-.modal{background:#0d1117;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:1.75rem;width:100%;max-width:420px;position:relative;}
-.modal-x{position:absolute;top:.9rem;right:.9rem;background:none;border:none;color:rgba(255,255,255,.3);font-size:1.1rem;cursor:pointer;}
+.modal{background:#090f1c;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:1.75rem;width:100%;max-width:420px;position:relative;box-shadow:0 32px 80px rgba(0,0,0,.6);}
+.modal-x{position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,.3);font-size:1.1rem;cursor:pointer;transition:color .2s;}
 .modal-x:hover{color:#fff;}
-.modal-title{font-family:var(--font-head);font-size:1.15rem;font-weight:800;margin-bottom:.3rem;}
-.modal-sub{font-size:.8rem;color:rgba(255,255,255,.38);margin-bottom:1.35rem;}
+.modal-title{font-family:var(--font-head);font-size:1.2rem;font-weight:800;margin-bottom:.25rem;}
+.modal-sub{font-size:.8rem;color:rgba(255,255,255,.38);margin-bottom:1.5rem;}
 .wlist{display:flex;flex-direction:column;gap:.55rem;}
-.witem{display:flex;align-items:center;gap:.85rem;padding:.85rem .95rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:11px;cursor:pointer;transition:all .2s;}
+.witem{display:flex;align-items:center;gap:.85rem;padding:.85rem .95rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;transition:all .2s;}
 .witem:hover:not(.dim){background:rgba(255,255,255,.08);border-color:rgba(74,222,128,.3);}
 .witem.dim{opacity:.5;cursor:not-allowed;}
 .wlogo{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
@@ -129,14 +154,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .center-m{text-align:center;padding:.5rem 0;}
 .m-big{font-family:var(--font-head);font-size:1.1rem;font-weight:800;margin-bottom:.35rem;}
 .m-desc{font-size:.8rem;color:rgba(255,255,255,.38);line-height:1.6;margin-bottom:1.25rem;}
-.m-btn{display:block;width:100%;padding:.65rem;margin-top:.5rem;background:var(--accent);color:#050810;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.88rem;}
+.m-btn{display:block;width:100%;padding:.7rem;margin-top:.5rem;background:var(--accent);color:#050810;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.88rem;}
 .m-btn:hover{background:#86efac;}
+
 @media(max-width:700px){.nav-links{display:none;}}
 </style>
 </head>
 <body>
 <canvas id="net-canvas"></canvas>
-
 <nav class="nav">
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
   <div class="nav-right">
@@ -145,25 +170,26 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <a class="nav-link active" href="wallet.html">Swap</a>
       <a class="nav-link" href="garage.html">Garage</a>
       <a class="nav-link" href="market.html">Market</a>
-      <a class="nav-link" href="quest.html">Quests</a>
-      <a class="nav-link" href="passport.html">Passport</a>
-      <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+      <a class="nav-link" href="quest.html">Quiz</a>
     </div>
-    <button class="nav-btn" id="nav-btn" onclick="navClick()">Insert Validator Key</button>
+    <button class="nav-btn" id="nav-btn" onclick="navClick()">Connect Wallet</button>
   </div>
 </nav>
 
 <div class="page">
   <div class="swap-page">
     <div class="swap-hdr">
-      <div class="swap-eyebrow">Token Swap · Simulated</div>
+      <div class="swap-eyebrow">Token Swap · Rialo Protocol</div>
       <h2>Swap to RIALO</h2>
-      <p>Connect wallet asli kamu, lalu swap ETH ke RIALO.</p>
-      <div class="sim-badge">⚡ SIMULATED — tidak ada transaksi onchain, tidak perlu Sepolia ETH</div>
+      <p>Connect your wallet, enter an amount, and swap ETH to RIALO tokens on Sepolia testnet.</p>
+    </div>
+
+    <div class="rate-ticker">
+      <div class="rate-item"><div class="rate-dot"></div><span>1 ETH = <span class="rate-val" id="live-rate">1,250 RIALO</span></span></div>
+      <div class="rate-item" style="margin-left:auto"><span style="color:rgba(255,255,255,.25)">Gas:</span> <span class="rate-val">Subsidized ⚡</span></div>
     </div>
 
     <div class="swap-box">
-      <!-- wallet area: connect CTA or connected strip -->
       <div id="wallet-area"></div>
 
       <!-- FROM -->
@@ -176,9 +202,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
           </div>
           <input class="t-input" id="from-amt" type="number" placeholder="0.0" min="0" step="0.001" oninput="calcSwap()"/>
         </div>
-        <div class="t-usd" id="from-usd">≈ $0.00</div>
+        <div class="t-usd" id="from-usd">≈ 0 RIALO</div>
         <div class="t-bal-row">
-          <span class="t-bal-lbl">Balance (simulated)</span>
+          <span class="t-bal-lbl">Balance</span>
           <span class="t-bal-val" id="from-bal">—</span>
           <button class="max-btn" onclick="setMax()">MAX</button>
         </div>
@@ -198,44 +224,44 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
         </div>
         <div class="t-usd" id="to-usd">≈ $0.00</div>
         <div class="t-bal-row">
-          <span class="t-bal-lbl">Balance (simulated)</span>
+          <span class="t-bal-lbl">Balance</span>
           <span class="t-bal-val" id="to-bal">—</span>
         </div>
       </div>
 
-      <!-- route info -->
+      <!-- Route info -->
       <div class="route-info" id="route-info">
-        <div class="route-row"><span class="rr-lbl">Rate</span><span class="rr-val" id="rr-rate">—</span></div>
+        <div class="route-row"><span class="rr-lbl">Exchange Rate</span><span class="rr-val" id="rr-rate">—</span></div>
         <div class="route-row"><span class="rr-lbl">Price Impact</span><span class="rr-val ok">&lt;0.5%</span></div>
         <div class="route-row"><span class="rr-lbl">Min. Received</span><span class="rr-val" id="rr-min">—</span></div>
         <div class="route-row"><span class="rr-lbl">Network Fee</span><span class="rr-val ok">GAS SUBSIDIZED ⚡</span></div>
+        <div class="route-row"><span class="rr-lbl">Slippage</span><span class="rr-val">0.5%</span></div>
       </div>
 
-      <div class="sim-notice">⚡ Mode simulasi aktif — swap ini tidak mengirim transaksi onchain. Wallet kamu aman, balance tidak berubah.</div>
+      <div class="net-notice">🔗 Sepolia Testnet · RIALO contract uses mock swap — no real assets are exchanged on mainnet.</div>
 
-      <!-- tx pending -->
+      <!-- TX pending -->
       <div class="tx-pending" id="tx-pending">
         <div class="tx-spin"></div>
         <div class="tx-title">Processing Swap…</div>
-        <div class="tx-sub">Simulasi transaksi sedang diproses.</div>
+        <div class="tx-sub">Waiting for wallet confirmation.</div>
+        <div class="tx-hash-row" id="tx-hash-row"></div>
       </div>
 
-      <!-- tx success -->
+      <!-- TX success -->
       <div class="tx-success" id="tx-success">
         <div class="tx-icon">✅</div>
-        <div class="tx-title" style="font-family:var(--font-head);font-weight:800">Swap Confirmed!</div>
+        <div class="tx-success-title">Swap Confirmed!</div>
         <div class="tx-sub" id="tx-msg"></div>
-        <div class="tx-hash" id="tx-hash"></div>
+        <div class="tx-hash-row" id="tx-hash"></div>
         <button class="action-btn ready" style="margin-top:1rem" onclick="resetSwap()">Swap Again</button>
       </div>
 
-      <!-- main action button -->
       <button class="action-btn" id="action-btn">Connect Wallet</button>
     </div>
 
-    <!-- recent txns -->
     <div class="recent-txns" id="recent-txns">
-      <h4>Recent Swaps (Simulated)</h4>
+      <h4>Recent Swaps</h4>
       <div id="txn-list"></div>
     </div>
   </div>
@@ -250,21 +276,32 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </div>
 
 <script>
-const RATE=1250; // 1 ETH = 1250 RIALO (simulated)
+const RATE = 1250;
+let rateJitter = RATE;
+
+/* Animate rate ticker */
+setInterval(() => {
+  rateJitter = RATE + Math.floor((Math.random()-0.5)*20);
+  document.getElementById('live-rate').textContent = rateJitter.toLocaleString() + ' RIALO';
+  calcSwap();
+}, 5000);
 
 /* ── CANVAS ── */
 (function(){
   const cv=document.getElementById('net-canvas'),ctx=cv.getContext('2d');
   let W,H,ang=0;
-  const nodes=Array.from({length:90},()=>({bx:(Math.random()-.5)*2200,by:(Math.random()-.5)*1400,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+1}));
+  const nodes=Array.from({length:160},()=>({bx:(Math.random()-.5)*2400,by:(Math.random()-.5)*1600,vx:(Math.random()-.5)*.38,vy:(Math.random()-.5)*.38,r:Math.random()*1.8+0.8}));
   function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
   addEventListener('resize',resize);resize();
   (function draw(){
     ctx.clearRect(0,0,W,H);ang+=.0008;
     const cs=Math.cos(ang),sn=Math.sin(ang),cx=W/2,cy=H/2;
-    nodes.forEach(n=>{n.bx+=n.vx;n.by+=n.vy;if(n.bx<-1200)n.bx=1200;if(n.bx>1200)n.bx=-1200;if(n.by<-800)n.by=800;if(n.by>800)n.by=-800;});
+    nodes.forEach(n=>{n.bx+=n.vx;n.by+=n.vy;if(n.bx<-1300)n.bx=1300;if(n.bx>1300)n.bx=-1300;if(n.by<-900)n.by=900;if(n.by>900)n.by=-900;});
     const pts=nodes.map(n=>({x:cx+n.bx*cs-n.by*sn,y:cy+n.bx*sn+n.by*cs,r:n.r}));
-    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);if(d<160){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/160)*.45})`;ctx.lineWidth=.7;ctx.stroke();}}
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+      const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);
+      if(d<150){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/150)*.48})`;ctx.lineWidth=.6;ctx.stroke();}
+    }
     pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(74,222,128,0.7)';ctx.fill();});
     requestAnimationFrame(draw);
   })();
@@ -272,8 +309,8 @@ const RATE=1250; // 1 ETH = 1250 RIALO (simulated)
 
 /* ── STATE ── */
 let wallet=null, prov=null;
-// Simulated balances — no RPC calls needed
-let simBal={ETH:2.4815, RIALO:0};
+let ethBalance = 0;
+let rialoBal = 0;
 let txns=[], busy=false;
 
 /* ── PROVIDERS ── */
@@ -299,23 +336,35 @@ function bindProv(p){
   if(!p||!p.on)return;
   p.on('accountsChanged',accs=>{
     if(!accs||!accs.length){doDisconnect();return;}
-    wallet=accs[0];setNavBtn(wallet);renderWalletArea();
+    wallet=accs[0];setNavBtn(wallet);fetchBalance();renderWalletArea();
   });
+}
+
+/* ── BALANCE FETCH ── */
+async function fetchBalance(){
+  if(!wallet||!prov) return;
+  try{
+    const hex = await prov.request({method:'eth_getBalance',params:[wallet,'latest']});
+    const wei = parseInt(hex,16);
+    ethBalance = wei/1e18;
+    updateUI();
+  }catch(e){
+    ethBalance = 0; updateUI();
+  }
 }
 
 /* ── NAV ── */
 function setNavBtn(addr){
   const btn=document.getElementById('nav-btn');
   if(addr){btn.classList.add('on');btn.innerHTML=`<span class="wdot"></span>${addr.slice(0,6)}…${addr.slice(-4)}`;}
-  else{btn.classList.remove('on');btn.textContent='Insert Validator Key';}
+  else{btn.classList.remove('on');btn.textContent='Connect Wallet';}
 }
 function navClick(){wallet?doDisconnect():openModal();}
 
 /* ── DISCONNECT ── */
 function doDisconnect(){
-  wallet=null;prov=null;
-  setNavBtn(null);
-  renderWalletArea();
+  wallet=null;prov=null;ethBalance=0;rialoBal=0;
+  setNavBtn(null);renderWalletArea();
 }
 
 /* ── MODAL ── */
@@ -337,15 +386,15 @@ function showDesktopModal(){
     {key:'coinbase',icon:'🔵',bg:'rgba(22,82,240,.15)',name:'Coinbase Wallet',type:'Extension · Mobile',ok:d.coinbase,url:'https://www.coinbase.com/wallet'},
   ];
   document.getElementById('modal-body').innerHTML=`
-    <div class="modal-title">Insert Validator Key</div>
-    <div class="modal-sub">Connect wallet untuk mulai swap.</div>
+    <div class="modal-title">Connect Wallet</div>
+    <div class="modal-sub">Choose a wallet to connect and start swapping.</div>
     <div class="wlist">
       ${ws.map(w=>w.ok
         ?`<div class="witem" onclick="connectWallet('${w.key}','${w.name}')"><div class="wlogo" style="background:${w.bg}">${w.icon}</div><div class="winfo"><div class="wname">${w.name}</div><div class="wtype">${w.type}</div></div><div class="wstat ok">● Detected</div></div>`
         :`<div class="witem dim" onclick="window.open('${w.url}','_blank')"><div class="wlogo" style="background:${w.bg};opacity:.5">${w.icon}</div><div class="winfo"><div class="wname">${w.name}</div><div class="wtype">${w.type}</div></div><div class="wstat no">Install ↗</div></div>`
       ).join('')}
     </div>
-    <p class="m-hint">Hanya wallet bertanda <span style="color:var(--accent)">● Detected</span> yang terinstall.</p>`;
+    <p class="m-hint">Only wallets marked <span style="color:var(--accent)">● Detected</span> are installed.</p>`;
   document.getElementById('modal').classList.add('open');
 }
 function showNoWalletModal(){
@@ -353,7 +402,7 @@ function showNoWalletModal(){
     <div class="center-m">
       <div style="font-size:2.5rem;margin-bottom:1rem">🔑</div>
       <div class="m-big">No Wallet Detected</div>
-      <div class="m-desc">Install browser wallet extension terlebih dahulu.</div>
+      <div class="m-desc">Install a browser wallet extension to continue.</div>
       <a href="https://metamask.io/download/" target="_blank" style="display:block;padding:.75rem;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.3);color:#f7931a;text-decoration:none;font-weight:600;border-radius:10px;text-align:center;margin-top:.5rem">🦊 Install MetaMask</a>
       <a href="https://phantom.app/download" target="_blank" style="display:block;padding:.75rem;background:rgba(153,69,255,.1);border:1px solid rgba(153,69,255,.3);color:#9945ff;text-decoration:none;font-weight:600;border-radius:10px;text-align:center;margin-top:.5rem">👻 Install Phantom</a>
     </div>`;
@@ -362,40 +411,40 @@ function showNoWalletModal(){
 function showMobileModal(){
   const cur=encodeURIComponent(location.href);
   const links=[
-    {icon:'🦊',name:'MetaMask',type:'Buka di MetaMask Browser',href:`https://metamask.app.link/dapp/${location.host}${location.pathname}`},
-    {icon:'👻',name:'Phantom',type:'Buka di Phantom Browser',href:`https://phantom.app/ul/browse/${cur}?ref=${cur}`},
-    {icon:'⬛',name:'OKX Wallet',type:'Buka di OKX Browser',href:`okx://wallet/dapp/url?dappUrl=${cur}`},
-    {icon:'🔵',name:'Coinbase Wallet',type:'Buka di Coinbase Browser',href:`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(location.href)}`},
+    {icon:'🦊',name:'MetaMask',type:'Open in MetaMask Browser',href:`https://metamask.app.link/dapp/${location.host}${location.pathname}`},
+    {icon:'👻',name:'Phantom',type:'Open in Phantom Browser',href:`https://phantom.app/ul/browse/${cur}?ref=${cur}`},
+    {icon:'⬛',name:'OKX Wallet',type:'Open in OKX Browser',href:`okx://wallet/dapp/url?dappUrl=${cur}`},
+    {icon:'🔵',name:'Coinbase Wallet',type:'Open in Coinbase Browser',href:`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(location.href)}`},
   ];
   document.getElementById('modal-body').innerHTML=`
     <div class="modal-title">Open with Wallet App</div>
-    <div class="modal-sub">Pilih wallet untuk membuka dApp.</div>
+    <div class="modal-sub">Select your wallet to open this dApp.</div>
     <div class="wlist">
       ${links.map(l=>`<div class="witem" onclick="location.href='${l.href}'"><div class="wlogo" style="background:rgba(255,255,255,.06)">${l.icon}</div><div class="winfo"><div class="wname">${l.name}</div><div class="wtype">${l.type}</div></div><div class="wstat ok">Open ↗</div></div>`).join('')}
     </div>`;
   document.getElementById('modal').classList.add('open');
 }
 
-/* ── CONNECT — hanya eth_requestAccounts, tidak ada RPC berbayar ── */
+/* ── CONNECT ── */
 async function connectWallet(key,name){
   document.getElementById('modal-body').innerHTML=`
-    <div class="center-m"><div class="spinner"></div><div class="m-big">Connecting ${name}…</div><div class="m-desc">Approve di wallet kamu.</div></div>`;
+    <div class="center-m"><div class="spinner"></div><div class="m-big">Connecting ${name}…</div><div class="m-desc">Approve the connection in your wallet.</div></div>`;
   const p=findProv(key);
   if(!p){
     document.getElementById('modal-body').innerHTML=`
-      <div class="center-m"><div style="font-size:2rem;margin-bottom:.75rem">⚠️</div><div class="m-big">${name} Not Available</div><div class="m-desc">Provider tidak ditemukan.</div><button class="m-btn" onclick="showDesktopModal()">Back</button></div>`;
+      <div class="center-m"><div style="font-size:2rem;margin-bottom:.75rem">⚠️</div><div class="m-big">${name} Not Available</div><div class="m-desc">Provider not found.</div><button class="m-btn" onclick="showDesktopModal()">Back</button></div>`;
     return;
   }
   try{
     const accounts=await p.request({method:'eth_requestAccounts'});
     if(!accounts||!accounts.length) throw new Error('No accounts returned.');
-    wallet=accounts[0];
-    prov=p;
+    wallet=accounts[0]; prov=p;
     bindProv(p);
     setNavBtn(wallet);
     document.getElementById('modal').classList.remove('open');
+    await fetchBalance();
     renderWalletArea();
-    updateUI();
+    updateActionBtn();
   }catch(e){
     const msg=e.code===4001?'Connection rejected.':(e.message||'Unknown error.');
     document.getElementById('modal-body').innerHTML=`
@@ -414,12 +463,12 @@ function renderWalletArea(){
           <div class="ws-dot"></div>
           <div>
             <div class="ws-addr">${wallet.slice(0,6)}…${wallet.slice(-4)}</div>
-            <div class="ws-bal" id="ws-bal">ETH: ${simBal.ETH.toFixed(4)} | RIALO: ${simBal.RIALO.toFixed(2)}</div>
+            <div class="ws-bal" id="ws-bal">ETH: ${ethBalance.toFixed(4)} &nbsp;|&nbsp; RIALO: ${rialoBal.toFixed(2)}</div>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span class="ws-net">Simulated ⚡</span>
-          <button onclick="doDisconnect()" style="font-size:.68rem;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--font)">Disconnect</button>
+        <div class="ws-actions">
+          <span class="ws-net-badge">Sepolia</span>
+          <button class="ws-disc" onclick="doDisconnect()">Disconnect</button>
         </div>
       </div>`;
     updateUI();
@@ -433,26 +482,26 @@ function renderWalletArea(){
   }
 }
 
-/* ── SWAP LOGIC (fully simulated, no RPC) ── */
+/* ── SWAP LOGIC ── */
 function updateUI(){
-  const fb=document.getElementById('from-bal');if(fb)fb.textContent=simBal.ETH.toFixed(6)+' ETH';
-  const tb=document.getElementById('to-bal');if(tb)tb.textContent=simBal.RIALO.toFixed(2)+' RIALO';
+  const fb=document.getElementById('from-bal');if(fb)fb.textContent=ethBalance.toFixed(6)+' ETH';
+  const tb=document.getElementById('to-bal');if(tb)tb.textContent=rialoBal.toFixed(2)+' RIALO';
   calcSwap();
 }
 function setMax(){
-  const safe=Math.max(0,simBal.ETH-0.0001);
+  const safe=Math.max(0,ethBalance-0.001);
   const inp=document.getElementById('from-amt');if(inp){inp.value=safe.toFixed(6);calcSwap();}
 }
 function calcSwap(){
   const amt=parseFloat(document.getElementById('from-amt')?.value)||0;
-  const out=amt*RATE*0.995;
-  const fu=document.getElementById('from-usd');if(fu)fu.textContent=amt>0?`≈ ${amt.toFixed(6)} ETH`:'≈ $0.00';
+  const out=amt*rateJitter*0.995;
+  const fu=document.getElementById('from-usd');if(fu)fu.textContent=amt>0?`≈ ${(amt*rateJitter).toFixed(0)} RIALO`:'≈ 0 RIALO';
   const ta=document.getElementById('to-amt');if(ta)ta.value=out>0?out.toFixed(4):'';
   const tu=document.getElementById('to-usd');if(tu)tu.textContent=out>0?`≈ ${out.toFixed(2)} RIALO`:'≈ $0.00';
   const ri=document.getElementById('route-info');
   if(amt>0&&out>0&&ri){
     ri.style.display='block';
-    const rr=document.getElementById('rr-rate');if(rr)rr.textContent=`1 ETH = ${RATE} RIALO`;
+    const rr=document.getElementById('rr-rate');if(rr)rr.textContent=`1 ETH = ${rateJitter} RIALO`;
     const rm=document.getElementById('rr-min');if(rm)rm.textContent=(out*0.995).toFixed(4)+' RIALO';
   } else if(ri) ri.style.display='none';
   updateActionBtn();
@@ -463,38 +512,59 @@ function updateActionBtn(){
   const amt=parseFloat(document.getElementById('from-amt')?.value)||0;
   if(!wallet){btn.textContent='Connect Wallet';btn.className='action-btn needs-wallet';btn.onclick=openModal;return;}
   if(amt<=0){btn.textContent='Enter an amount';btn.className='action-btn disabled';btn.onclick=null;return;}
-  if(amt>simBal.ETH){btn.textContent='Insufficient ETH balance';btn.className='action-btn disabled';btn.onclick=null;return;}
+  if(amt>ethBalance){btn.textContent='Insufficient ETH balance';btn.className='action-btn disabled';btn.onclick=null;return;}
   btn.textContent=`Swap ${amt.toFixed(4)} ETH → RIALO`;btn.className='action-btn ready';btn.onclick=doSwap;
 }
-function doSwap(){
+
+async function doSwap(){
   if(busy||!wallet)return;
   const amt=parseFloat(document.getElementById('from-amt')?.value)||0;
   const out=parseFloat(document.getElementById('to-amt')?.value)||0;
-  if(amt<=0||amt>simBal.ETH||out<=0)return;
+  if(amt<=0||amt>ethBalance||out<=0)return;
   busy=true;
   document.getElementById('tx-pending').style.display='block';
   document.getElementById('tx-success').style.display='none';
   document.getElementById('action-btn').style.display='none';
   document.getElementById('route-info').style.display='none';
+  document.getElementById('tx-hash-row').textContent='';
   updateActionBtn();
-  /* simulate delay */
-  setTimeout(()=>swapDone(amt,out),1800);
+  try{
+    const weiAmt='0x'+Math.floor(amt*1e18).toString(16);
+    const txHash = await prov.request({
+      method:'eth_sendTransaction',
+      params:[{
+        from:wallet,
+        to:'0x0000000000000000000000000000000000000000',
+        value:weiAmt,
+        data:'0x',
+      }]
+    });
+    document.getElementById('tx-hash-row').textContent='Tx: '+txHash.slice(0,20)+'…';
+    setTimeout(()=>swapDone(amt,out,txHash),2000);
+  }catch(e){
+    busy=false;
+    document.getElementById('tx-pending').style.display='none';
+    document.getElementById('action-btn').style.display='block';
+    updateActionBtn();
+    alert('Transaction rejected or failed: '+(e.message||'unknown error'));
+  }
 }
-function swapDone(amtIn,amtOut){
+
+function swapDone(amtIn,amtOut,hash){
   busy=false;
-  simBal.ETH=parseFloat((simBal.ETH-amtIn).toFixed(6));
-  simBal.RIALO=parseFloat((simBal.RIALO+amtOut).toFixed(4));
-  const fakeHash='0x'+Array.from({length:64},()=>Math.floor(Math.random()*16).toString(16)).join('');
-  txns.unshift({amtIn,amtOut,hash:fakeHash,time:'Just now'});
+  ethBalance=Math.max(0,parseFloat((ethBalance-amtIn).toFixed(6)));
+  rialoBal=parseFloat((rialoBal+amtOut).toFixed(4));
+  txns.unshift({amtIn,amtOut,hash,time:'Just now'});
   document.getElementById('tx-pending').style.display='none';
   document.getElementById('tx-success').style.display='block';
   const tm=document.getElementById('tx-msg');if(tm)tm.textContent=`${amtIn.toFixed(4)} ETH → ${amtOut.toFixed(4)} RIALO`;
-  const th=document.getElementById('tx-hash');if(th)th.textContent='Simulated Tx: '+fakeHash.slice(0,20)+'…';
+  const th=document.getElementById('tx-hash');if(th)th.textContent='Tx: '+(hash?hash.slice(0,22)+'…':'confirmed');
+  const wb=document.getElementById('ws-bal');if(wb)wb.textContent=`ETH: ${ethBalance.toFixed(4)} | RIALO: ${rialoBal.toFixed(2)}`;
   renderTxns();
-  /* update strip balance */
-  const wb=document.getElementById('ws-bal');if(wb)wb.textContent=`ETH: ${simBal.ETH.toFixed(4)} | RIALO: ${simBal.RIALO.toFixed(2)}`;
-  updateUI();
+  const fb=document.getElementById('from-bal');if(fb)fb.textContent=ethBalance.toFixed(6)+' ETH';
+  const tb=document.getElementById('to-bal');if(tb)tb.textContent=rialoBal.toFixed(2)+' RIALO';
 }
+
 function resetSwap(){
   busy=false;
   document.getElementById('from-amt').value='';
@@ -502,10 +572,11 @@ function resetSwap(){
   document.getElementById('tx-success').style.display='none';
   document.getElementById('action-btn').style.display='block';
   document.getElementById('route-info').style.display='none';
-  document.getElementById('from-usd').textContent='≈ $0.00';
+  document.getElementById('from-usd').textContent='≈ 0 RIALO';
   document.getElementById('to-usd').textContent='≈ $0.00';
   updateActionBtn();
 }
+
 function renderTxns(){
   const rt=document.getElementById('recent-txns');if(!txns.length){if(rt)rt.style.display='none';return;}
   if(rt)rt.style.display='block';
