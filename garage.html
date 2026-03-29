@@ -25,7 +25,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .nav-btn.on{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.75);}
 
 /* STATUS BADGE */
-.status-row{display:flex;justify-content:center;padding:1.5rem 0 0;position:relative;z-index:1;}
+.status-row{display:flex;justify-content:center;padding:1.5rem 0 0;}
 .node-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:var(--red);padding:.35rem 1rem;border-radius:999px;font-family:var(--font-mono);font-size:.7rem;font-weight:700;}
 .node-badge.online{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.25);color:var(--accent);}
 .nbdot{width:7px;height:7px;border-radius:50%;background:currentColor;}
@@ -55,15 +55,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .vm-tab.active{background:rgba(74,222,128,.1);border-color:var(--accent);color:var(--accent);}
 
 /* STACK LIST */
-.layer-item{display:flex;align-items:center;gap:.85rem;padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.04);animation: fadeIn 0.3s ease forwards;}
-@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.layer-item{display:flex;align-items:center;gap:.85rem;padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
 .li-ico img{width:22px;height:22px;object-fit:contain;}
 .li-name{font-size:.82rem;font-weight:700;}
 .li-pill{font-family:var(--font-mono);font-size:.6rem;padding:2px 8px;border-radius:99px;}
 
 /* WALLET PICKER */
-.witem{display:flex;align-items:center;gap:1rem;padding:1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;width:300px;margin-bottom:.5rem;transition: 0.2s;}
-.witem:hover { background:rgba(74,222,128,0.1); border-color:var(--accent); }
+.witem{display:flex;align-items:center;gap:1rem;padding:1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;width:300px;margin-bottom:.5rem;}
 </style>
 </head>
 <body>
@@ -72,7 +70,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 <nav class="nav">
   <div class="nav-logo"><div class="logo-dot"></div>RIALO</div>
   <div class="nav-right">
-    <button class="nav-btn" id="nav-btn">Insert Validator Key</button>
+    <button class="nav-btn" id="nav-btn" onclick="navClick()">Insert Validator Key</button>
   </div>
 </nav>
 
@@ -84,11 +82,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   </div>
 
   <div id="scr-standby" class="screen" style="display:flex;">
-    <h2 style="margin-bottom:0.5rem; font-family:var(--font-head);">Rialo Alpha Core</h2>
-    <p style="color:var(--muted); margin-bottom:1.5rem; font-size:0.9rem;">Pilih provider untuk mengaktifkan Validator Engine.</p>
+    <h2 style="margin-bottom:1rem;">Rialo Alpha Core</h2>
     <div id="wallet-area">
-      <div class="witem" onclick="handleWalletConnect('MetaMask')">🦊 &nbsp; MetaMask</div>
-      <div class="witem" onclick="handleWalletConnect('Phantom')">👻 &nbsp; Phantom Wallet</div>
+      <div class="witem" onclick="mockConnect('MetaMask')">🦊 MetaMask</div>
+      <div class="witem" onclick="mockConnect('Phantom')">👻 Phantom</div>
     </div>
   </div>
 
@@ -97,7 +94,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <div class="tele-grid">
         <div class="tele-card">
           <div class="tele-lbl">Finality</div>
-          <div id="finality-text" class="tele-val">--</div>
+          <div id="finality-text" class="tele-val">50ms</div>
         </div>
         <div class="tele-card">
           <div class="tele-lbl">Active VM</div>
@@ -123,7 +120,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
             <button class="vm-tab" onclick="switchVM('SVM',this)">SVM</button>
             <button class="vm-tab" onclick="switchVM('MOVE',this)">MOVE</button>
           </div>
-          <div id="vm-desc" style="font-size:.75rem; color:var(--muted); line-height:1.6;">Execution environment active.</div>
+          <div id="vm-desc" style="font-size:.75rem; color:var(--muted); line-height:1.6;">Solidity stack active.</div>
         </div>
 
         <div class="mod-card" id="stack-card">
@@ -134,94 +131,67 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </div>
 
 <script>
-/* ── DATA ── */
+/* ── DATA CONFIG ── */
 const MARKET_DATA = {
   EVM: {
     finality: 50, baseGas: 0.00125, color: '#4ade80',
     stack: [
-      { name: "Ethereum", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=032", status: "SETTLEMENT" },
-      { name: "Arbitrum", logo: "https://cryptologos.cc/logos/arbitrum-arb-logo.png?v=032", status: "L2 EXEC" }
+      { name: "Ethereum", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=032", status: "L1" },
+      { name: "Arbitrum", logo: "https://cryptologos.cc/logos/arbitrum-arb-logo.png?v=032", status: "L2" }
     ]
   },
   SVM: {
     finality: 22, baseGas: 0.00005, color: '#22d3ee',
     stack: [
-      { name: "Solana", logo: "https://cryptologos.cc/logos/solana-sol-logo.png?v=032", status: "SVM CORE" },
-      { name: "Jupiter", logo: "https://static.jup.ag/jup/tokens/jup.png", status: "AGGREGATOR" }
+      { name: "Solana", logo: "https://cryptologos.cc/logos/solana-sol-logo.png?v=032", status: "SVM" },
+      { name: "Jupiter", logo: "https://static.jup.ag/jup/tokens/jup.png", status: "AGG" }
     ]
   },
   MOVE: {
     finality: 45, baseGas: 0.00082, color: '#7c5cfc',
     stack: [
-      { name: "Sui", logo: "https://cryptologos.cc/logos/sui-sui-logo.png?v=032", status: "OBJECT-VM" },
-      { name: "Movement", logo: "https://raw.githubusercontent.com/Rialo-Labs/branding/main/movement_logo_white.png", status: "M2 STACK" }
+      { name: "Sui", logo: "https://cryptologos.cc/logos/sui-sui-logo.png?v=032", status: "MOVE" },
+      { name: "Movement", logo: "https://raw.githubusercontent.com/Rialo-Labs/branding/main/movement_logo_white.png", status: "M2" }
     ]
   }
 };
 
 let currentVM = 'EVM';
-let isConnected = false;
+let wallet = null;
 
-/* ── WALLET CONNECT LOGIC ── */
-function handleWalletConnect(provider) {
-  const btn = document.getElementById('nav-btn');
-  const badge = document.getElementById('node-badge');
-  const badgeTxt = document.getElementById('badge-txt');
+/* ── GAS SIMULATION (SINKRONISASI ID) ── */
+setInterval(() => {
+  if(!wallet) return; // Hanya jalan jika sudah "Connect"
   
-  // 1. Update UI Status
-  isConnected = true;
-  btn.textContent = "0x71...8976F (CONNECTED)";
-  btn.classList.add('on');
-  badge.classList.add('online');
-  badgeTxt.textContent = "NODE_STATUS: ONLINE";
+  const d = MARKET_DATA[currentVM];
+  const jitter = (Math.random() * 0.00005).toFixed(5);
+  const liveBase = (d.baseGas + parseFloat(jitter)).toFixed(5);
+  const livePriority = (Math.random() * 0.00001).toFixed(5);
+  const liveCost = (liveBase * 0.0001).toFixed(6);
 
-  // 2. Switch Screen
-  document.getElementById('scr-standby').style.display = 'none';
-  document.getElementById('scr-dashboard').style.display = 'flex';
-
-  // 3. Initialize Data
-  switchVM('EVM', document.querySelector('.vm-tab'));
-  startGasSimulation();
-}
-
-/* ── GAS SIMULATION ── */
-function startGasSimulation() {
-  setInterval(() => {
-    if(!isConnected) return;
-    
-    const d = MARKET_DATA[currentVM];
-    const jitter = (Math.random() * 0.00005).toFixed(5);
-    const liveBase = (d.baseGas + parseFloat(jitter)).toFixed(5);
-    const livePriority = (Math.random() * 0.00002).toFixed(5);
-    const liveCost = (liveBase * 0.0001).toFixed(6);
-
-    document.getElementById('gas-base').textContent = `${liveBase} GWEI`;
-    document.getElementById('gas-priority').textContent = `${livePriority} GWEI`;
-    document.getElementById('gas-cost').textContent = `$${liveCost}`;
-  }, 1500);
-}
+  // Update elemen HTML berdasarkan ID
+  if(document.getElementById('gas-base')) document.getElementById('gas-base').textContent = `${liveBase} GWEI`;
+  if(document.getElementById('gas-priority')) document.getElementById('gas-priority').textContent = `${livePriority} GWEI`;
+  if(document.getElementById('gas-cost')) document.getElementById('gas-cost').textContent = `$${liveCost}`;
+}, 2000);
 
 /* ── VM LOGIC ── */
 function switchVM(vm, btn) {
   currentVM = vm;
   const d = MARKET_DATA[vm];
   
-  // Tab Styling
   document.querySelectorAll('.vm-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
 
-  // Telemetry Update
   document.getElementById('vm-label').textContent = vm;
   document.getElementById('vm-label').style.color = d.color;
   document.getElementById('finality-text').textContent = d.finality + 'ms';
-  document.getElementById('finality-text').style.color = d.color;
 
-  // Table Update
   const stackCard = document.getElementById('stack-card');
-  let html = `<div class="card-lbl">🧱 ${vm} Supermodular Stack</div>`;
-  d.stack.forEach((item, i) => {
+  let html = `<div class="card-lbl">🧱 ${vm} Stack</div>`;
+  d.stack.forEach(item => {
     html += `
-      <div class="layer-item" style="animation-delay: ${i*0.1}s">
+      <div class="layer-item">
         <div class="li-ico"><img src="${item.logo}" onerror="this.src='https://via.placeholder.com/20'"></div>
         <div class="li-info"><div class="li-name">${item.name}</div></div>
         <span class="li-pill" style="background:${d.color}20; color:${d.color}">${item.status}</span>
@@ -230,15 +200,26 @@ function switchVM(vm, btn) {
   stackCard.innerHTML = html;
 }
 
-/* ── CANVAS BG ── */
+/* ── UI FLOW ── */
+function mockConnect(name) {
+  wallet = "0x71...8976F";
+  document.getElementById('nav-btn').textContent = "0x71...CONNECTED";
+  document.getElementById('node-badge').classList.add('online');
+  document.getElementById('badge-txt').textContent = "NODE_STATUS: ONLINE";
+  document.getElementById('scr-standby').style.display = 'none';
+  document.getElementById('scr-dashboard').style.display = 'flex';
+  switchVM('EVM', document.querySelector('.vm-tab'));
+}
+
+/* ── BACKGROUND CANVAS ── */
 const cv=document.getElementById('net-canvas'),ctx=cv.getContext('2d');
 let w,h;
 function res(){w=cv.width=innerWidth;h=cv.height=innerHeight;}
 window.onresize=res;res();
 function draw(){
   ctx.clearRect(0,0,w,h);
-  ctx.fillStyle='rgba(74,222,128,0.03)';
-  for(let i=0;i<40;i++) ctx.fillRect(Math.random()*w,Math.random()*h,2,2);
+  ctx.fillStyle='rgba(74,222,128,0.05)';
+  for(let i=0;i<30;i++) ctx.fillRect(Math.random()*w,Math.random()*h,2,2);
   requestAnimationFrame(draw);
 }
 draw();
