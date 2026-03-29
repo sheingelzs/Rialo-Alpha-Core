@@ -65,7 +65,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .wpicker-grid{display:grid;grid-template-columns: 1fr 1fr; gap:0.75rem; width:100%; max-width:500px;}
 .witem{display:flex;align-items:center;gap:0.75rem;padding:0.85rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;transition: 0.2s;}
 .witem:hover { background:rgba(74,222,128,0.1); border-color:var(--accent); transform: translateY(-2px); }
-.w-icon { width:24px; height:24px; border-radius:4px; object-fit: contain; }
+.w-icon { width:24px; height:24px; border-radius:4px; }
 </style>
 </head>
 <body>
@@ -147,7 +147,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </div>
 
 <script>
-/* ── CONFIG DATA ── */
 const MARKET_DATA = {
   EVM: {
     finality: 50, baseGas: 0.00125, color: '#4ade80',
@@ -175,62 +174,47 @@ const MARKET_DATA = {
 let currentVM = 'EVM';
 let isConnected = false;
 
-/* ── CONNECT LOGIC ── */
 function handleWalletConnect(provider) {
   isConnected = true;
-  
-  // Update Navbar & Badge
-  const btn = document.getElementById('nav-btn');
-  btn.textContent = "0x71...8976F (CONNECTED)";
-  btn.classList.add('on');
-  
+  document.getElementById('nav-btn').textContent = "0x71...CONNECTED";
+  document.getElementById('nav-btn').classList.add('on');
   document.getElementById('node-badge').classList.add('online');
   document.getElementById('badge-txt').textContent = "NODE_STATUS: ONLINE (" + provider.toUpperCase() + ")";
 
-  // Screen Switch
   document.getElementById('scr-standby').style.display = 'none';
   document.getElementById('scr-dashboard').style.display = 'flex';
 
-  // Init UI Components
   switchVM('EVM', document.querySelector('.vm-tab'));
   startGasSimulation();
 }
 
-/* ── SIMULATION ENGINE ── */
 function startGasSimulation() {
   setInterval(() => {
     if(!isConnected) return;
-    
     const d = MARKET_DATA[currentVM];
-    // Membuat angka acak (jitter) agar terlihat real-time
     const jitter = (Math.random() * 0.00005).toFixed(5);
     const liveBase = (d.baseGas + parseFloat(jitter)).toFixed(5);
     const livePriority = (Math.random() * 0.00002).toFixed(5);
     const liveCost = (liveBase * 0.0001).toFixed(6);
 
-    // Update ke elemen HTML
     document.getElementById('gas-base').textContent = `${liveBase} GWEI`;
     document.getElementById('gas-priority').textContent = `${livePriority} GWEI`;
     document.getElementById('gas-cost').textContent = `$${liveCost}`;
   }, 1500);
 }
 
-/* ── VM LOGIC ── */
 function switchVM(vm, btn) {
   currentVM = vm;
   const d = MARKET_DATA[vm];
   
-  // Tab UI
   document.querySelectorAll('.vm-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
 
-  // Telemetry UI
   document.getElementById('vm-label').textContent = vm;
   document.getElementById('vm-label').style.color = d.color;
   document.getElementById('finality-text').textContent = d.finality + 'ms';
   document.getElementById('finality-text').style.color = d.color;
 
-  // Render Table Stack
   const stackCard = document.getElementById('stack-card');
   let html = `<div class="card-lbl">🧱 ${vm} Supermodular Stack</div>`;
   d.stack.forEach((item, i) => {
@@ -244,7 +228,7 @@ function switchVM(vm, btn) {
   stackCard.innerHTML = html;
 }
 
-/* ── BACKGROUND CANVAS ── */
+/* CANVAS BG */
 const cv=document.getElementById('net-canvas'),ctx=cv.getContext('2d');
 let w,h;
 function res(){w=cv.width=innerWidth;h=cv.height=innerHeight;}
