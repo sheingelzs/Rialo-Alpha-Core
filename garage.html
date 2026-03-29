@@ -6,7 +6,7 @@
 <title>RIALO · Validator Garage</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
-/* STYLE 100% ASLI DARI FILE ANDA */
+/* 100% STYLE ASLI DARI FILE GARAGE (1).HTML ANDA */
 :root{
   --bg:#050810;--card:#0f1929;--border:#1a2a42;
   --accent:#4ade80;--accent2:#7c5cfc;--red:#f87171;--amber:#facc15;--cyan:#22d3ee;
@@ -26,8 +26,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
 .logo-dot{width:9px;height:9px;background:var(--accent);border-radius:50%;animation:lpulse 2s infinite;}
 .nav-right{display:flex;align-items:center;gap:.6rem;}
-.nav-links{display:flex;gap:.2rem;background:rgba(255,255,255,.05);border-radius:99px;padding:3px;}
-.nav-link{padding:.35rem .85rem;border-radius:99px;background:transparent;color:rgba(255,255,255,.45);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;text-decoration:none;border:none;font-family:var(--font);}
+.nav-links{display:flex;gap:.2rem;background:rgba(255,255,255,.05);border-radius:9px;padding:3px;}
+.nav-link{padding:.35rem .85rem;border-radius:6px;background:transparent;color:rgba(255,255,255,.45);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;text-decoration:none;border:none;font-family:var(--font);}
 .nav-link.active{background:rgba(255,255,255,.1);color:#fff;}
 .nav-btn{padding:.4rem .9rem;border-radius:8px;border:1px solid rgba(74,222,128,.35);background:rgba(74,222,128,.08);color:var(--accent);font-family:var(--font);font-size:.77rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;}
 .nav-btn.on{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.75);}
@@ -40,7 +40,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .nbdot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1.5s infinite;}
 
 .screen{display:none;position:relative;z-index:1;}
-#scr-standby{flex-direction:column;align-items:center;text-align:center;padding:2rem 1.5rem;animation:fadein .3s ease;}
+#scr-standby{flex-direction:column;align-items:center;text-align:center;padding:2rem 1.5rem;}
 #scr-standby h2{font-family:var(--font-head);font-size:2.4rem;margin-bottom:.75rem;}
 #scr-standby p{font-size:.88rem;color:var(--muted);max-width:400px;line-height:1.7;}
 
@@ -48,7 +48,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .witem{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;transition:all .2s;}
 .witem:hover{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.3);}
 
-/* DASHBOARD & TELEMETRY */
+/* DASHBOARD & TELEMETRY ASLI */
 .dash-wrap{padding:1.5rem 2rem;max-width:1100px;margin:0 auto;width:100%;}
 .tele-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;}
 .tele-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;position:relative;overflow:hidden;}
@@ -63,10 +63,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .tag{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:.62rem;padding:2px 8px;border-radius:99px;margin-top:.5rem;}
 .tag.ok{background:rgba(74,222,128,.1);color:var(--accent);}
 
+/* ASSEMBLY ASLI */
 #scr-assembly{flex-direction:column;align-items:center;justify-content:center;min-height:80vh;padding:2rem;text-align:center;}
 .asm-bar{width:100%;max-width:420px;height:2px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;margin-top:20px;}
 .asm-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));width:0%;transition:width .4s ease;}
 
+/* VM TABS ASLI */
 .vm-tabs{display:flex;gap:.4rem;margin-bottom:1rem;}
 .vm-tab{flex:1;padding:.6rem;border-radius:9px;border:1px solid rgba(255,255,255,.08);background:transparent;color:rgba(255,255,255,.3);font-family:var(--font-mono);font-size:.75rem;font-weight:700;cursor:pointer;}
 .vm-tab.active{background:rgba(74,222,128,.1);border-color:var(--accent);color:var(--accent);}
@@ -97,10 +99,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <h2>Rialo Alpha Core</h2>
     <p>Mount Validator Key untuk mengakses Engine Telemetry Dashboard.</p>
     <div id="wallet-area" class="wpicker">
-      <div class="witem" onclick="connect('metamask')"><div style="font-size:1.5rem">🦊</div><div><b>MetaMask</b><br><small style="color:var(--muted)">Validator Key</small></div><span style="color:var(--accent); font-size:0.7rem">Connect ●</span></div>
-      <div class="witem" onclick="connect('phantom')"><div style="font-size:1.5rem">👻</div><div><b>Phantom</b><br><small style="color:var(--muted)">Validator Key</small></div><span style="color:var(--muted); font-size:0.7rem">Connect ●</span></div>
-      <div class="witem" onclick="connect('okx')"><div style="font-size:1.5rem">⬛</div><div><b>OKX Wallet</b><br><small style="color:var(--muted)">Validator Key</small></div><span style="color:var(--muted); font-size:0.7rem">Connect ●</span></div>
-      <div class="witem" onclick="connect('coinbase')"><div style="font-size:1.5rem">🔵</div><div><b>Coinbase</b><br><small style="color:var(--muted)">Validator Key</small></div><span style="color:var(--muted); font-size:0.7rem">Connect ●</span></div>
+      <div class="witem" onclick="connectWallet('metamask')"><div style="font-size:1.5rem">🦊</div><div><b>MetaMask</b><br><small>Validator Key</small></div><span style="color:var(--accent); font-size:0.7rem; margin-left:auto">Connect ●</span></div>
+      <div class="witem" onclick="connectWallet('phantom')"><div style="font-size:1.5rem">👻</div><div><b>Phantom</b><br><small>Validator Key</small></div><span style="color:var(--muted); font-size:0.7rem; margin-left:auto">Detected ●</span></div>
+      <div class="witem" onclick="connectWallet('okx')"><div style="font-size:1.5rem">⬛</div><div><b>OKX Wallet</b><br><small>Validator Key</small></div><span style="color:var(--muted); font-size:0.7rem; margin-left:auto">Detected ●</span></div>
     </div>
   </div>
 
@@ -126,7 +127,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
         </div>
         <div class="tele-card c">
           <div class="tele-lbl">Gas Fees</div>
-          <div class="tele-val" id="gas-val" style="color:var(--cyan)">SUBSIDIZED</div>
+          <div class="tele-val" id="gas-val" style="color:var(--cyan); font-size:1.3rem;">SUBSIDIZED</div>
           <div class="tele-s" id="gas-sub">Fuel-Injection Active</div>
           <div class="tag ok">● GAS-LESS</div>
         </div>
@@ -146,7 +147,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
       <div style="background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.25rem;">
         <div class="tele-lbl">Supermodular Diagnostic Suite</div>
-        <div class="vm-tabs" style="margin-top:10px;">
+        <div class="vm-tabs">
           <button class="vm-tab active" onclick="switchVM('EVM',this)">EVM</button>
           <button class="vm-tab" onclick="switchVM('SVM',this)">SVM</button>
           <button class="vm-tab" onclick="switchVM('MOVE',this)">MOVE</button>
@@ -169,11 +170,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </div>
 
 <script>
-/* ── CANVAS ASLI (NET-CANVAS) ── */
+/* ── CANVAS NET ASLI ── */
 (function(){
   const cv=document.getElementById('net-canvas'),ctx=cv.getContext('2d');
   let W,H,ang=0;
-  const nodes=Array.from({length:80},()=>({bx:(Math.random()-.5)*2200,by:(Math.random()-.5)*1400,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+1}));
+  const nodes=Array.from({length:85},()=>({bx:(Math.random()-.5)*2200,by:(Math.random()-.5)*1400,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+1}));
   function res(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
   window.onresize=res; res();
   (function draw(){
@@ -192,7 +193,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   })();
 })();
 
-/* ── DATA ASLI & VM SWITCHER ── */
+/* ── DATA MAPPING UNTUK VM SWITCHING ── */
 const VM_DATA = {
   EVM: { finality: "50", sub: "Confirmed on Rialo L1", gas: "SUBSIDIZED", gSub: "Fuel-Injection Active", integrity: "3 / 3", cost: "$0.000" },
   SVM: { finality: "12", sub: "Parallel SVM Engine", gas: "LOW-FEE", gSub: "Compute-Unit Optimized", integrity: "5 / 5", cost: "$0.0001" },
@@ -213,17 +214,26 @@ function switchVM(vm, btn){
   document.getElementById('gauge-txt').textContent = d.finality;
 }
 
-/* ── LOGIC ASLI ASSEMBLY & DASHBOARD ── */
+/* ── LOGIKA KONEKSI WALLET YANG LEBIH BAGUS ── */
 let wallet = null;
+
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.style.display='none');
   document.getElementById('scr-'+id).style.display='flex';
 }
 
-function connect(type){
-  // Simulasi koneksi agar fitur bisa dicoba
-  wallet = "0x741...982";
-  runAssembly();
+async function connectWallet(type){
+  // Hanya melakukan request account (Read-Only)
+  if(!window.ethereum && type === 'metamask'){
+    alert("MetaMask not found!"); return;
+  }
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    wallet = accounts[0];
+    runAssembly();
+  } catch(e) {
+    console.log("User rejected");
+  }
 }
 
 function runAssembly(){
@@ -232,8 +242,9 @@ function runAssembly(){
   const fill=document.getElementById('asm-fill'), log=document.getElementById('asm-log');
   const iv=setInterval(()=>{
     p+=5; fill.style.width=p+'%';
-    if(p==40) log.textContent="Verifying Stack Integrity...";
-    if(p==80) log.textContent="Finalizing Node Sync...";
+    if(p==30) log.textContent="Mounting RISC-V execution engine...";
+    if(p==60) log.textContent="Verifying Ethereum settlement layer...";
+    if(p==90) log.textContent="Syncing DA layer... Finality: 50ms ✓";
     if(p>=100){ clearInterval(iv); showDash(); }
   }, 100);
 }
@@ -243,7 +254,12 @@ function showDash(){
   document.getElementById('kbd-addr').textContent = wallet;
   document.getElementById('node-badge').classList.add('online');
   document.getElementById('badge-txt').textContent = 'NODE_STATUS: ONLINE';
-  document.getElementById('nav-btn').textContent = wallet.slice(0,6)+'...';
+  document.getElementById('nav-btn').innerHTML = `<span class="wdot"></span>${wallet.slice(0,6)}...${wallet.slice(-4)}`;
+}
+
+function navClick(){
+  if(wallet) location.reload();
+  else showScreen('standby');
 }
 </script>
 </body>
