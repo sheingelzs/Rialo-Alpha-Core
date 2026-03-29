@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>RIALO · Validator Garage</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
@@ -12,164 +12,66 @@
   --text:#e8eaf0;--muted:#5a7090;
   --font:'Space Grotesk',sans-serif;--font-head:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
 #net-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
-@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ANIMATIONS */
 @keyframes lpulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes vpulse{0%,100%{opacity:1}50%{opacity:.6}}
 
 /* NAV */
-.nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,.95);backdrop-filter:blur(16px);}
-.nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logo-dot{width:9px;height:9px;background:var(--accent);border-radius:50%;animation:lpulse 2s infinite;}
-.nav-right{display:flex;align-items:center;gap:.6rem;}
-.nav-links{display:flex;gap:.2rem;background:rgba(255,255,255,.05);border-radius:9px;padding:3px;}
-.nav-link{padding:.35rem .85rem;border-radius:6px;background:transparent;color:rgba(255,255,255,.45);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;text-decoration:none;border:none;font-family:var(--font);}
-.nav-link:hover{color:rgba(255,255,255,.8);}
-.nav-link.active{background:rgba(255,255,255,.1);color:#fff;}
-.nav-btn{padding:.4rem .9rem;border-radius:8px;border:1px solid rgba(74,222,128,.35);background:rgba(74,222,128,.08);color:var(--accent);font-family:var(--font);font-size:.77rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
-.nav-btn.on{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.75);}
-.wdot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,.9);backdrop-filter:blur(12px);}
+.nav-logo{font-family:var(--font-head);font-size:1.1rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:6px;text-decoration:none;}
+.logo-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:lpulse 2s infinite;}
+.nav-btn{padding:.5rem .8rem;border-radius:8px;border:1px solid rgba(74,222,128,.3);background:rgba(74,222,128,.1);color:var(--accent);font-size:.75rem;font-weight:700;cursor:pointer;}
+.nav-btn.on{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;}
 
-/* PAGE */
-.page{position:relative;z-index:1;}
-.status-row{display:flex;justify-content:center;padding:1.5rem 0 0;}
-.node-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:var(--red);padding:.35rem 1rem;border-radius:999px;font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.1em;transition:background .4s,border-color .4s,color .4s;}
-.node-badge.online{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.25);color:var(--accent);}
-.nbdot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1.5s infinite;flex-shrink:0;}
+/* MOBILE STATUS ROW */
+.status-row{display:flex;justify-content:center;padding:1rem 0;}
+.node-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);color:var(--red);padding:.4rem 1rem;border-radius:99px;font-family:var(--font-mono);font-size:.65rem;font-weight:700;}
+.node-badge.online{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.2);color:var(--accent);}
+.nbdot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.5s infinite;}
 
-.screen{display:none;position:relative;z-index:1;}
-
-/* STANDBY */
-#scr-standby{flex-direction:column;align-items:center;text-align:center;padding:2rem 1.5rem;animation:fadein .3s ease;}
-#scr-standby h2{font-family:var(--font-head);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:.75rem;}
-#scr-standby h2 .dim{color:rgba(255,255,255,.2);}
-#scr-standby p{font-size:.88rem;color:var(--muted);max-width:400px;line-height:1.7;margin-bottom:.75rem;}
-.ro-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.25);color:rgba(200,180,255,.75);padding:.4rem 1rem;border-radius:8px;font-size:.72rem;font-family:var(--font-mono);margin-bottom:1.5rem;}
+/* SCREENS */
+.screen{display:none;flex-direction:column;align-items:center;padding:1rem;position:relative;z-index:1;}
 
 /* WALLET PICKER */
-.wpicker{width:100%;max-width:380px;display:flex;flex-direction:column;gap:.45rem;}
-.wpicker-note{font-size:.68rem;color:rgba(200,180,255,.5);font-family:var(--font-mono);margin-bottom:.35rem;display:flex;align-items:center;gap:6px;background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.15);padding:.35rem .8rem;border-radius:8px;}
-.witem{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;transition:all .2s;}
-.witem:hover:not(.dim){background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.3);}
-.witem.dim{opacity:.4;cursor:default;}
-.wlogo{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
-.winfo{flex:1;text-align:left;}
-.wname{font-weight:600;font-size:.85rem;}
-.wsub{font-size:.67rem;color:var(--muted);margin-top:1px;}
-.wbadge{font-size:.67rem;font-weight:700;}
-.wbadge.ok{color:var(--accent);}
-.wbadge.no{color:rgba(255,255,255,.25);}
+.wpicker{width:100%;max-width:350px;display:flex;flex-direction:column;gap:0.6rem;margin-top:1.5rem;}
+.witem{display:flex;align-items:center;gap:1rem;padding:1rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;cursor:pointer;}
+.witem:active{background:rgba(74,222,128,.1);}
+.wname{font-weight:700;font-size:0.9rem;}
+.wbadge{font-size:0.65rem;font-weight:800;padding:2px 6px;border-radius:4px;}
+.wbadge.ok{color:var(--accent);background:rgba(74,222,128,.1);}
+.wbadge.no{color:var(--muted);background:rgba(255,255,255,.05);}
 
-.conn-state{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1.5rem 0;}
-.conn-spin{width:40px;height:40px;border:3px solid rgba(74,222,128,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
-.conn-lbl{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);}
-.err-msg{font-size:.82rem;color:var(--red);margin-bottom:.5rem;}
-.retry-btn{padding:.5rem 1.25rem;background:transparent;border:1px solid rgba(74,222,128,.3);color:var(--accent);border-radius:8px;font-family:var(--font);font-size:.8rem;font-weight:600;cursor:pointer;}
+/* DASHBOARD GRID */
+.dash-wrap{width:100%;max-width:1000px;margin:0 auto;}
+.tele-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:0.8rem;margin-bottom:1rem;}
+@media(min-width:768px){ .tele-grid{grid-template-columns:repeat(4,1fr);} }
 
-/* ASSEMBLY */
-#scr-assembly{flex-direction:column;align-items:center;justify-content:center;min-height:80vh;padding:2rem;text-align:center;animation:fadein .3s ease;}
-.asm-title{font-family:var(--font-head);font-size:1.4rem;font-weight:800;margin-bottom:2.5rem;letter-spacing:-.02em;}
-.asm-title span{color:var(--muted);font-size:.9rem;font-family:var(--font-mono);display:block;margin-top:.3rem;}
-.asm-layers{display:flex;flex-direction:column;gap:.75rem;width:100%;max-width:420px;margin-bottom:2rem;}
-.asm-layer{display:flex;align-items:center;gap:1rem;padding:.85rem 1.1rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;opacity:0;transform:translateX(-16px);transition:opacity .5s ease,transform .5s ease,border-color .5s ease,background .5s ease;}
-.asm-layer.loaded{opacity:1;transform:translateX(0);border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.04);}
-.asm-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-.asm-ico.exec{background:rgba(74,222,128,.12);}
-.asm-ico.settle{background:rgba(98,126,234,.12);}
-.asm-ico.da{background:rgba(124,92,252,.12);}
-.asm-text{flex:1;text-align:left;}
-.asm-lbl{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
-.asm-st{font-size:.85rem;font-weight:700;}
-.asm-st.pending{color:rgba(255,255,255,.2);}
-.asm-st.loading{color:var(--amber);}
-.asm-st.done{color:var(--accent);}
-.asm-check{font-size:1rem;opacity:0;transition:opacity .3s;}
-.asm-layer.loaded .asm-check{opacity:1;}
-.asm-bar{width:100%;max-width:420px;height:2px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;}
-.asm-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));width:0%;transition:width .4s ease;}
-#asm-log{font-size:.72rem;color:var(--muted);margin-top:1rem;font-family:var(--font-mono);}
+.tele-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;position:relative;}
+.tele-lbl{font-family:var(--font-mono);font-size:.55rem;color:var(--muted);text-transform:uppercase;margin-bottom:0.5rem;}
+.tele-val{font-family:var(--font-head);font-size:1.2rem;font-weight:800;}
+.vp{animation:vpulse 1.5s infinite;}
 
-/* DASHBOARD */
-#scr-dashboard{flex-direction:column;animation:fadein .3s ease;}
-.dash-wrap{padding:1.5rem 2rem;max-width:1100px;margin:0 auto;width:100%;}
-.dash-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
-.dash-lbl{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem;}
-.dash-title{font-family:var(--font-head);font-size:1.6rem;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:.4rem;}
-.dash-sub{font-size:.8rem;color:var(--muted);}
-.key-badge{display:flex;align-items:center;gap:8px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:10px;padding:.55rem .85rem;}
-.kbd-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:lpulse 2s infinite;flex-shrink:0;}
-.kbd-lbl{font-size:.6rem;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
-.kbd-ro{font-size:.58rem;font-family:var(--font-mono);color:var(--accent2);background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.25);padding:1px 6px;border-radius:99px;margin-left:4px;}
-.kbd-addr{font-family:var(--font-mono);font-size:.75rem;color:var(--text);font-weight:700;}
-.kbd-eject{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.68rem;font-family:var(--font);margin-left:.5rem;transition:color .2s;}
-.kbd-eject:hover{color:var(--red);}
+/* MODULAR SECTIONS */
+.mod-grid{display:grid;grid-template-columns:1fr;gap:1rem;}
+@media(min-width:768px){ .mod-grid{grid-template-columns:1fr 1fr;} }
+.mod-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;}
 
-.sec-title{font-family:var(--font-head);font-weight:800;font-size:1rem;letter-spacing:-.3px;margin-bottom:1rem;display:flex;align-items:center;gap:10px;color:var(--text);}
-.sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+/* GAUGE & DATA */
+.gauge-box{display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.gas-row{display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.8rem;background:rgba(0,0,0,0.2);padding:0.5rem;border-radius:6px;}
 
-/* TELEMETRY */
-.tele-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;}
-.tele-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;position:relative;overflow:hidden;}
-.tele-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.tele-card.g::before{background:linear-gradient(90deg,var(--accent),transparent);}
-.tele-card.c::before{background:linear-gradient(90deg,var(--cyan),transparent);}
-.tele-card.a::before{background:linear-gradient(90deg,var(--amber),transparent);}
-.tele-card.p::before{background:linear-gradient(90deg,var(--accent2),transparent);}
-.tele-lbl{font-family:var(--font-mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.6rem;}
-.tele-val{font-family:var(--font-head);font-size:1.6rem;font-weight:800;line-height:1;margin-bottom:.3rem;}
-.tele-s{font-size:.7rem;color:var(--muted);}
-.tag{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:.62rem;padding:2px 8px;border-radius:99px;margin-top:.5rem;}
-.tag.ok{background:rgba(74,222,128,.1);color:var(--accent);}
-.tag.act{background:rgba(34,211,238,.1);color:var(--cyan);}
-.tag.mod{background:rgba(124,92,252,.1);color:var(--accent2);}
-.ca{color:var(--accent);}.cc{color:var(--cyan);}.cam{color:var(--amber);}.cp{color:var(--accent2);}
-.vp{animation:vpulse 1.2s ease-in-out infinite;}
+.vm-tabs{display:flex;gap:4px;margin-bottom:1rem;}
+.vm-tab{flex:1;padding:0.6rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:0.7rem;font-weight:700;cursor:pointer;}
+.vm-tab.active{background:rgba(74,222,128,0.1);color:var(--accent);border-color:var(--accent);}
 
-/* MODULAR */
-.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:1.5rem;}
-.mod-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;}
-.card-lbl{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:1rem;}
-.vm-tabs{display:flex;gap:.4rem;}
-.vm-tab{flex:1;padding:.6rem .4rem;border-radius:9px;border:1px solid rgba(255,255,255,.08);background:transparent;color:rgba(255,255,255,.3);font-family:var(--font-mono);font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;}
-.vm-tab:hover{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.6);}
-.vm-tab.active{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);color:var(--accent);}
-.vm-desc{margin-top:.85rem;font-size:.75rem;color:var(--muted);line-height:1.6;}
-.vm-desc strong{color:var(--accent);font-family:var(--font-mono);}
-.vm-hint{margin-top:.6rem;font-size:.68rem;color:rgba(255,255,255,.2);font-family:var(--font-mono);border-top:1px solid rgba(255,255,255,.05);padding-top:.6rem;}
-
-.gas-rows{display:flex;flex-direction:column;gap:.5rem;}
-.gas-row{display:flex;align-items:center;justify-content:space-between;padding:.55rem .75rem;border-radius:9px;border:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.03);}
-.gr-lbl{font-size:.75rem;color:rgba(255,255,255,.45);}
-.gr-val{font-family:var(--font-mono);font-size:.75rem;font-weight:700;color:var(--accent);}
-.gas-note{margin-top:.75rem;display:flex;align-items:center;gap:8px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:9px;padding:.55rem .75rem;font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.5;}
-.gas-note strong{color:var(--accent);}
-
-.fin-card{display:flex;flex-direction:column;align-items:center;}
-.fin-unit{font-size:.7rem;color:var(--muted);text-align:center;margin-top:2px;}
-.fin-note{font-size:.65rem;color:rgba(255,255,255,.2);text-align:center;margin-top:.5rem;font-family:var(--font-mono);}
-.fin-note span{color:rgba(255,255,255,.4);}
-
-.layer-item{display:flex;align-items:center;gap:.85rem;padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
-.layer-item:last-child{border-bottom:none;}
-.li-n{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);width:20px;flex-shrink:0;}
-.li-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
-.li-info{flex:1;}
-.li-name{font-size:.82rem;font-weight:700;margin-bottom:2px;}
-.li-desc{font-size:.68rem;color:var(--muted);}
-.li-pill{font-family:var(--font-mono);font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
-.li-pill.ok{background:rgba(74,222,128,.1);color:var(--accent);}
-.li-pill.mo{background:rgba(34,211,238,.1);color:var(--cyan);}
-
-@media(max-width:700px){
-  .tele-grid{grid-template-columns:1fr 1fr;}
-  .mod-grid{grid-template-columns:1fr;}
-  .dash-wrap{padding:1rem;}
-  .nav-links{display:none;}
-}
+/* ASSEMBLY PROGRESS */
+.asm-bar{width:100%;max-width:300px;height:4px;background:rgba(255,255,255,0.1);border-radius:10px;margin:1rem 0;overflow:hidden;}
+.asm-fill{height:100%;background:var(--accent);width:0%;transition:width 0.4s;}
 </style>
 </head>
 <body>
@@ -177,307 +79,206 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 <nav class="nav">
   <a class="nav-logo" href="#"><div class="logo-dot"></div>RIALO</a>
-  <div class="nav-right">
-    <div class="nav-links">
-      <a class="nav-link" href="#">Home</a>
-      <a class="nav-link" href="#">Swap</a>
-      <a class="nav-link active" href="#">Garage</a>
-      <a class="nav-link" href="#">Market</a>
-    </div>
-    <button class="nav-btn" id="nav-btn" onclick="navClick()">Insert Validator Key</button>
-  </div>
+  <button class="nav-btn" id="nav-btn" onclick="navClick()">Connect</button>
 </nav>
 
-<div class="page">
-  <div class="status-row">
-    <div class="node-badge" id="node-badge">
-      <div class="nbdot"></div><span id="badge-txt">NODE_STATUS: DISCONNECTED</span>
+<div class="status-row">
+  <div class="node-badge" id="node-badge">
+    <div class="nbdot"></div><span id="badge-txt">DISCONNECTED</span>
+  </div>
+</div>
+
+<div id="scr-standby" class="screen" style="display:flex;">
+  <h2 style="font-family:var(--font-head);text-align:center;margin-top:2rem;">Validator Garage</h2>
+  <p style="color:var(--muted);font-size:0.85rem;text-align:center;margin:1rem 0;">Pilih wallet untuk mengaktifkan node.</p>
+  <div id="wallet-area" class="wpicker"></div>
+</div>
+
+<div id="scr-assembly" class="screen">
+  <h3 style="margin-top:4rem;font-family:var(--font-head);">Mounting Key...</h3>
+  <div class="asm-bar"><div class="asm-fill" id="asm-fill"></div></div>
+  <p id="asm-log" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);">Initializing Stack...</p>
+</div>
+
+<div id="scr-dashboard" class="screen">
+  <div class="dash-wrap">
+    <div style="margin-bottom:1.5rem;">
+      <h2 id="live-balance" style="font-family:var(--font-head);font-size:1.4rem;">Balance: -- ETH</h2>
+      <p id="kbd-addr" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--accent);">0x00...000</p>
     </div>
-  </div>
 
-  <div id="scr-standby" class="screen" style="display:flex;">
-    <h2>Rialo Alpha Core<br><span class="dim">// Validator Garage</span></h2>
-    <p>Mesin modular belum aktif. Mount Validator Key untuk memulai proses assembly dan mengakses Engine Telemetry Dashboard.</p>
-    <div class="ro-pill">🔒 Read-only connection — tidak ada transaksi atau saldo yang digunakan</div>
-    <div id="wallet-area"></div>
-  </div>
-
-  <div id="scr-assembly" class="screen">
-    <div class="asm-title">Mounting Validator Key…<span>Assembling Supermodular Stack</span></div>
-    <div class="asm-layers">
-      <div class="asm-layer" id="al1"><div class="asm-ico exec">⚙️</div><div class="asm-text"><div class="asm-lbl">Layer 1 · Execution</div><div class="asm-st pending" id="as1">Waiting…</div></div><span class="asm-check">✓</span></div>
-      <div class="asm-layer" id="al2"><div class="asm-ico settle">🔷</div><div class="asm-text"><div class="asm-lbl">Layer 2 · Settlement</div><div class="asm-st pending" id="as2">Waiting…</div></div><span class="asm-check">✓</span></div>
-      <div class="asm-layer" id="al3"><div class="asm-ico da">🗄️</div><div class="asm-text"><div class="asm-lbl">Layer 3 · Data Availability</div><div class="asm-st pending" id="as3">Waiting…</div></div><span class="asm-check">✓</span></div>
-    </div>
-    <div class="asm-bar"><div class="asm-fill" id="asm-fill"></div></div>
-    <p id="asm-log">Initializing…</p>
-  </div>
-
-  <div id="scr-dashboard" class="screen">
-    <div class="dash-wrap">
-      <div class="dash-hdr">
-        <div>
-          <div class="dash-lbl">Engine Telemetry</div>
-          <div class="dash-title">Validator Dashboard</div>
-          <div id="live-balance-sub" class="dash-sub">Rialo Alpha Core · Supermodular Stack Active</div>
-        </div>
-        <div class="key-badge">
-          <div class="kbd-dot"></div>
-          <div>
-            <div class="kbd-lbl">Validator Key <span class="kbd-ro">READ-ONLY</span></div>
-            <div class="kbd-addr" id="kbd-addr">—</div>
-          </div>
-          <button class="kbd-eject" onclick="doDisconnect()">Eject ↗</button>
-        </div>
+    <div class="tele-grid">
+      <div class="tele-card">
+        <div class="tele-lbl">Finality</div>
+        <div class="tele-val vp" id="finality-val" style="color:var(--accent)">50ms</div>
       </div>
-
-      <div class="sec-title">Live Engine Telemetry</div>
-      <div class="tele-grid">
-        <div class="tele-card g">
-          <div class="tele-lbl">Time to Finality</div>
-          <div class="tele-val ca vp" id="finality-val">50<span style="font-size:1rem">ms</span></div>
-          <div class="tele-s">Confirmed on Rialo L1</div>
-          <div class="tag ok">● OPTIMAL</div>
-        </div>
-        <div class="tele-card c">
-          <div class="tele-lbl">Gas Fees</div>
-          <div class="tele-val cc" style="font-size:1.2rem;letter-spacing:-.02em">SUBSIDIZED</div>
-          <div class="tele-s">Fuel-Injection Protocol Active</div>
-          <div class="tag ok">● GAS-LESS</div>
-        </div>
-        <div class="tele-card a">
-          <div class="tele-lbl">Active VM</div>
-          <div class="tele-val cam" style="font-size:1.3rem" id="vm-label">EVM</div>
-          <div class="tele-s">Swappable without chain rebuild</div>
-          <div class="tag act">● MODULAR</div>
-        </div>
-        <div class="tele-card p">
-          <div class="tele-lbl">Stack Integrity</div>
-          <div id="integrity-load" class="tele-val cp" style="font-size:1.2rem">3 / 3</div>
-          <div class="tele-s">All layers operational</div>
-          <div class="tag mod">● VERIFIED</div>
-        </div>
+      <div class="tele-card">
+        <div class="tele-lbl">Gas Price</div>
+        <div class="tele-val" style="color:var(--cyan)">0 Gwei</div>
       </div>
-
-      <div class="sec-title">Supermodular Diagnostic Suite</div>
-      <div class="mod-grid">
-        <div class="mod-card">
-          <div class="card-lbl">⚙ Modular VM Interface</div>
-          <div class="vm-tabs">
-            <button class="vm-tab active" onclick="switchVM('EVM',this)">EVM</button>
-            <button class="vm-tab" onclick="switchVM('SVM',this)">SVM</button>
-            <button class="vm-tab" onclick="switchVM('MOVE',this)">MOVE</button>
-          </div>
-          <div class="vm-desc" id="vm-desc">Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Gas model: SUBSIDIZED.</div>
-          <div class="vm-hint">// Swap VM without chain rebuild · Supermodular by design</div>
-        </div>
-        <div class="mod-card">
-          <div class="card-lbl">⛽ Cruise Monitor — Gas System</div>
-          <div class="gas-rows">
-            <div class="gas-row"><span class="gr-lbl">Base Fee</span><span class="gr-val">0 GWEI</span></div>
-            <div class="gas-row"><span class="gr-lbl">Priority Fee</span><span class="gr-val">0 GWEI</span></div>
-            <div class="gas-row"><span class="gr-lbl">Tx Cost</span><span class="gr-val">$0.000</span></div>
-            <div class="gas-row"><span class="gr-lbl">Subsidy Status</span><span class="gr-val">ACTIVE ⚡</span></div>
-          </div>
-          <div id="gold-price-note" class="gas-note">⚡ Rialo Fuel-Injection Protocol: <strong>Gas fees fully subsidized</strong>. Zero-cost transactions.</div>
-        </div>
-        <div class="mod-card fin-card">
-          <div class="card-lbl" style="align-self:flex-start">🏁 Finality Gauge</div>
-          <svg viewBox="0 0 140 80" style="width:160px;height:90px">
-            <defs><linearGradient id="gG" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#4ade80"/><stop offset="100%" style="stop-color:#22d3ee"/></linearGradient></defs>
-            <path d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10" stroke-linecap="round"/>
-            <path id="gauge-path" d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="url(#gG)" stroke-width="10" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="20"/>
-            <text id="gauge-text" x="70" y="60" text-anchor="middle" font-family="Syne" font-size="26" font-weight="800" fill="#4ade80">50</text>
-            <text x="70" y="74" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#5a7090">ms</text>
-          </svg>
-          <div class="fin-unit">Time to Finality · Rialo L1</div>
-          <div class="fin-note">Backed by <span>Pantera Capital</span> · 2025</div>
-        </div>
-        <div class="mod-card">
-          <div class="card-lbl">🧱 Supermodular Layer Stack</div>
-          <div class="layer-item">
-            <div class="li-n">L1</div><div class="li-ico" style="background:rgba(74,222,128,.12)">⚙️</div>
-            <div class="li-info"><div class="li-name">RISC-V Engine</div><div class="li-desc">Execution · Lightweight, portable compute</div></div>
-            <span class="li-pill ok">LOADED</span>
-          </div>
-          <div class="layer-item">
-            <div class="li-n">L2</div><div class="li-ico" style="background:rgba(98,126,234,.12)">🔷</div>
-            <div class="li-info"><div class="li-name">Ethereum Settlement</div><div class="li-desc">Settlement · Proven security model</div></div>
-            <span class="li-pill ok">VERIFIED</span>
-          </div>
-          <div class="layer-item">
-            <div class="li-n">L3</div><div class="li-ico" style="background:rgba(124,92,252,.12)">🗄️</div>
-            <div class="li-info"><div class="li-name">Data Availability</div><div class="li-desc">DA · Always accessible, always on</div></div>
-            <span class="li-pill mo">SYNCED</span>
-          </div>
-        </div>
+      <div class="tele-card">
+        <div class="tele-lbl">Status</div>
+        <div class="tele-val" style="color:var(--amber)">Active</div>
+      </div>
+      <div class="tele-card">
+        <div class="tele-lbl">Node Load</div>
+        <div class="tele-val" id="load-val" style="color:var(--accent2)">99%</div>
       </div>
     </div>
+
+    <div class="mod-grid">
+      <div class="mod-card">
+        <div class="tele-lbl">⚙️ Modular VM</div>
+        <div class="vm-tabs">
+          <button class="vm-tab active" onclick="switchVM('EVM',this)">EVM</button>
+          <button class="vm-tab" onclick="switchVM('SVM',this)">SVM</button>
+          <button class="vm-tab" onclick="switchVM('MOVE',this)">MOVE</button>
+        </div>
+        <p id="vm-desc" style="font-size:0.75rem;color:var(--muted);line-height:1.4;">Active: <strong>EVM</strong> — Ethereum compatible.</p>
+      </div>
+
+      <div class="mod-card gauge-box">
+        <div class="tele-lbl">🏁 Finality Gauge</div>
+        <svg viewBox="0 0 140 80" style="width:120px;">
+          <path d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10" stroke-linecap="round"/>
+          <path id="gauge-path" d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="50"/>
+          <text id="gauge-text" x="70" y="60" text-anchor="middle" font-family="Syne" font-size="22" font-weight="800" fill="white">50</text>
+        </svg>
+      </div>
+
+      <div class="mod-card" style="grid-column: 1 / -1;">
+        <div class="tele-lbl">📊 Live Market (XAU/USD)</div>
+        <div class="gas-row"><span>Gold Price</span><span id="gold-price" style="color:var(--amber)">Loading...</span></div>
+        <p style="font-size:0.6rem;color:var(--muted);">*Data ditarik secara real-time dari pasar global.</p>
+      </div>
+    </div>
+    
+    <button onclick="doDisconnect()" style="margin-top:2rem;width:100%;padding:1rem;background:rgba(248,113,113,0.1);border:1px solid var(--red);color:var(--red);border-radius:10px;font-weight:700;">EJECT VALIDATOR</button>
   </div>
 </div>
 
 <script>
-/* ── CANVAS BACKGROUND ── */
-(function(){
-  const cv=document.getElementById('net-canvas'),ctx=cv.getContext('2d');
-  let W,H,ang=0;
-  const nodes=Array.from({length:90},()=>({bx:(Math.random()-.5)*2200,by:(Math.random()-.5)*1400,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+1}));
-  function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
-  addEventListener('resize',resize);resize();
-  (function draw(){
-    ctx.clearRect(0,0,W,H);ang+=.0008;
-    const cs=Math.cos(ang),sn=Math.sin(ang),cx=W/2,cy=H/2;
-    nodes.forEach(n=>{n.bx+=n.vx;n.by+=n.vy;if(n.bx<-1200)n.bx=1200;if(n.bx>1200)n.bx=-1200;if(n.by<-800)n.by=800;if(n.by>800)n.by=-800;});
-    const pts=nodes.map(n=>({x:cx+n.bx*cs-n.by*sn,y:cy+n.bx*sn+n.by*cs,r:n.r}));
-    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);if(d<160){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/160)*.45})`;ctx.lineWidth=.7;ctx.stroke();}}
-    pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(74,222,128,0.7)';ctx.fill();});
-    requestAnimationFrame(draw);
-  })();
-})();
-
-/* ── STATE ── */
 let wallet=null, prov=null;
 
-/* ── LIVE DATA INTEGRATION ── */
-async function fetchGoldPrice() {
+/* ── LIVE DATA ── */
+async function fetchMarketData() {
   try {
     const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
     const data = await res.json();
-    const price = parseFloat(data.price).toFixed(2);
-    const note = document.getElementById('gold-price-note');
-    if(note) note.innerHTML = `📊 <strong>XAU/USD Live:</strong> $${price} | Rialo Fuel-Injection Active.`;
-  } catch(e) { console.warn("Gold price API offline"); }
+    document.getElementById('gold-price').textContent = '$' + parseFloat(data.price).toFixed(2);
+  } catch(e) {}
 }
 
 async function updateBalance(addr, p) {
   try {
     const balHex = await p.request({ method: 'eth_getBalance', params: [addr, 'latest'] });
     const eth = (parseInt(balHex, 16) / 1e18).toFixed(4);
-    const sub = document.getElementById('live-balance-sub');
-    if(sub) sub.innerHTML = `Rialo Alpha Core • <strong>Balance: ${eth} ETH</strong> • Stack Active`;
-  } catch(e) { console.warn("Balance fetch failed"); }
+    document.getElementById('live-balance').textContent = `Balance: ${eth} ETH`;
+  } catch(e) {}
 }
 
-function updateLiveTelemetry() {
+function updateTelemetry() {
   if(!wallet) return;
-  const fVal = document.getElementById('finality-val');
-  const gText = document.getElementById('gauge-text');
-  const gPath = document.getElementById('gauge-path');
-  
-  if(fVal && gText && gPath) {
-    const ms = Math.floor(Math.random() * (55 - 45 + 1)) + 45;
-    fVal.innerHTML = `${ms}<span style="font-size:1rem">ms</span>`;
-    gText.textContent = ms;
-    const offset = 188 - (ms * 1.8); 
-    gPath.style.strokeDashoffset = offset;
-  }
-
-  const intLoad = document.getElementById('integrity-load');
-  if(intLoad) {
-    const load = (Math.random() * (100 - 99.2) + 99.2).toFixed(2);
-    intLoad.innerHTML = `<span style="font-size:0.9rem">Load: ${load}%</span>`;
-  }
+  const ms = Math.floor(Math.random() * (55 - 45 + 1)) + 45;
+  document.getElementById('finality-val').textContent = ms + 'ms';
+  document.getElementById('gauge-text').textContent = ms;
+  document.getElementById('gauge-path').style.strokeDashoffset = 188 - (ms * 1.8);
+  document.getElementById('load-val').textContent = (Math.random() * (100 - 98) + 98).toFixed(1) + '%';
 }
 
-/* ── UI CORE FUNCTIONS ── */
+/* ── UI CORE ── */
 function showScreen(name){
-  document.querySelectorAll('.screen').forEach(el=>el.style.display='none');
-  const el=document.getElementById('scr-'+name);
-  if(el) el.style.display='flex';
+  document.querySelectorAll('.screen').forEach(s => s.style.display='none');
+  document.getElementById('scr-'+name).style.display='flex';
 }
 
 function setBadge(online){
   const b=document.getElementById('node-badge'), t=document.getElementById('badge-txt');
-  if(online){b.classList.add('online');t.textContent='NODE_STATUS: ONLINE';}
-  else{b.classList.remove('online');t.textContent='NODE_STATUS: DISCONNECTED';}
+  b.className = online ? 'node-badge online' : 'node-badge';
+  t.textContent = online ? 'NODE: ONLINE' : 'DISCONNECTED';
 }
 
-function setNavBtn(addr){
-  const btn=document.getElementById('nav-btn');
-  if(addr){btn.classList.add('on');btn.innerHTML=`<span class="wdot"></span>${addr.slice(0,6)}…${addr.slice(-4)}`;}
-  else{btn.classList.remove('on');btn.textContent='Insert Validator Key';}
-}
-
-function navClick(){ wallet ? doDisconnect() : renderPicker(); }
-
-function doDisconnect(){
-  wallet=null; prov=null;
-  setNavBtn(null); setBadge(false);
-  showScreen('standby'); renderPicker();
-}
-
-/* ── WALLET LOGIC ── */
 function renderPicker(){
-  const area=document.getElementById('wallet-area');
-  if(!area) return;
+  const area = document.getElementById('wallet-area');
+  const isOKX = !!window.okxwallet;
+  const isMM = !!window.ethereum;
+
   area.innerHTML = `
-    <div class="wpicker-note">🔒 Read-only — data asli akan ditarik setelah koneksi</div>
-    <div class="wpicker">
-      <div class="witem" onclick="connectWallet('metamask','MetaMask')">
-        <div class="wlogo" style="background:rgba(247,147,26,.15)">🦊</div>
-        <div class="winfo"><div class="wname">MetaMask</div><div class="wsub">Browser Extension</div></div>
-        <span class="wbadge ok">● Detected</span>
-      </div>
-    </div>`;
+    <div class="witem" onclick="connectWallet('metamask')">
+      <div>🦊</div><div class="winfo"><div class="wname">MetaMask</div></div>
+      <span class="wbadge ${isMM?'ok':'no'}">${isMM?'Detected':'Mobile?'}</span>
+    </div>
+    <div class="witem" onclick="connectWallet('okx')">
+      <div>🖤</div><div class="winfo"><div class="wname">OKX Wallet</div></div>
+      <span class="wbadge ${isOKX?'ok':'no'}">${isOKX?'Detected':'Off'}</span>
+    </div>
+  `;
 }
 
-async function connectWallet(key,name){
-  const p = window.ethereum;
-  if(!p) return alert("Install MetaMask!");
+async function connectWallet(type){
+  const p = (type === 'okx') ? window.okxwallet : window.ethereum;
+  if(!p) return alert("Buka di Browser Wallet (MetaMask/OKX App)!");
   try {
-    const accs = await p.request({method:'eth_requestAccounts'});
+    const accs = await p.request({ method: 'eth_requestAccounts' });
     wallet = accs[0]; prov = p;
-    setNavBtn(wallet);
-    runAssembly(wallet);
-  } catch(e) { console.error(e); }
+    runAssembly();
+  } catch(e) {}
 }
 
-function runAssembly(addr){
+function runAssembly(){
   showScreen('assembly');
+  let p=0;
   const fill=document.getElementById('asm-fill'), log=document.getElementById('asm-log');
-  let i=0;
-  const steps = [
-    {l:'al1', s:'as1', txt:'RISC-V Engine Loaded', p:'33%', log:'[L1] Mounting RISC-V...'},
-    {l:'al2', s:'as2', txt:'Ethereum Verified', p:'66%', log:'[L2] Verifying Settlement...'},
-    {l:'al3', s:'as3', txt:'DA Layer Synced', p:'100%', log:'[L3] Finalizing Sync...'}
-  ];
-  function next(){
-    if(i >= steps.length) { setTimeout(()=>showDash(addr), 600); return; }
-    const s = steps[i];
-    log.textContent = s.log;
-    document.getElementById(s.s).textContent = "Loading...";
-    setTimeout(()=>{
-      document.getElementById(s.l).classList.add('loaded');
-      document.getElementById(s.s).className = 'asm-st done';
-      document.getElementById(s.s).textContent = s.txt;
-      fill.style.width = s.p;
-      i++; next();
-    }, 800);
-  }
-  next();
+  const iv = setInterval(()=>{
+    p += 10;
+    fill.style.width = p+'%';
+    if(p==30) log.textContent = "Verifying L2 Settlement...";
+    if(p==70) log.textContent = "Syncing Data Availability...";
+    if(p>=100){
+      clearInterval(iv);
+      showDash();
+    }
+  }, 300);
 }
 
-function showDash(addr){
+function showDash(){
   showScreen('dashboard');
   setBadge(true);
-  document.getElementById('kbd-addr').textContent = addr.slice(0,10)+'…'+addr.slice(-6);
-  updateBalance(addr, prov);
-  fetchGoldPrice();
-  setInterval(updateLiveTelemetry, 2000);
-  setInterval(fetchGoldPrice, 10000);
+  document.getElementById('kbd-addr').textContent = wallet;
+  document.getElementById('nav-btn').textContent = wallet.slice(0,6)+'...';
+  updateBalance(wallet, prov);
+  fetchMarketData();
+  setInterval(updateTelemetry, 2000);
+  setInterval(fetchMarketData, 10000);
 }
 
-const VM_DESC={
-  EVM:'Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready.',
-  SVM:'Active: <strong>SVM</strong> — Solana Virtual Machine. Parallel processing. Rust-based.',
-  MOVE:'Active: <strong>MOVE</strong> — Move language VM. Safe asset management.'
-};
-function switchVM(vm,btn){
+function doDisconnect(){ location.reload(); }
+
+function switchVM(vm, btn){
   document.querySelectorAll('.vm-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('vm-desc').innerHTML=VM_DESC[vm];
-  document.getElementById('vm-label').textContent=vm;
+  document.getElementById('vm-desc').textContent = `Active: ${vm} — Supermodular execution active.`;
 }
+
+/* ── CANVAS BG ── */
+(function(){
+  const cv=document.getElementById('net-canvas'),ctx=cv.getContext('2d');
+  let W,H;
+  const nodes=Array.from({length:40},()=>({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*0.001,vy:(Math.random()-.5)*0.001}));
+  function res(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
+  window.onresize=res; res();
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    nodes.forEach(n=>{
+      n.x+=n.vx; n.y+=n.vy;
+      if(n.x<0||n.x>1)n.vx*=-1; if(n.y<0||n.y>1)n.vy*=-1;
+      ctx.beginPath();ctx.arc(n.x*W,n.y*H,2,0,Math.PI*2);
+      ctx.fillStyle='rgba(74,222,128,0.2)';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
 renderPicker();
 </script>
