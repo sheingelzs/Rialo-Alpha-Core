@@ -3,132 +3,154 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RIALO · Quest Board</title>
+<title>RIALO · Quiz</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
 :root{
---bg:#050810;--bg2:#0b1120;--card:#0f1929;--border:#1a2a42;
---accent:#4ade80;--accent2:#7c5cfc;--red:#f87171;--amber:#facc15;--cyan:#22d3ee;
---text:#e8eaf0;--muted:#5a7090;
---font:'Space Grotesk',sans-serif;--font-head:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
+  --bg:#050810;--card:#0f1929;--border:#1a2a42;
+  --accent:#4ade80;--accent2:#7c5cfc;--red:#f87171;--amber:#facc15;--cyan:#22d3ee;
+  --text:#e8eaf0;--muted:#5a7090;
+  --font:'Space Grotesk',sans-serif;--font-head:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
 #net-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
-@keyframes lpulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
-@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes xpPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
 
 /* NAV */
 .nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,.95);backdrop-filter:blur(16px);}
 .nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
 .logo-dot{width:9px;height:9px;background:var(--accent);border-radius:50%;animation:lpulse 2s infinite;}
-.nav-right{display:flex;align-items:center;gap:.6rem;}
+@keyframes lpulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
 .nav-links{display:flex;gap:.2rem;background:rgba(255,255,255,.05);border-radius:9px;padding:3px;}
 .nav-link{padding:.35rem .85rem;border-radius:6px;background:transparent;color:rgba(255,255,255,.45);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;text-decoration:none;border:none;font-family:var(--font);}
 .nav-link:hover{color:rgba(255,255,255,.8);}
 .nav-link.active{background:rgba(255,255,255,.1);color:#fff;}
-.nav-btn{padding:.4rem .9rem;border-radius:8px;border:1px solid rgba(74,222,128,.35);background:rgba(74,222,128,.08);color:var(--accent);font-family:var(--font);font-size:.77rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
-.nav-btn.on{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.75);}
-.wdot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
 
-/* PAGE */
-.page{position:relative;z-index:1;animation:fadein .25s ease;}
+.page{position:relative;z-index:1;}
 
-/* LOCK SCREEN */
-#lock-screen{min-height:85vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;}
-.lock-icon{font-size:3rem;margin-bottom:1.5rem;opacity:.5;}
-.lock-title{font-family:var(--font-head);font-size:2rem;font-weight:800;margin-bottom:.75rem;}
-.lock-sub{color:var(--muted);font-size:.9rem;max-width:360px;line-height:1.7;margin-bottom:2rem;}
-.wpicker{width:100%;max-width:380px;display:flex;flex-direction:column;gap:.45rem;margin:0 auto;}
-.wpicker-note{font-size:.68rem;color:rgba(200,180,255,.5);font-family:var(--font-mono);margin-bottom:.35rem;display:flex;align-items:center;gap:6px;background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.15);padding:.35rem .8rem;border-radius:8px;}
-.witem{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;transition:all .2s;}
-.witem:hover{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.3);}
-.wlogo{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
-.winfo{flex:1;text-align:left;}
-.wname{font-weight:600;font-size:.85rem;}
-.wsub{font-size:.67rem;color:var(--muted);margin-top:1px;}
-.wbadge{font-size:.67rem;font-weight:700;}
-.wbadge.ok{color:var(--accent);}
-.wbadge.no{color:rgba(255,255,255,.25);}
-.conn-state{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1.5rem 0;}
-.conn-spin{width:40px;height:40px;border:3px solid rgba(74,222,128,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
-.conn-lbl{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);}
+/* ── SCREENS ── */
+.screen{display:none;}
+.screen.active{display:flex;flex-direction:column;}
 
-/* MAIN */
-#main-screen{display:none;}
-.board-wrap{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+/* ── START SCREEN ── */
+.start-wrap{max-width:540px;margin:0 auto;padding:3rem 1.5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.25rem;}
+.start-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);}
+.start-title{font-family:var(--font-head);font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;}
+.start-title .acc{color:var(--accent);}
+.start-sub{font-size:.9rem;color:var(--muted);line-height:1.7;max-width:400px;}
+.rules-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:1.25rem 1.5rem;width:100%;text-align:left;display:flex;flex-direction:column;gap:.65rem;}
+.rule-row{display:flex;align-items:center;gap:.75rem;font-size:.82rem;color:rgba(255,255,255,.6);}
+.rule-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.rule-ico.g{background:rgba(74,222,128,.12);}
+.rule-ico.a{background:rgba(250,204,21,.12);}
+.rule-ico.r{background:rgba(248,113,113,.12);}
+.rule-ico.p{background:rgba(124,92,252,.12);}
+.name-input-wrap{width:100%;display:flex;flex-direction:column;gap:.5rem;text-align:left;}
+.name-label{font-size:.72rem;color:var(--muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em;}
+.name-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:.75rem 1rem;color:#fff;font-family:var(--font);font-size:.95rem;outline:none;transition:border-color .2s;}
+.name-input:focus{border-color:rgba(74,222,128,.4);}
+.name-input::placeholder{color:rgba(255,255,255,.25);}
+.start-btn{background:var(--accent);color:#050810;font-family:var(--font);font-size:1rem;font-weight:700;padding:.9rem 2.5rem;border-radius:12px;border:none;cursor:pointer;transition:all .2s;width:100%;}
+.start-btn:hover{background:#86efac;transform:translateY(-1px);}
+.lb-btn{background:transparent;color:var(--cyan);font-family:var(--font);font-size:.85rem;font-weight:600;padding:.65rem 1.5rem;border-radius:10px;border:1px solid rgba(34,211,238,.25);cursor:pointer;transition:all .2s;width:100%;}
+.lb-btn:hover{background:rgba(34,211,238,.08);}
 
-/* HEADER */
-.board-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
-.hdr-left{}
-.hdr-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;}
-.hdr-title{font-family:var(--font-head);font-size:1.8rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.3rem;}
-.hdr-sub{font-size:.82rem;color:var(--muted);}
-.xp-card{background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.25);border-radius:14px;padding:.9rem 1.2rem;display:flex;align-items:center;gap:1rem;min-width:200px;}
-.xp-icon{font-size:1.6rem;}
-.xp-lbl{font-size:.62rem;font-family:var(--font-mono);color:rgba(200,180,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
-.xp-val{font-family:var(--font-head);font-size:1.5rem;font-weight:800;color:#c4b5fd;line-height:1;}
-.xp-rank{font-size:.68rem;color:rgba(200,180,255,.4);margin-top:2px;}
-.xp-bar-wrap{margin-top:.5rem;height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;}
-.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent2),#a78bfa);border-radius:99px;transition:width .6s ease;}
+/* ── QUIZ SCREEN ── */
+.quiz-wrap{max-width:620px;margin:0 auto;padding:2rem 1.5rem;display:flex;flex-direction:column;gap:1.25rem;}
+.quiz-topbar{display:flex;justify-content:space-between;align-items:center;}
+.q-progress-text{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);}
+.xp-display{display:flex;align-items:center;gap:6px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:99px;padding:.3rem .75rem;font-family:var(--font-mono);font-size:.72rem;color:var(--accent);font-weight:700;}
 
-/* ADDR STRIP */
-.addr-strip{display:flex;align-items:center;justify-content:space-between;background:rgba(74,222,128,.04);border:1px solid rgba(74,222,128,.12);border-radius:10px;padding:.6rem 1rem;margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem;}
-.addr-left{display:flex;align-items:center;gap:8px;}
-.addr-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:blink 1.5s infinite;}
-.addr-txt{font-family:var(--font-mono);font-size:.75rem;color:rgba(255,255,255,.55);}
-.addr-disc{font-size:.68rem;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--font);transition:color .2s;}
-.addr-disc:hover{color:var(--red);}
+/* timer */
+.timer-ring-wrap{display:flex;flex-direction:column;align-items:center;gap:.25rem;}
+.timer-ring{width:56px;height:56px;position:relative;}
+.timer-ring svg{transform:rotate(-90deg);}
+.timer-ring-bg{fill:none;stroke:rgba(255,255,255,.07);stroke-width:4;}
+.timer-ring-fill{fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round;stroke-dasharray:150.8;stroke-dashoffset:0;transition:stroke-dashoffset .9s linear, stroke .3s;}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:1.05rem;font-weight:800;}
+.timer-lbl{font-family:var(--font-mono);font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
 
-/* PROGRESS BAR */
-.prog-section{margin-bottom:1.5rem;}
-.prog-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;}
-.prog-lbl{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
-.prog-frac{font-family:var(--font-mono);font-size:.78rem;font-weight:700;color:var(--accent);}
-.prog-bar{height:6px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:99px;transition:width .8s ease;}
+/* progress bar */
+.progress-bar-wrap{background:rgba(255,255,255,.05);border-radius:99px;height:4px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:99px;transition:width .4s ease;}
 
-/* SECTION */
-.sec-title{font-family:var(--font-head);font-weight:800;font-size:1rem;letter-spacing:-.3px;margin:1.5rem 0 .85rem;display:flex;align-items:center;gap:10px;color:var(--text);}
-.sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+/* question card */
+.q-card{background:rgba(15,25,41,.9);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:1.75rem;backdrop-filter:blur(12px);}
+.q-num-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.2);color:var(--accent2);padding:.2rem .65rem;border-radius:99px;font-family:var(--font-mono);font-size:.65rem;font-weight:700;margin-bottom:.85rem;}
+.q-text{font-family:var(--font-head);font-size:1.15rem;font-weight:800;line-height:1.4;margin-bottom:1.25rem;}
+.options-grid{display:flex;flex-direction:column;gap:.6rem;}
+.opt-btn{display:flex;align-items:center;gap:.85rem;padding:.85rem 1.1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;cursor:pointer;transition:all .2s;text-align:left;font-family:var(--font);font-size:.875rem;color:var(--text);width:100%;}
+.opt-btn:hover:not(:disabled){background:rgba(255,255,255,.08);border-color:rgba(74,222,128,.3);transform:translateX(2px);}
+.opt-btn:disabled{cursor:default;}
+.opt-btn.correct{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.5);color:var(--accent);}
+.opt-btn.wrong{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.4);color:var(--red);}
+.opt-btn.reveal{opacity:.4;}
+.opt-letter{width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.72rem;font-weight:700;flex-shrink:0;transition:all .2s;}
+.opt-btn.correct .opt-letter{background:rgba(74,222,128,.2);color:var(--accent);}
+.opt-btn.wrong .opt-letter{background:rgba(248,113,113,.2);color:var(--red);}
 
-/* QUEST GRID */
-.quest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.85rem;}
-.quest-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.2rem;position:relative;overflow:hidden;transition:border-color .2s,transform .2s;cursor:default;}
-.quest-card:hover{transform:translateY(-2px);}
-.quest-card.done{border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.03);}
-.quest-card.done::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
-.quest-card.locked{opacity:.5;}
-.quest-card.active{border-color:rgba(250,204,21,.3);background:rgba(250,204,21,.02);}
-.quest-card.active::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),transparent);}
-.qc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.7rem;}
-.qc-ico{font-size:1.5rem;}
-.qc-badge{font-family:var(--font-mono);font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:99px;}
-.qc-badge.done{background:rgba(74,222,128,.12);color:var(--accent);}
-.qc-badge.active{background:rgba(250,204,21,.12);color:var(--amber);}
-.qc-badge.locked{background:rgba(255,255,255,.06);color:var(--muted);}
-.qc-title{font-weight:700;font-size:.9rem;margin-bottom:.3rem;}
-.qc-desc{font-size:.75rem;color:var(--muted);line-height:1.55;margin-bottom:.75rem;}
-.qc-footer{display:flex;align-items:center;justify-content:space-between;}
-.qc-xp{font-family:var(--font-mono);font-size:.72rem;font-weight:700;color:#c4b5fd;}
-.qc-action{font-size:.72rem;font-weight:600;color:var(--accent);background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:6px;padding:3px 10px;cursor:pointer;text-decoration:none;transition:background .2s;}
-.qc-action:hover{background:rgba(74,222,128,.2);}
-.qc-action.locked-btn{color:var(--muted);background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);cursor:not-allowed;}
-.qc-action.done-btn{color:var(--accent);background:none;border:none;cursor:default;}
+/* timeout notice */
+.timeout-notice{display:none;text-align:center;padding:.65rem;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:10px;font-size:.8rem;color:var(--red);font-weight:600;}
 
-/* TOAST */
-.toast-wrap{position:fixed;bottom:2rem;right:2rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;}
-.toast{background:rgba(15,25,41,.95);border:1px solid rgba(74,222,128,.3);border-radius:12px;padding:.75rem 1.1rem;font-size:.82rem;display:flex;align-items:center;gap:.6rem;animation:fadein .3s ease;backdrop-filter:blur(12px);}
-.toast .tick{color:var(--accent);font-size:1rem;}
+/* ── CONGRATS OVERLAY ── */
+.congrats-overlay{position:fixed;inset:0;z-index:9999;pointer-events:none;display:none;}
+.confetti-canvas{position:absolute;inset:0;width:100%;height:100%;}
+.xp-pop{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);background:rgba(5,8,16,.95);border:2px solid var(--accent);border-radius:20px;padding:1.5rem 2.5rem;text-align:center;animation:xpPop .5s cubic-bezier(.34,1.56,.64,1) forwards;}
+@keyframes xpPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.xp-pop-icon{font-size:2.5rem;margin-bottom:.5rem;}
+.xp-pop-title{font-family:var(--font-head);font-size:2rem;font-weight:800;color:var(--accent);margin-bottom:.25rem;}
+.xp-pop-sub{font-size:.85rem;color:rgba(255,255,255,.55);}
+
+/* ── RESULT SCREEN ── */
+.result-wrap{max-width:560px;margin:0 auto;padding:2.5rem 1.5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.25rem;}
+.result-score-ring{width:120px;height:120px;position:relative;margin:0 auto;}
+.result-score-ring svg{transform:rotate(-90deg);}
+.rs-bg{fill:none;stroke:rgba(255,255,255,.06);stroke-width:8;}
+.rs-fill{fill:none;stroke:var(--accent);stroke-width:8;stroke-linecap:round;stroke-dasharray:339.3;transition:stroke-dashoffset 1.5s ease;}
+.rs-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.rs-xp{font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--accent);}
+.rs-label{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+.result-title{font-family:var(--font-head);font-size:2rem;font-weight:800;letter-spacing:-.02em;}
+.result-sub{font-size:.9rem;color:var(--muted);line-height:1.7;}
+.result-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;width:100%;}
+.rs-stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem .75rem;text-align:center;}
+.rs-stat-val{font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:var(--accent);}
+.rs-stat-lbl{font-size:.68rem;color:var(--muted);margin-top:.25rem;}
+.result-actions{display:flex;gap:.65rem;width:100%;}
+.result-actions button{flex:1;padding:.85rem;border-radius:12px;font-family:var(--font);font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;border:none;}
+.btn-replay{background:var(--accent);color:#050810;}
+.btn-replay:hover{background:#86efac;}
+.btn-lb{background:rgba(34,211,238,.08);color:var(--cyan);border:1px solid rgba(34,211,238,.25) !important;}
+.btn-lb:hover{background:rgba(34,211,238,.15);}
+
+/* ── LEADERBOARD SCREEN ── */
+.lb-wrap{max-width:580px;margin:0 auto;padding:2.5rem 1.5rem;display:flex;flex-direction:column;gap:1.25rem;}
+.lb-hdr{display:flex;align-items:center;justify-content:space-between;}
+.lb-title-group{}
+.lb-eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.3rem;}
+.lb-title{font-family:var(--font-head);font-size:1.5rem;font-weight:800;letter-spacing:-.02em;}
+.lb-back{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-family:var(--font);font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:9px;cursor:pointer;transition:all .2s;}
+.lb-back:hover{color:#fff;}
+.lb-list{display:flex;flex-direction:column;gap:.5rem;}
+.lb-row{display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;transition:all .2s;animation:fadeInUp .3s ease forwards;}
+.lb-row.top1{background:rgba(250,204,21,.06);border-color:rgba(250,204,21,.25);}
+.lb-row.top2{background:rgba(180,180,180,.05);border-color:rgba(180,180,180,.2);}
+.lb-row.top3{background:rgba(205,127,50,.05);border-color:rgba(205,127,50,.2);}
+.lb-row.me{border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.06);}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.lb-rank{width:28px;text-align:center;font-family:var(--font-mono);font-size:.85rem;font-weight:700;color:var(--muted);flex-shrink:0;}
+.lb-rank.gold{color:var(--amber);}
+.lb-rank.silver{color:#a0a0b0;}
+.lb-rank.bronze{color:#cd7f32;}
+.lb-name{flex:1;font-size:.88rem;font-weight:600;}
+.lb-correct{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);}
+.lb-xp{font-family:var(--font-head);font-size:1rem;font-weight:800;color:var(--accent);}
+.lb-empty{text-align:center;padding:2rem;color:var(--muted);font-size:.85rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;}
+.lb-note{font-size:.7rem;color:var(--muted);text-align:center;font-family:var(--font-mono);}
 
 @media(max-width:600px){
-  .quest-grid{grid-template-columns:1fr;}
   .nav-links{display:none;}
-  .board-hdr{flex-direction:column;}
+  .result-stats{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
@@ -137,320 +159,436 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 <nav class="nav">
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
-  <div class="nav-right">
-    <div class="nav-links">
-      <a class="nav-link" href="menu.html">Home</a>
-      <a class="nav-link" href="wallet.html">Swap</a>
-      <a class="nav-link" href="garage.html">Garage</a>
-      <a class="nav-link" href="market.html">Market</a>
-      <a class="nav-link active" href="quest.html">Quests</a>
-      <a class="nav-link" href="passport.html">Passport</a>
-      <a class="nav-link" href="leaderboard.html">Leaderboard</a>
-    </div>
-    <button class="nav-btn" id="nav-btn" onclick="navClick()">Insert Validator Key</button>
+  <div class="nav-links">
+    <a class="nav-link" href="menu.html">Home</a>
+    <a class="nav-link" href="wallet.html">Swap</a>
+    <a class="nav-link" href="garage.html">Garage</a>
+    <a class="nav-link" href="market.html">Market</a>
+    <a class="nav-link active" href="quest.html">Quiz</a>
   </div>
 </nav>
 
 <div class="page">
 
-  <!-- LOCK SCREEN -->
-  <div id="lock-screen">
-    <div class="lock-icon">🎯</div>
-    <div class="lock-title">Quest Board</div>
-    <div class="lock-sub">Connect wallet untuk mulai tracking misi dan kumpulkan XP di ekosistem Rialo.</div>
-    <div id="wallet-area">
-      <div class="wpicker">
-        <div class="wpicker-note">🔒 Read-only — tidak ada transaksi</div>
+  <!-- START -->
+  <div id="scr-start" class="screen active">
+    <div class="start-wrap">
+      <div class="start-eyebrow">Rialo Knowledge Quiz</div>
+      <h1 class="start-title">How well do you<br>know <span class="acc">Rialo</span>?</h1>
+      <p class="start-sub">Answer questions about the Rialo protocol. Each correct answer earns you 50 XP. You have 15 seconds per question. Climb the leaderboard!</p>
+      <div class="rules-card">
+        <div class="rule-row"><div class="rule-ico g">⏱</div><span><strong>15 seconds</strong> per question — auto-skip on timeout</span></div>
+        <div class="rule-row"><div class="rule-ico a">⚡</div><span><strong>+50 XP</strong> for every correct answer</span></div>
+        <div class="rule-row"><div class="rule-ico p">🏆</div><span>Your score is saved permanently to the <strong>Leaderboard</strong></span></div>
+        <div class="rule-row"><div class="rule-ico r">🧠</div><span><strong>30 questions</strong> from the Rialo knowledge base</span></div>
+      </div>
+      <div class="name-input-wrap">
+        <div class="name-label">Your Name / Handle</div>
+        <input class="name-input" id="player-name" type="text" maxlength="20" placeholder="e.g. RialoBuilder" autocomplete="off"/>
+      </div>
+      <button class="start-btn" onclick="startQuiz()">Start Quiz →</button>
+      <button class="lb-btn" onclick="showLeaderboard()">🏆 View Leaderboard</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="scr-quiz" class="screen">
+    <div class="quiz-wrap">
+      <div class="quiz-topbar">
+        <div class="q-progress-text" id="q-progress">Question 1 / 30</div>
+        <div class="timer-ring-wrap">
+          <div class="timer-ring">
+            <svg width="56" height="56" viewBox="0 0 56 56">
+              <circle class="timer-ring-bg" cx="28" cy="28" r="24"/>
+              <circle class="timer-ring-fill" id="timer-circle" cx="28" cy="28" r="24"/>
+            </svg>
+            <div class="timer-num" id="timer-num">15</div>
+          </div>
+          <div class="timer-lbl">seconds</div>
+        </div>
+        <div class="xp-display">⚡ <span id="xp-count">0</span> XP</div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+      <div class="q-card">
+        <div class="q-num-tag" id="q-num-tag">Q1</div>
+        <div class="q-text" id="q-text">Loading question…</div>
+        <div class="timeout-notice" id="timeout-notice">⏱ Time's up! Moving to next question…</div>
+        <div class="options-grid" id="options-grid"></div>
       </div>
     </div>
   </div>
 
-  <!-- MAIN BOARD -->
-  <div id="main-screen">
-    <div class="board-wrap">
-      <div class="board-hdr">
-        <div class="hdr-left">
-          <div class="hdr-eyebrow">Alpha Operator Missions</div>
-          <div class="hdr-title">Quest Board</div>
-          <div class="hdr-sub">Selesaikan misi untuk kumpulkan XP dan unlock status Alpha Operator.</div>
-        </div>
-        <div class="xp-card">
-          <div class="xp-icon">⚡</div>
-          <div>
-            <div class="xp-lbl">Total XP</div>
-            <div class="xp-val" id="xp-total">0</div>
-            <div class="xp-rank" id="xp-rank">Rank: Recruit</div>
-            <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-bar" style="width:0%"></div></div>
-          </div>
+  <!-- RESULT -->
+  <div id="scr-result" class="screen">
+    <div class="result-wrap">
+      <div class="result-score-ring">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle class="rs-bg" cx="60" cy="60" r="54"/>
+          <circle class="rs-fill" id="rs-fill" cx="60" cy="60" r="54" stroke-dashoffset="339.3"/>
+        </svg>
+        <div class="rs-num">
+          <div class="rs-xp" id="final-xp">0</div>
+          <div class="rs-label">XP Earned</div>
         </div>
       </div>
-
-      <div class="addr-strip">
-        <div class="addr-left">
-          <div class="addr-dot"></div>
-          <span class="addr-txt" id="addr-txt">—</span>
-        </div>
-        <button class="addr-disc" onclick="doDisconnect()">Disconnect ↗</button>
+      <div class="result-title" id="result-title">Quiz Complete!</div>
+      <div class="result-sub" id="result-sub">Your results have been saved to the leaderboard.</div>
+      <div class="result-stats">
+        <div class="rs-stat"><div class="rs-stat-val" id="stat-correct">0</div><div class="rs-stat-lbl">Correct</div></div>
+        <div class="rs-stat"><div class="rs-stat-val" id="stat-wrong">0</div><div class="rs-stat-lbl">Wrong / Skipped</div></div>
+        <div class="rs-stat"><div class="rs-stat-val" id="stat-acc">0%</div><div class="rs-stat-lbl">Accuracy</div></div>
       </div>
-
-      <div class="prog-section">
-        <div class="prog-hdr">
-          <span class="prog-lbl">Mission Progress</span>
-          <span class="prog-frac" id="prog-frac">0 / 8</span>
-        </div>
-        <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="result-actions">
+        <button class="result-actions btn-replay" style="flex:1;padding:.85rem;border-radius:12px;font-family:var(--font);font-size:.88rem;font-weight:700;cursor:pointer;background:var(--accent);color:#050810;border:none;" onclick="startQuiz()">Play Again</button>
+        <button class="result-actions btn-lb" style="flex:1;padding:.85rem;border-radius:12px;font-family:var(--font);font-size:.88rem;font-weight:700;cursor:pointer;background:rgba(34,211,238,.08);color:var(--cyan);border:1px solid rgba(34,211,238,.25);" onclick="showLeaderboard()">🏆 Leaderboard</button>
       </div>
-
-      <div class="sec-title">🚀 Onboarding Missions</div>
-      <div class="quest-grid" id="onboarding-grid"></div>
-
-      <div class="sec-title">⚙️ Validator Missions</div>
-      <div class="quest-grid" id="validator-grid"></div>
-
-      <div class="sec-title">🔬 Advanced Missions</div>
-      <div class="quest-grid" id="advanced-grid"></div>
     </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="scr-lb" class="screen">
+    <div class="lb-wrap">
+      <div class="lb-hdr">
+        <div class="lb-title-group">
+          <div class="lb-eyebrow">All Time Rankings</div>
+          <div class="lb-title">🏆 Leaderboard</div>
+        </div>
+        <button class="lb-back" onclick="showStart()">← Back</button>
+      </div>
+      <div class="lb-list" id="lb-list"></div>
+      <div class="lb-note">Scores are persistent and shared across all players.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CONGRATS OVERLAY -->
+<div class="congrats-overlay" id="congrats-overlay">
+  <canvas class="confetti-canvas" id="confetti-canvas"></canvas>
+  <div class="xp-pop" id="xp-pop">
+    <div class="xp-pop-icon">🎉</div>
+    <div class="xp-pop-title">+50 XP</div>
+    <div class="xp-pop-sub">Correct Answer!</div>
   </div>
 </div>
 
-<div class="toast-wrap" id="toast-wrap"></div>
-
 <script>
-/* ── CANVAS ── */
+/* ── QUESTIONS ── */
+const QUESTIONS = [
+  {q:"Why do onchain lenders currently ignore a borrower's real-world credit score?",opts:["They consider credit scores outdated","They legally cannot store credit information","They have no visibility into offchain credit data","They prefer to focus only on crypto trading history"],ans:2},
+  {q:"What is the typical collateral requirement borrowers face in today's onchain lending market?",opts:["25%","80%","100%","150%"],ans:3},
+  {q:"Which of the following is NOT part of how Rialo makes real-world credit signals programmable?",opts:["Proving FICO through Plaid","Native onchain validation of credentials","Smart contracts approving loans automatically","Manual review by centralized underwriting teams"],ans:3},
+  {q:"What benefit comes from streaming verified credentials onchain?",opts:["Lenders can adjust interest rates weekly","Borrowers no longer need wallets","Smart contracts can autonomously assess borrower status","Fees are reduced to zero"],ans:2},
+  {q:"Why do onchain markets assume zero recovery under current lending systems?",opts:["Liquid staking is too volatile","They lack identity, income, and recovery data","Overcollateralization is illegal in most chains","Stablecoins distort repayment estimates"],ans:1},
+  {q:"What is the effect of adding real-world recovery signals onchain?",opts:["Interest rates rise but collateral stays the same","Recovery increases and collateral requirements decrease","Loans become permissioned","Borrowers must provide physical documentation"],ans:1},
+  {q:"Which of the following is one of Rialo's three new levers for safer lending?",opts:["Automated liquidation bots","Attested credit signals","Proof-of-work scoring","NFT-based underwriting"],ans:1},
+  {q:"What is the role of streaming disbursements in Rialo's system?",opts:["Increase exposure to earn higher yields","Allow borrowers to pause their loans anytime","Cap peak exposure by releasing funds only when credit conditions stay healthy","Enable custodial payout options"],ans:2},
+  {q:"What spectrum of collateral does Rialo aim to make programmable?",opts:["10% to 80%","25% to 200%","0% to 150%","5% to 50%"],ans:2},
+  {q:"According to Ade, what is helping him survive his first winter in NYC?",opts:["A new heater he bought on sale","A $5 bottle of Vitamin D","Daily runs in Central Park","A sunlight therapy lamp"],ans:1},
+  {q:"Why is Jan Camenisch joining Subzero Labs considered a major milestone for Rialo?",opts:["It expands Rialo's validator set","It strengthens Rialo's privacy and cryptographic foundation","It accelerates token issuance plans","It shifts Rialo toward consumer social apps"],ans:1},
+  {q:"Which area has NOT been a core focus of Camenisch's cryptographic work?",opts:["Anonymous credentials","Privacy-preserving identity","Secure multi-party computation","Proof-of-work consensus design"],ans:3},
+  {q:"What problem did Identity Mixer (Idemix) primarily solve?",opts:["Fast cross-chain transfers","Selective disclosure without revealing identity","Onchain credit scoring","Tokenized access control"],ans:1},
+  {q:"What example best illustrates selective disclosure as described in the article?",opts:["Showing a wallet balance without revealing addresses","Proving age eligibility without sharing a birthdate","Sharing income ranges instead of exact salary","Signing transactions without gas fees"],ans:1},
+  {q:"Why are Camenisch–Lysyanskaya (CL) signatures important in modern cryptographic systems?",opts:["They reduce transaction fees","They enable unlinkable, privacy-preserving credentials","They replace hardware security modules","They speed up block finality"],ans:1},
+  {q:"Which capability is NOT listed as part of Camenisch's MPC-related work?",opts:["Distributed key generation","Threshold signatures","Verifiable randomness","Public mempool encryption"],ans:3},
+  {q:"What role did Jan Camenisch play at Dfinity?",opts:["Head of validator incentives","Chief Technology Officer","Lead smart contract auditor","Governance council chair"],ans:1},
+  {q:"Why has Web3 struggled with mainstream adoption beyond DeFi, according to the article?",opts:["Poor token liquidity","Excessive transaction fees","Public-by-default systems cannot handle sensitive data","Lack of developer tooling"],ans:2},
+  {q:"What does Rialo's cryptographic orchestration layer enable for developers?",opts:["Faster token launches","Permissioned blockchain deployments","Secure use of encrypted data and API keys in decentralized apps","Cross-chain liquidity routing"],ans:2},
+  {q:"What is ACE (Advanced Computing Engine) composed of?",opts:["Only fully homomorphic encryption","MPC, FHE, and TEEs combined","Smart contracts and rollups","Trusted validators and oracles"],ans:1},
+  {q:"Why is Jan Camenisch described as a catalyst for true Web3 scale?",opts:["He focuses on token liquidity design","He advances privacy and verifiable computation","He optimizes consensus throughput","He builds consumer-facing dApps"],ans:1},
+  {q:"Which role is Jan Camenisch joining at Subzero Labs?",opts:["Chief Privacy Officer","Lead Protocol Architect","Distinguished Researcher","Head of Developer Relations"],ans:2},
+  {q:"What balance is highlighted as essential for real-world applications?",opts:["Speed and decentralization","Cost and scalability","Privacy and verifiability","Governance and incentives"],ans:2},
+  {q:"Why does full anonymity create problems for applications?",opts:["It increases transaction costs","It limits composability","It breaks trust","It slows block times"],ans:2},
+  {q:"What core problem does Stake-for-Service aim to solve in onchain systems?",opts:["Low validator participation","The split between staked capital and service payments","Excessive token inflation","Slow transaction finality"],ans:1},
+  {q:"How does Stake-for-Service change the role of staking yield?",opts:["It increases staking rewards","It locks yield for governance voting","It converts yield into live service payments","It delays reward distribution"],ans:2},
+  {q:"What does an SfS position allow a user or contract to specify?",opts:["A fixed gas price","A validator commission rate","A routing fraction of staking rewards","A lockup expiration date"],ans:2},
+  {q:"What happens to routed staking rewards in SfS?",opts:["They are burned","They are sent to governance","They pass through the user wallet","They are minted into service credits via the ServicePaymaster"],ans:3},
+  {q:"Why is Stake-for-Service described as a macroeconomic policy tool?",opts:["It controls validator incentives","It enables direct, bounded demand stimulus without inflation","It replaces governance voting","It stabilizes token prices"],ans:1},
+  {q:"Which technologies were described as mostly theoretical when the speakers first met around 2016?",opts:["Rollups and sidechains","MPC and FHE","Stablecoins and AMMs","Smart contracts and DAOs"],ans:1},
+];
+
+/* ── STATE ── */
+let playerName = '';
+let currentQ = 0;
+let xp = 0;
+let correct = 0;
+let wrong = 0;
+let timerInterval = null;
+let timeLeft = 15;
+let answered = false;
+let totalQ = QUESTIONS.length;
+
+/* ── STORAGE KEY ── */
+const LB_KEY = 'rialo_quiz_leaderboard_v2';
+
+function getLB(){
+  try{
+    const raw = localStorage.getItem(LB_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){return [];}
+}
+function saveLB(entries){ localStorage.setItem(LB_KEY, JSON.stringify(entries)); }
+
+function addToLB(name, xpVal, correctVal, total){
+  const lb = getLB();
+  lb.push({name, xp: xpVal, correct: correctVal, total, date: new Date().toLocaleDateString()});
+  lb.sort((a,b) => b.xp - a.xp || b.correct - a.correct);
+  saveLB(lb);
+}
+
+/* ── SCREENS ── */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showStart(){ showScreen('scr-start'); }
+function showLeaderboard(){ renderLB(); showScreen('scr-lb'); }
+
+/* ── START QUIZ ── */
+function startQuiz(){
+  const nameEl = document.getElementById('player-name');
+  playerName = (nameEl && nameEl.value.trim()) || 'Anonymous';
+  currentQ = 0; xp = 0; correct = 0; wrong = 0;
+  document.getElementById('xp-count').textContent = '0';
+  showScreen('scr-quiz');
+  renderQuestion();
+}
+
+/* ── RENDER QUESTION ── */
+function renderQuestion(){
+  if(currentQ >= totalQ){ endQuiz(); return; }
+  answered = false;
+  const q = QUESTIONS[currentQ];
+  const pct = (currentQ / totalQ) * 100;
+  document.getElementById('q-progress').textContent = `Question ${currentQ+1} / ${totalQ}`;
+  document.getElementById('q-num-tag').textContent = `Q${currentQ+1}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('timeout-notice').style.display = 'none';
+
+  const grid = document.getElementById('options-grid');
+  const letters = ['A','B','C','D'];
+  grid.innerHTML = q.opts.map((opt, i) => `
+    <button class="opt-btn" id="opt-${i}" onclick="selectAnswer(${i})">
+      <div class="opt-letter">${letters[i]}</div>
+      <span>${opt}</span>
+    </button>
+  `).join('');
+
+  startTimer();
+}
+
+/* ── TIMER ── */
+function startTimer(){
+  timeLeft = 15;
+  clearInterval(timerInterval);
+  updateTimerUI(15);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerUI(timeLeft);
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      if(!answered) timeOut();
+    }
+  }, 1000);
+}
+
+function updateTimerUI(t){
+  document.getElementById('timer-num').textContent = t;
+  const circle = document.getElementById('timer-circle');
+  const circumference = 150.8;
+  const offset = circumference - (t / 15) * circumference;
+  circle.style.strokeDashoffset = offset;
+  const pct = t / 15;
+  if(pct > 0.5) circle.style.stroke = 'var(--accent)';
+  else if(pct > 0.25) circle.style.stroke = 'var(--amber)';
+  else circle.style.stroke = 'var(--red)';
+}
+
+function timeOut(){
+  answered = true;
+  wrong++;
+  const q = QUESTIONS[currentQ];
+  // reveal correct
+  const opts = document.querySelectorAll('.opt-btn');
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if(i === q.ans) btn.classList.add('correct');
+    else btn.classList.add('reveal');
+  });
+  document.getElementById('timeout-notice').style.display = 'block';
+  setTimeout(() => { currentQ++; renderQuestion(); }, 2000);
+}
+
+/* ── SELECT ANSWER ── */
+function selectAnswer(idx){
+  if(answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  const q = QUESTIONS[currentQ];
+  const opts = document.querySelectorAll('.opt-btn');
+  opts.forEach(btn => btn.disabled = true);
+
+  if(idx === q.ans){
+    opts[idx].classList.add('correct');
+    correct++;
+    xp += 50;
+    document.getElementById('xp-count').textContent = xp;
+    showCongratsAnim();
+    setTimeout(() => { currentQ++; renderQuestion(); }, 2200);
+  } else {
+    opts[idx].classList.add('wrong');
+    opts[q.ans].classList.add('correct');
+    opts.forEach((btn, i) => { if(i !== idx && i !== q.ans) btn.classList.add('reveal'); });
+    wrong++;
+    setTimeout(() => { currentQ++; renderQuestion(); }, 1800);
+  }
+}
+
+/* ── CONFETTI / CONGRATS ── */
+function showCongratsAnim(){
+  const overlay = document.getElementById('congrats-overlay');
+  const canvas = document.getElementById('confetti-canvas');
+  overlay.style.display = 'block';
+  overlay.style.pointerEvents = 'none';
+  spawnConfetti(canvas);
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    stopConfetti();
+  }, 2000);
+}
+
+let confettiParticles = [];
+let confettiRAF = null;
+
+function spawnConfetti(canvas){
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  confettiParticles = [];
+  const colors = ['#4ade80','#22d3ee','#facc15','#7c5cfc','#f87171','#fff'];
+  for(let i=0;i<120;i++){
+    confettiParticles.push({
+      x: Math.random()*canvas.width,
+      y: -10 - Math.random()*200,
+      vx: (Math.random()-0.5)*4,
+      vy: 2+Math.random()*5,
+      rot: Math.random()*360,
+      rotV: (Math.random()-0.5)*8,
+      w: 8+Math.random()*10,
+      h: 4+Math.random()*6,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      opacity: 1
+    });
+  }
+  function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confettiParticles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.rot += p.rotV;
+      if(p.y > canvas.height+20) p.y = -20;
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    confettiRAF = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+function stopConfetti(){
+  if(confettiRAF) cancelAnimationFrame(confettiRAF);
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+}
+
+/* ── END QUIZ ── */
+function endQuiz(){
+  clearInterval(timerInterval);
+  addToLB(playerName, xp, correct, totalQ);
+
+  document.getElementById('final-xp').textContent = xp;
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = wrong;
+  const acc = Math.round((correct/totalQ)*100);
+  document.getElementById('stat-acc').textContent = acc + '%';
+
+  let title = 'Quiz Complete!';
+  let sub = 'Your score has been saved to the leaderboard.';
+  if(acc >= 80) { title = '🔥 Rialo Expert!'; sub = 'Outstanding performance. You truly know the Rialo protocol!'; }
+  else if(acc >= 60) { title = '💡 Well Played!'; sub = 'Solid knowledge. Keep building and come back for more!'; }
+  else { title = 'Keep Learning!'; sub = 'Study the Rialo protocol deeper and try again!'; }
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-sub').textContent = sub;
+
+  // Animate ring
+  const circumference = 339.3;
+  const fill = document.getElementById('rs-fill');
+  fill.style.strokeDashoffset = circumference;
+  setTimeout(() => {
+    const offset = circumference - (correct/totalQ)*circumference;
+    fill.style.strokeDashoffset = offset;
+  }, 100);
+
+  showScreen('scr-result');
+}
+
+/* ── LEADERBOARD ── */
+function renderLB(){
+  const lb = getLB();
+  const list = document.getElementById('lb-list');
+  if(!lb.length){
+    list.innerHTML = '<div class="lb-empty">No scores yet. Be the first to complete the quiz!</div>';
+    return;
+  }
+  const rankClass = (i) => i===0?'top1':i===1?'top2':i===2?'top3':'';
+  const rankLabel = (i) => {
+    if(i===0) return '<span class="lb-rank gold">🥇</span>';
+    if(i===1) return '<span class="lb-rank silver">🥈</span>';
+    if(i===2) return '<span class="lb-rank bronze">🥉</span>';
+    return `<span class="lb-rank">#${i+1}</span>`;
+  };
+  list.innerHTML = lb.slice(0,50).map((entry, i) => `
+    <div class="lb-row ${rankClass(i)}" style="animation-delay:${i*0.05}s">
+      ${rankLabel(i)}
+      <div class="lb-name">${escHtml(entry.name)}</div>
+      <div class="lb-correct">${entry.correct}/${entry.total}</div>
+      <div class="lb-xp">${entry.xp} XP</div>
+    </div>
+  `).join('');
+}
+
+function escHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── BACKGROUND CANVAS ── */
 (function(){
   const cv=document.getElementById('net-canvas'),ctx=cv.getContext('2d');
   let W,H,ang=0;
-  const nodes=Array.from({length:80},()=>({bx:(Math.random()-.5)*2000,by:(Math.random()-.5)*1200,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+1}));
+  const nodes=Array.from({length:160},()=>({bx:(Math.random()-.5)*2400,by:(Math.random()-.5)*1600,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*1.8+0.8}));
   function res(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
-  window.onresize=res;res();
+  window.onresize=res; res();
   (function draw(){
-    ctx.clearRect(0,0,W,H);ang+=.0005;
+    ctx.clearRect(0,0,W,H);ang+=.0006;
     const cs=Math.cos(ang),sn=Math.sin(ang),cx=W/2,cy=H/2;
-    nodes.forEach(n=>{n.bx+=n.vx;n.by+=n.vy;if(n.bx<-1000)n.bx=1000;if(n.bx>1000)n.bx=-1000;});
+    nodes.forEach(n=>{n.bx+=n.vx;n.by+=n.vy;if(n.bx<-1300)n.bx=1300;if(n.bx>1300)n.bx=-1300;if(n.by<-900)n.by=900;if(n.by>900)n.by=-900;});
     const pts=nodes.map(n=>({x:cx+n.bx*cs-n.by*sn,y:cy+n.bx*sn+n.by*cs,r:n.r}));
     pts.forEach((p,i)=>{
-      for(let j=i+1;j<pts.length;j++){const d=Math.hypot(p.x-pts[j].x,p.y-pts[j].y);if(d<150){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/150)*.3})`;ctx.stroke();}}
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle='rgba(74,222,128,.5)';ctx.fill();
+      for(let j=i+1;j<pts.length;j++){
+        const d=Math.hypot(p.x-pts[j].x,p.y-pts[j].y);
+        if(d<150){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/150)*.45})`;ctx.lineWidth=.6;ctx.stroke();}
+      }
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle='rgba(74,222,128,.65)';ctx.fill();
     });
     requestAnimationFrame(draw);
   })();
 })();
-
-/* ── QUESTS DATA ── */
-const QUESTS = {
-  onboarding: [
-    {id:'connect', icon:'🔑', title:'Insert Validator Key', desc:'Connect wallet kamu ke Rialo untuk pertama kali dan mount validator key.', xp:50, link:'garage.html', linkTxt:'Go to Garage'},
-    {id:'visit_market', icon:'📊', title:'Open the Markets', desc:'Kunjungi halaman Market dan lihat live crypto prices di Rialo.', xp:25, link:'market.html', linkTxt:'Open Market'},
-    {id:'visit_swap', icon:'🔄', title:'Visit Swap', desc:'Buka halaman Swap dan lihat cara kerja token exchange di Rialo.', xp:25, link:'wallet.html', linkTxt:'Go to Swap'},
-  ],
-  validator: [
-    {id:'mount_key', icon:'⚙️', title:'Mount Validator Key', desc:'Buka Garage dan mount validator key kamu — mulai assembly supermodular stack.', xp:100, link:'garage.html', linkTxt:'Open Garage'},
-    {id:'assemble_stack', icon:'🧱', title:'Assemble the Stack', desc:'Selesaikan 3-layer assembly di Garage: Execution → Settlement → Data Availability.', xp:150, link:'garage.html', linkTxt:'Open Garage'},
-    {id:'switch_vm', icon:'🔃', title:'VM Switcher', desc:'Ganti VM dari EVM ke SVM atau MOVE di Validator Dashboard.', xp:75, link:'garage.html', linkTxt:'Open Garage'},
-  ],
-  advanced: [
-    {id:'first_swap', icon:'💱', title:'First Swap', desc:'Lakukan simulasi swap pertama kamu — ETH ke RIALO token.', xp:200, link:'wallet.html', linkTxt:'Go to Swap'},
-    {id:'all_missions', icon:'🏆', title:'Alpha Operator', desc:'Selesaikan semua misi di atas. Status: Alpha Operator unlocked.', xp:500, link:null, linkTxt:null},
-  ]
-};
-
-const RANKS = [
-  {min:0, name:'Recruit', next:200},
-  {min:200, name:'Operator', next:500},
-  {min:500, name:'Validator', next:900},
-  {min:900, name:'Core Builder', next:1125},
-  {min:1125, name:'Alpha Operator', next:9999},
-];
-
-let wallet = null;
-let completed = {};
-
-function getKey(addr){ return `rialo_quests_${addr}`; }
-function loadProgress(addr){
-  try{ const d=localStorage.getItem(getKey(addr)); return d?JSON.parse(d):{}; }catch(e){ return {}; }
-}
-function saveProgress(addr, data){
-  try{ localStorage.setItem(getKey(addr), JSON.stringify(data)); }catch(e){}
-}
-
-function calcXP(){
-  const all = [...QUESTS.onboarding,...QUESTS.validator,...QUESTS.advanced];
-  let total=0;
-  all.forEach(q=>{ if(completed[q.id]) total+=q.xp; });
-  return total;
-}
-
-function getRank(xp){
-  let rank=RANKS[0];
-  RANKS.forEach(r=>{ if(xp>=r.min) rank=r; });
-  return rank;
-}
-
-function countDone(){
-  const all=[...QUESTS.onboarding,...QUESTS.validator,...QUESTS.advanced];
-  return all.filter(q=>completed[q.id]).length;
-}
-
-function updateXPDisplay(){
-  const xp=calcXP();
-  const rank=getRank(xp);
-  const done=countDone();
-  const total=[...QUESTS.onboarding,...QUESTS.validator,...QUESTS.advanced].length;
-  document.getElementById('xp-total').textContent=xp;
-  document.getElementById('xp-rank').textContent='Rank: '+rank.name;
-  document.getElementById('xp-bar').style.width=Math.min(100,(xp/rank.next)*100)+'%';
-  document.getElementById('prog-frac').textContent=done+' / '+total;
-  document.getElementById('prog-fill').style.width=(done/total*100)+'%';
-
-  // check all_missions auto-complete
-  if(done>=(total-1) && !completed['all_missions']){
-    completed['all_missions']=true;
-    saveProgress(wallet,completed);
-  }
-}
-
-function renderGrid(quests, gridId){
-  const g=document.getElementById(gridId);
-  g.innerHTML='';
-  quests.forEach(q=>{
-    const isDone = !!completed[q.id];
-    const isAllMissions = q.id==='all_missions';
-    const canDo = isAllMissions ? false : !isDone;
-    let status = isDone ? 'done' : 'active';
-    if(isAllMissions && !isDone) status='locked';
-
-    const card=document.createElement('div');
-    card.className=`quest-card ${status}`;
-    card.innerHTML=`
-      <div class="qc-top">
-        <div class="qc-ico">${q.icon}</div>
-        <span class="qc-badge ${status}">${isDone?'✓ DONE': status==='locked'?'LOCKED':'IN PROGRESS'}</span>
-      </div>
-      <div class="qc-title">${q.title}</div>
-      <div class="qc-desc">${q.desc}</div>
-      <div class="qc-footer">
-        <span class="qc-xp">+${q.xp} XP</span>
-        ${isDone
-          ? `<span class="qc-action done-btn">Completed ✓</span>`
-          : status==='locked'
-            ? `<span class="qc-action locked-btn">🔒 Locked</span>`
-            : q.link
-              ? `<a class="qc-action" href="${q.link}">${q.linkTxt} →</a>`
-              : `<button class="qc-action" onclick="markDone('${q.id}',${q.xp})">Mark Done</button>`
-        }
-      </div>`;
-    g.appendChild(card);
-  });
-}
-
-function renderBoard(){
-  renderGrid(QUESTS.onboarding, 'onboarding-grid');
-  renderGrid(QUESTS.validator, 'validator-grid');
-  renderGrid(QUESTS.advanced, 'advanced-grid');
-  updateXPDisplay();
-}
-
-function markDone(id, xp){
-  if(completed[id]) return;
-  completed[id]=true;
-  saveProgress(wallet,completed);
-  showToast(`+${xp} XP — Quest Complete! 🎉`);
-  renderBoard();
-}
-
-function showToast(msg){
-  const wrap=document.getElementById('toast-wrap');
-  const t=document.createElement('div');
-  t.className='toast';
-  t.innerHTML=`<span class="tick">✓</span>${msg}`;
-  wrap.appendChild(t);
-  setTimeout(()=>t.remove(),3500);
-}
-
-/* ── WALLET ── */
-function getProvList(){ const e=window.ethereum; if(!e) return []; return e.providers||[e]; }
-function findProv(key){
-  const L=getProvList();
-  if(key==='okx') return window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)||null;
-  if(key==='metamask') return L.find(p=>p.isMetaMask&&!p.isPhantom)||null;
-  if(key==='phantom') return L.find(p=>p.isPhantom)||null;
-  if(key==='coinbase') return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;
-  return window.ethereum||null;
-}
-function detectW(){
-  const L=getProvList();
-  return{
-    metamask:!!(L.find(p=>p.isMetaMask&&!p.isPhantom)),
-    phantom:!!(L.find(p=>p.isPhantom)),
-    okx:!!(window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)),
-    coinbase:!!(L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)),
-  };
-}
-
-function setNavBtn(addr){
-  const b=document.getElementById('nav-btn');
-  b.innerHTML=addr?`<span class="wdot"></span>${addr.slice(0,6)}…${addr.slice(-4)}`:'Insert Validator Key';
-  b.className=addr?'nav-btn on':'nav-btn';
-}
-function navClick(){ wallet?doDisconnect():renderPicker(); }
-function doDisconnect(){
-  wallet=null; setNavBtn(null);
-  document.getElementById('main-screen').style.display='none';
-  document.getElementById('lock-screen').style.display='flex';
-  renderPicker();
-}
-
-function renderPicker(){
-  const d=detectW();
-  const isMob=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const wallets=[
-    {key:'metamask',icon:'🦊',bg:'rgba(247,147,26,.1)',name:'MetaMask',sub:'Browser Extension',ok:d.metamask},
-    {key:'phantom',icon:'👻',bg:'rgba(153,69,255,.1)',name:'Phantom',sub:'Solana & EVM',ok:d.phantom},
-    {key:'okx',icon:'⬛',bg:'rgba(0,0,0,.3)',name:'OKX Wallet',sub:'Extension & Mobile',ok:d.okx},
-    {key:'coinbase',icon:'🔵',bg:'rgba(22,82,240,.15)',name:'Coinbase Wallet',sub:'Extension & Mobile',ok:d.coinbase},
-  ];
-  const area=document.getElementById('wallet-area');
-  if(isMob){
-    const cur=encodeURIComponent(location.href);
-    area.innerHTML=`<div class="wpicker">
-      <div class="wpicker-note">📱 Mobile — buka di wallet browser</div>
-      ${[{icon:'🦊',name:'MetaMask',href:`https://metamask.app.link/dapp/${location.host}${location.pathname}`},{icon:'👻',name:'Phantom',href:`https://phantom.app/ul/browse/${cur}?ref=${cur}`},{icon:'⬛',name:'OKX Wallet',href:`okx://wallet/dapp/url?dappUrl=${cur}`},{icon:'🔵',name:'Coinbase',href:`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(location.href)}`}].map(l=>`<div class="witem" onclick="location.href='${l.href}'"><div class="wlogo">${l.icon}</div><div class="winfo"><div class="wname">${l.name}</div></div><span class="wbadge ok">Open ↗</span></div>`).join('')}
-    </div>`;
-    return;
-  }
-  area.innerHTML=`<div class="wpicker">
-    <div class="wpicker-note">🔒 Read-only connection</div>
-    ${wallets.map(w=>`<div class="witem${w.ok?'':' '}" onclick="${w.ok?`connectWallet('${w.key}','${w.name}')`:''}" style="${w.ok?'':'opacity:.45;cursor:default'}">
-      <div class="wlogo" style="background:${w.bg}">${w.icon}</div>
-      <div class="winfo"><div class="wname">${w.name}</div><div class="wsub">${w.sub}</div></div>
-      <span class="wbadge ${w.ok?'ok':'no'}">${w.ok?'● Detected':'Not Found'}</span>
-    </div>`).join('')}
-  </div>`;
-}
-
-async function connectWallet(key, name){
-  const area=document.getElementById('wallet-area');
-  area.innerHTML=`<div class="conn-state"><div class="conn-spin"></div><div class="conn-lbl">Connecting ${name}...</div></div>`;
-  const p=findProv(key);
-  if(!p){ renderPicker(); return; }
-  try{
-    const accounts=await p.request({method:'eth_requestAccounts'});
-    if(!accounts||!accounts.length) throw new Error('No accounts');
-    wallet=accounts[0];
-    setNavBtn(wallet);
-    completed=loadProgress(wallet);
-    // auto-mark connect quest
-    if(!completed['connect']){ completed['connect']=true; saveProgress(wallet,completed); showToast('+50 XP — First Connection! 🔑'); }
-    document.getElementById('addr-txt').textContent=wallet.slice(0,10)+'...'+wallet.slice(-6);
-    document.getElementById('lock-screen').style.display='none';
-    document.getElementById('main-screen').style.display='block';
-    renderBoard();
-  }catch(e){
-    renderPicker();
-  }
-}
-
-renderPicker();
 </script>
 </body>
 </html>
