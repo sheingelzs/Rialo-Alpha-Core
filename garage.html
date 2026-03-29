@@ -133,6 +133,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .tag.ok{background:rgba(74,222,128,.1);color:var(--accent);}
 .tag.act{background:rgba(34,211,238,.1);color:var(--cyan);}
 .tag.mod{background:rgba(124,92,252,.1);color:var(--accent2);}
+.tag.stable{background:rgba(250,204,21,.08);color:var(--amber);}
 
 /* MOD */
 .mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:1.5rem;}
@@ -147,7 +148,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .gas-row{display:flex;align-items:center;justify-content:space-between;padding:.55rem .75rem;border-radius:9px;border:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.03);}
 .gr-lbl{font-size:.75rem;color:rgba(255,255,255,.45);}
 .gr-val{font-family:var(--font-mono);font-size:.75rem;font-weight:700;color:var(--accent);}
-.gr-val.pulse{animation:blink .9s infinite;}
+.gr-val.amber{color:var(--amber);}
+
+/* FIXED FEE BADGE */
+.fixed-fee-banner{
+  display:flex;align-items:center;gap:.6rem;
+  background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);
+  border-radius:10px;padding:.5rem .85rem;margin-bottom:.75rem;
+  font-size:.7rem;font-family:var(--font-mono);color:rgba(250,204,21,.8);
+}
 
 /* STACK */
 .layer-item{display:flex;align-items:center;gap:.85rem;padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
@@ -169,7 +178,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 <body>
 <canvas id="net-canvas"></canvas>
 
-<!-- Home → menu.html | Swap (bukan Wallet) → wallet.html -->
 <nav class="nav">
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
   <div class="nav-right">
@@ -190,14 +198,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     </div>
   </div>
 
+  <!-- STANDBY -->
   <div id="scr-standby" class="screen" style="display:flex;">
     <h2>Rialo Alpha Core<br><span class="dim">// Validator Garage</span></h2>
     <p>Mesin modular belum aktif. Mount Validator Key untuk memulai proses assembly dan mengakses Engine Telemetry Dashboard.</p>
     <div class="ro-pill">🔒 Read-only · tidak ada transaksi yang dilakukan</div>
-    <div class="chain-pill">⛓ Jaringan: Ethereum Mainnet (Chain ID: 1)</div>
+    <div class="chain-pill">⛓ Jaringan: Ethereum Mainnet · Fixed Fee: 0.001 ETH</div>
     <div id="wallet-area"></div>
   </div>
 
+  <!-- ASSEMBLY -->
   <div id="scr-assembly" class="screen">
     <div class="asm-title">Mounting Validator Key…<span>Assembling Supermodular Stack</span></div>
     <div class="asm-layers">
@@ -209,6 +219,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <p id="asm-log">Initializing…</p>
   </div>
 
+  <!-- DASHBOARD -->
   <div id="scr-dashboard" class="screen">
     <div class="dash-wrap">
       <div class="dash-hdr">
@@ -226,15 +237,43 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
           <button class="kbd-eject" onclick="doDisconnect()">Eject ↗</button>
         </div>
       </div>
+
       <div class="sec-title">Live Engine Telemetry</div>
       <div class="tele-grid">
-        <div class="tele-card g"><div class="tele-lbl">Time to Finality</div><div class="tele-val" id="finality-text">50<span style="font-size:1rem">ms</span></div><div class="tele-s">Confirmed on Rialo L1</div><div class="tag ok" id="finality-tag">● OPTIMAL</div></div>
-        <div class="tele-card c"><div class="tele-lbl">Gas Fees</div><div class="tele-val" style="font-size:1.2rem;">SUBSIDIZED</div><div class="tele-s">Fuel-Injection Protocol Active</div><div class="tag ok">● GAS-LESS</div></div>
-        <div class="tele-card a"><div class="tele-lbl">Active VM</div><div class="tele-val" style="font-size:1.3rem" id="vm-label">EVM</div><div class="tele-s">Swappable without chain rebuild</div><div class="tag act">● MODULAR</div></div>
-        <div class="tele-card p"><div class="tele-lbl">Stack Integrity</div><div class="tele-val" style="font-size:1.2rem" id="integrity-text">3 / 3</div><div class="tele-s">All layers operational</div><div class="tag mod" id="integrity-tag">● VERIFIED</div></div>
+        <!-- Finality -->
+        <div class="tele-card g">
+          <div class="tele-lbl">Time to Finality</div>
+          <div class="tele-val" id="finality-text">50<span style="font-size:1rem">ms</span></div>
+          <div class="tele-s">Confirmed on Rialo L1</div>
+          <div class="tag ok" id="finality-tag">● OPTIMAL</div>
+        </div>
+        <!-- Gas Fees — LOW-COST -->
+        <div class="tele-card c">
+          <div class="tele-lbl">Gas Fees</div>
+          <div class="tele-val" style="font-size:1.2rem;">LOW-COST</div>
+          <div class="tele-s">Fixed-Rate Fee Protocol Active</div>
+          <div class="tag stable">● FLAT-RATE</div>
+        </div>
+        <!-- Active VM -->
+        <div class="tele-card a">
+          <div class="tele-lbl">Active VM</div>
+          <div class="tele-val" style="font-size:1.3rem" id="vm-label">EVM</div>
+          <div class="tele-s">Swappable without chain rebuild</div>
+          <div class="tag act">● MODULAR</div>
+        </div>
+        <!-- Stack Integrity -->
+        <div class="tele-card p">
+          <div class="tele-lbl">Stack Integrity</div>
+          <div class="tele-val" style="font-size:1.2rem" id="integrity-text">3 / 3</div>
+          <div class="tele-s">All layers operational</div>
+          <div class="tag mod" id="integrity-tag">● VERIFIED</div>
+        </div>
       </div>
+
       <div class="sec-title">Supermodular Diagnostic Suite</div>
       <div class="mod-grid">
+
+        <!-- VM Interface -->
         <div class="mod-card">
           <div class="card-lbl">⚙ Modular VM Interface</div>
           <div class="vm-tabs">
@@ -242,17 +281,34 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
             <button class="vm-tab" onclick="switchVM('SVM',this)">SVM</button>
             <button class="vm-tab" onclick="switchVM('MOVE',this)">MOVE</button>
           </div>
-          <div class="vm-desc" id="vm-desc">Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Gas model: SUBSIDIZED.</div>
+          <div class="vm-desc" id="vm-desc">Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Fee model: FIXED-RATE 0.001 ETH.</div>
         </div>
+
+        <!-- Gas System — Fixed Fee -->
         <div class="mod-card">
-          <div class="card-lbl">⛽ Gas System — Ethereum Mainnet · Live</div>
+          <div class="card-lbl">⛽ Gas System — Fixed-Rate Protocol</div>
+          <div class="fixed-fee-banner">🔒 Flat fee dikunci pada 0.001 ETH · Tidak terpengaruh Gas War</div>
           <div class="gas-rows">
-            <div class="gas-row"><span class="gr-lbl">Base Fee</span><span class="gr-val pulse" id="gas-base">Fetching…</span></div>
-            <div class="gas-row"><span class="gr-lbl">Priority Fee</span><span class="gr-val" id="gas-priority">0 GWEI</span></div>
-            <div class="gas-row"><span class="gr-lbl">Tx Cost</span><span class="gr-val pulse" id="gas-cost">Fetching…</span></div>
-            <div class="gas-row"><span class="gr-lbl">Subsidy Status</span><span class="gr-val" id="subsidy-status">ACTIVE ⚡</span></div>
+            <div class="gas-row">
+              <span class="gr-lbl">Base Fee</span>
+              <span class="gr-val" id="gas-base">0.001 GWEI</span>
+            </div>
+            <div class="gas-row">
+              <span class="gr-lbl">Priority Fee</span>
+              <span class="gr-val" id="gas-priority">0 GWEI</span>
+            </div>
+            <div class="gas-row">
+              <span class="gr-lbl">Tx Cost</span>
+              <span class="gr-val" id="gas-cost">0.001 ETH</span>
+            </div>
+            <div class="gas-row">
+              <span class="gr-lbl">Fee Status</span>
+              <span class="gr-val amber" id="subsidy-status">STABLE 🔒</span>
+            </div>
           </div>
         </div>
+
+        <!-- Finality Gauge -->
         <div class="mod-card" style="display:flex;flex-direction:column;align-items:center;">
           <div class="card-lbl" style="align-self:flex-start">🏁 Finality Gauge</div>
           <svg viewBox="0 0 140 80" style="width:160px;height:90px">
@@ -261,6 +317,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
             <text id="gauge-val" x="70" y="60" text-anchor="middle" font-family="Syne" font-size="26" font-weight="800" fill="#4ade80">50</text>
           </svg>
         </div>
+
+        <!-- Stack Card -->
         <div class="mod-card" id="stack-card"></div>
       </div>
     </div>
@@ -268,11 +326,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </div>
 
 <script>
-/* CANVAS */
+/* ── CANVAS BACKGROUND ── */
 (function(){
   const cv=document.getElementById('net-canvas'),ctx=cv.getContext('2d');
   let W,H,ang=0;
-  const nodes=Array.from({length:80},()=>({bx:(Math.random()-.5)*2000,by:(Math.random()-.5)*1200,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+1}));
+  const nodes=Array.from({length:80},()=>({
+    bx:(Math.random()-.5)*2000,by:(Math.random()-.5)*1200,
+    vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+    r:Math.random()*1.5+1
+  }));
   function res(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
   window.addEventListener('resize',res);res();
   (function draw(){
@@ -281,79 +343,91 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     nodes.forEach(n=>{n.bx+=n.vx;n.by+=n.vy;if(n.bx<-1000)n.bx=1000;if(n.bx>1000)n.bx=-1000;});
     const pts=nodes.map(n=>({x:cx+n.bx*cs-n.by*sn,y:cy+n.bx*sn+n.by*cs,r:n.r}));
     pts.forEach((p,i)=>{
-      for(let j=i+1;j<pts.length;j++){const d=Math.hypot(p.x-pts[j].x,p.y-pts[j].y);if(d<150){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/150)*.3})`;ctx.stroke();}}
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle='rgba(74,222,128,.5)';ctx.fill();
+      for(let j=i+1;j<pts.length;j++){
+        const d=Math.hypot(p.x-pts[j].x,p.y-pts[j].y);
+        if(d<150){
+          ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=`rgba(74,222,128,${(1-d/150)*.3})`;ctx.stroke();
+        }
+      }
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);
+      ctx.fillStyle='rgba(74,222,128,.5)';ctx.fill();
     });
     requestAnimationFrame(draw);
   })();
 })();
 
-/* STATE */
-let walletAddress=null,currentVM='EVM',gasInterval=null,ethPriceUSD=3000;
+/* ── STATE ── */
+let walletAddress=null,currentVM='EVM';
 
-/* VM DATA */
+/* ── VM DATA ── */
 const VM={
-  EVM:{finality:50,fStatus:'OPTIMAL',integrity:'3 / 3',iStatus:'VERIFIED',color:'#4ade80',gaugeOffset:40,
-    stack:[{name:"Ethereum",logo:"https://cryptologos.cc/logos/ethereum-eth-logo.png?v=032",status:"SETTLEMENT"},{name:"Arbitrum",logo:"https://cryptologos.cc/logos/arbitrum-arb-logo.png?v=032",status:"L2 EXECUTION"},{name:"Optimism",logo:"https://cryptologos.cc/logos/optimism-ethereum-op-logo.png?v=032",status:"SCALING"}],
-    desc:'Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Gas model: SUBSIDIZED.'},
-  SVM:{finality:22,fStatus:'ULTRA FAST',integrity:'12 / 12',iStatus:'STABLE',color:'#22d3ee',gaugeOffset:15,
-    stack:[{name:"Solana",logo:"https://cryptologos.cc/logos/solana-sol-logo.png?v=032",status:"SVM CORE"},{name:"Pyth Network",logo:"https://cryptologos.cc/logos/pyth-network-pyth-logo.png?v=032",status:"ORACLE"},{name:"Jupiter",logo:"https://static.jup.ag/jup/tokens/jup.png",status:"AGGREGATOR"}],
-    desc:'Active: <strong>SVM</strong> — Solana Virtual Machine. Parallel transaction processing. Rust-based.'},
-  MOVE:{finality:45,fStatus:'SECURE',integrity:'5 / 5',iStatus:'SYNCHRONIZED',color:'#7c5cfc',gaugeOffset:55,
-    stack:[{name:"Sui",logo:"https://cryptologos.cc/logos/sui-sui-logo.png?v=032",status:"OBJECT-VM"},{name:"Aptos",logo:"https://cryptologos.cc/logos/aptos-apt-logo.png?v=032",status:"MOVE-CORE"},{name:"Movement",logo:"https://avatars.githubusercontent.com/u/131062835?s=200&v=4",status:"M2 STACK"}],
-    desc:'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset management.'}
+  EVM:{
+    finality:50,fStatus:'OPTIMAL',integrity:'3 / 3',iStatus:'VERIFIED',
+    color:'#4ade80',gaugeOffset:40,
+    stack:[
+      {name:"Ethereum",logo:"https://cryptologos.cc/logos/ethereum-eth-logo.png?v=032",status:"SETTLEMENT"},
+      {name:"Arbitrum",logo:"https://cryptologos.cc/logos/arbitrum-arb-logo.png?v=032",status:"L2 EXECUTION"},
+      {name:"Optimism",logo:"https://cryptologos.cc/logos/optimism-ethereum-op-logo.png?v=032",status:"SCALING"}
+    ],
+    desc:'Active: <strong>EVM</strong> — Ethereum-compatible execution. Solidity contracts ready. Fee model: FIXED-RATE 0.001 ETH.'
+  },
+  SVM:{
+    finality:22,fStatus:'ULTRA FAST',integrity:'12 / 12',iStatus:'STABLE',
+    color:'#22d3ee',gaugeOffset:15,
+    stack:[
+      {name:"Solana",logo:"https://cryptologos.cc/logos/solana-sol-logo.png?v=032",status:"SVM CORE"},
+      {name:"Pyth Network",logo:"https://cryptologos.cc/logos/pyth-network-pyth-logo.png?v=032",status:"ORACLE"},
+      {name:"Jupiter",logo:"https://static.jup.ag/jup/tokens/jup.png",status:"AGGREGATOR"}
+    ],
+    desc:'Active: <strong>SVM</strong> — Solana Virtual Machine. Parallel transaction processing. Rust-based. Fee model: FIXED-RATE 0.001 ETH.'
+  },
+  MOVE:{
+    finality:45,fStatus:'SECURE',integrity:'5 / 5',iStatus:'SYNCHRONIZED',
+    color:'#7c5cfc',gaugeOffset:55,
+    stack:[
+      {name:"Sui",logo:"https://cryptologos.cc/logos/sui-sui-logo.png?v=032",status:"OBJECT-VM"},
+      {name:"Aptos",logo:"https://cryptologos.cc/logos/aptos-apt-logo.png?v=032",status:"MOVE-CORE"},
+      {name:"Movement",logo:"https://avatars.githubusercontent.com/u/131062835?s=200&v=4",status:"M2 STACK"}
+    ],
+    desc:'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset management. Fee model: FIXED-RATE 0.001 ETH.'
+  }
 };
 
-/* GAS — Ethereum Mainnet RPC */
-async function fetchEthPrice(){
-  try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');const j=await r.json();ethPriceUSD=j?.ethereum?.usd||3000;}catch{ethPriceUSD=3000;}
-}
-async function fetchLiveGas(){
-  try{
-    const body=JSON.stringify({jsonrpc:'2.0',method:'eth_gasPrice',params:[],id:1});
-    const r=await fetch('https://cloudflare-eth.com',{method:'POST',headers:{'Content-Type':'application/json'},body});
-    const j=await r.json();
-    if(j.result){
-      const wei=parseInt(j.result,16);
-      const gwei=wei/1e9;
-      const baseFee=Math.max(0,gwei-0.5).toFixed(4);
-      const txUSD=(wei*21000/1e18)*ethPriceUSD;
-      const elBase=document.getElementById('gas-base');
-      const elCost=document.getElementById('gas-cost');
-      if(elBase){elBase.textContent=`${baseFee} GWEI`;elBase.classList.remove('pulse');}
-      document.getElementById('gas-priority').textContent='0 GWEI';
-      if(elCost){elCost.textContent=`$${txUSD.toFixed(6)}`;elCost.classList.remove('pulse');}
-      document.getElementById('subsidy-status').textContent='ACTIVE ⚡';
-    }
-  }catch{
-    const elBase=document.getElementById('gas-base');const elCost=document.getElementById('gas-cost');
-    if(elBase){elBase.textContent='Unavailable';elBase.classList.remove('pulse');}
-    if(elCost){elCost.textContent='Unavailable';elCost.classList.remove('pulse');}
-  }
-}
-function startGasPolling(){
-  fetchEthPrice();fetchLiveGas();
-  if(gasInterval)clearInterval(gasInterval);
-  gasInterval=setInterval(fetchLiveGas,8000);
-  setInterval(fetchEthPrice,120000);
+/* ── GAS — FIXED, NO FETCH NEEDED ── */
+function applyFixedFee(){
+  const elBase=document.getElementById('gas-base');
+  const elCost=document.getElementById('gas-cost');
+  const elPrio=document.getElementById('gas-priority');
+  const elSub=document.getElementById('subsidy-status');
+  if(elBase)  elBase.textContent='0.001 GWEI';
+  if(elPrio)  elPrio.textContent='0 GWEI';
+  if(elCost)  elCost.textContent='0.001 ETH';
+  if(elSub)   elSub.textContent='STABLE 🔒';
 }
 
-/* SCREEN */
-function showScreen(n){document.querySelectorAll('.screen').forEach(s=>s.style.display='none');document.getElementById('scr-'+n).style.display='flex';}
-function setNavBtn(a){const b=document.getElementById('nav-btn');b.innerHTML=a?`<span class="wdot"></span>${a.slice(0,6)}…${a.slice(-4)}`:'Insert Validator Key';b.className=a?'nav-btn on':'nav-btn';}
+/* ── SCREEN HELPERS ── */
+function showScreen(n){
+  document.querySelectorAll('.screen').forEach(s=>s.style.display='none');
+  document.getElementById('scr-'+n).style.display='flex';
+}
+function setNavBtn(a){
+  const b=document.getElementById('nav-btn');
+  b.innerHTML=a?`<span class="wdot"></span>${a.slice(0,6)}…${a.slice(-4)}`:'Insert Validator Key';
+  b.className=a?'nav-btn on':'nav-btn';
+}
 function navClick(){walletAddress?doDisconnect():renderPicker();}
 function doDisconnect(){
   walletAddress=null;
-  if(gasInterval){clearInterval(gasInterval);gasInterval=null;}
   setNavBtn(null);
   document.getElementById('node-badge').classList.remove('online');
   document.getElementById('badge-txt').textContent='NODE_STATUS: DISCONNECTED';
-  showScreen('standby');renderPicker();
+  showScreen('standby');
+  renderPicker();
 }
 
-/* DETECT WALLET PROVIDERS */
+/* ── DETECT WALLET PROVIDERS ── */
 function getProvider(type){
-  // Multi-provider list (when multiple wallets installed)
   const providers=window.ethereum?.providers||[];
   if(type==='metamask'){
     if(providers.length>0){const p=providers.find(x=>x.isMetaMask&&!x.isBraveWallet&&!x.isCoinbaseWallet);if(p)return p;}
@@ -381,19 +455,18 @@ function getProvider(type){
   return window.ethereum||null;
 }
 
-/* WALLET PICKER */
+/* ── WALLET PICKER ── */
 function renderPicker(){
   const hasMM=!!getProvider('metamask');
   const hasCB=!!getProvider('coinbase');
   const hasPH=!!getProvider('phantom');
   const hasOKX=!!getProvider('okx');
   const anyFound=hasMM||hasCB||hasPH||hasOKX||!!window.ethereum;
-
   const pageUrl=encodeURIComponent(location.href);
 
   document.getElementById('wallet-area').innerHTML=`
     <div class="wpicker-wrap">
-      <div class="wpicker-note">🔒 Read-only · Ethereum Mainnet · tidak ada transaksi</div>
+      <div class="wpicker-note">🔒 Read-only · Ethereum Mainnet · Fixed Fee: 0.001 ETH</div>
       <div class="wpicker">
         <div class="witem${hasMM?'':' dim'}" onclick="${hasMM?'connectWallet(\'metamask\')':'void(0)'}">
           <div class="wlogo" style="background:rgba(247,147,26,.12)">🦊</div>
@@ -422,17 +495,21 @@ function renderPicker(){
     </div>`;
 }
 
-/* REAL CONNECT — Ethereum Mainnet */
+/* ── CONNECT ── */
 async function connectWallet(type){
   const provider=getProvider(type);
   if(!provider){showError('Provider tidak ditemukan. Pastikan extension aktif.');return;}
-  document.getElementById('wallet-area').innerHTML=`<div class="conn-state"><div class="conn-spin"></div><div class="conn-lbl">Menunggu konfirmasi di wallet kamu…</div></div>`;
+  document.getElementById('wallet-area').innerHTML=`
+    <div class="conn-state">
+      <div class="conn-spin"></div>
+      <div class="conn-lbl">Menunggu konfirmasi di wallet kamu…</div>
+    </div>`;
   try{
     const accounts=await provider.request({method:'eth_requestAccounts'});
     if(!accounts||!accounts.length)throw new Error('Tidak ada akun yang dipilih');
-    // Switch ke Ethereum Mainnet
-    try{await provider.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x1'}]});}
-    catch(e){if(e.code!==4902)console.warn('Chain switch:',e.message);}
+    try{
+      await provider.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x1'}]});
+    }catch(e){if(e.code!==4902)console.warn('Chain switch:',e.message);}
     walletAddress=accounts[0];
     onConnected();
   }catch(err){
@@ -443,7 +520,6 @@ async function connectWallet(type){
     showError(msg);
   }
 }
-
 function showError(msg){
   document.getElementById('wallet-area').innerHTML=`
     <div class="err-box">
@@ -452,54 +528,80 @@ function showError(msg){
     </div>`;
 }
 
-/* FLOW */
+/* ── FLOW ── */
 function onConnected(){setNavBtn(walletAddress);runAssembly();}
+
 function runAssembly(){
   showScreen('assembly');
   const fill=document.getElementById('asm-fill');
-  const steps=[{id:'al1',st:'as1',txt:'RISC-V Engine Loaded',p:'33%'},{id:'al2',st:'as2',txt:'Integrity Verified',p:'66%'},{id:'al3',st:'as3',txt:'DA Layer Synced',p:'100%'}];
+  const steps=[
+    {id:'al1',st:'as1',txt:'RISC-V Engine Loaded',p:'33%'},
+    {id:'al2',st:'as2',txt:'Integrity Verified',p:'66%'},
+    {id:'al3',st:'as3',txt:'DA Layer Synced',p:'100%'}
+  ];
   let i=0;
   (function next(){
     if(i>=steps.length){setTimeout(initDash,600);return;}
     const s=steps[i],el=document.getElementById(s.st);
     el.className='asm-st loading';el.textContent='Loading...';
-    setTimeout(()=>{document.getElementById(s.id).classList.add('loaded');el.className='asm-st done';el.textContent=s.txt;fill.style.width=s.p;i++;next();},800);
+    setTimeout(()=>{
+      document.getElementById(s.id).classList.add('loaded');
+      el.className='asm-st done';el.textContent=s.txt;
+      fill.style.width=s.p;i++;next();
+    },800);
   })();
 }
+
 function initDash(){
   showScreen('dashboard');
   document.getElementById('node-badge').classList.add('online');
   document.getElementById('badge-txt').textContent='NODE_STATUS: ONLINE';
   document.getElementById('kbd-addr').textContent=walletAddress.slice(0,10)+'...'+walletAddress.slice(-6);
   switchVM('EVM',document.querySelector('.vm-tab'));
-  startGasPolling();
+  applyFixedFee(); // langsung set nilai statis, tidak perlu fetch
 }
 
-/* VM SWITCH */
+/* ── VM SWITCH ── */
 function switchVM(vm,btn){
-  currentVM=vm;const d=VM[vm];
+  currentVM=vm;
+  const d=VM[vm];
   document.querySelectorAll('.vm-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  const fEl=document.getElementById('finality-text'),iEl=document.getElementById('integrity-text');
+
+  const fEl=document.getElementById('finality-text');
+  const iEl=document.getElementById('integrity-text');
   if(fEl){fEl.innerHTML=`${d.finality}<span style="font-size:1rem">ms</span>`;fEl.style.color=d.color;}
   if(iEl){iEl.textContent=d.integrity;iEl.style.color=d.color;}
   document.getElementById('finality-tag').innerHTML=`● ${d.fStatus}`;
   document.getElementById('integrity-tag').innerHTML=`● ${d.iStatus}`;
+
   const gp=document.getElementById('gauge-path'),gv=document.getElementById('gauge-val');
   if(gp){gp.style.strokeDashoffset=d.gaugeOffset;gp.style.stroke=d.color;}
   if(gv){gv.textContent=d.finality;gv.setAttribute('fill',d.color);}
+
   const sc=document.getElementById('stack-card');
   if(sc){
     let h=`<div class="card-lbl">🧱 ${vm} Supermodular Layer Stack</div>`;
-    d.stack.forEach((item,idx)=>{h+=`<div class="layer-item" style="animation:fadein .3s both;animation-delay:${idx*.1}s"><div class="li-n">0${idx+1}</div><div class="li-ico"><img src="${item.logo}" onerror="this.src='https://placehold.co/22x22/1a2a42/4ade80?text=?'" loading="lazy"></div><div class="li-info"><div class="li-name">${item.name}</div></div><span class="li-pill" style="background:${d.color}20;color:${d.color}">${item.status}</span></div>`;});
+    d.stack.forEach((item,idx)=>{
+      h+=`<div class="layer-item" style="animation:fadein .3s both;animation-delay:${idx*.1}s">
+        <div class="li-n">0${idx+1}</div>
+        <div class="li-ico"><img src="${item.logo}" onerror="this.src='https://placehold.co/22x22/1a2a42/4ade80?text=?'" loading="lazy"></div>
+        <div class="li-info"><div class="li-name">${item.name}</div></div>
+        <span class="li-pill" style="background:${d.color}20;color:${d.color}">${item.status}</span>
+      </div>`;
+    });
     sc.innerHTML=h;
   }
+
   document.getElementById('vm-label').textContent=vm;
   document.getElementById('vm-label').style.color=d.color;
   document.getElementById('vm-desc').innerHTML=d.desc;
+
+  // pastikan gas tetap statis saat ganti VM
+  applyFixedFee();
 }
 
-/* INIT */
+/* ── INIT ── */
 renderPicker();
 </script>
 </body>
