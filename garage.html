@@ -444,17 +444,34 @@ const SIM_ETH_PRICE = 3200;
 let _lastBaseFee = 12;
 
 const VM={
-  EVM:{finality:50,fStatus:'OPTIMAL',integrity:'3 / 3',iStatus:'VERIFIED',color:'#4ade80',gaugeOffset:40,
-    stack:[{name:"Ethereum",logo:"https://cryptologos.cc/logos/ethereum-eth-logo.png?v=032",status:"SETTLEMENT"},{name:"Arbitrum",logo:"https://cryptologos.cc/logos/arbitrum-arb-logo.png?v=032",status:"L2 EXECUTION"},{name:"Optimism",logo:"https://cryptologos.cc/logos/optimism-ethereum-op-logo.png?v=032",status:"SCALING"}],
-    desc:'Active: <strong>EVM</strong> — Ethereum-compatible execution. Sepolia Testnet. Gas: FREE.'},
-  SVM:{finality:22,fStatus:'ULTRA FAST',integrity:'12 / 12',iStatus:'STABLE',color:'#22d3ee',gaugeOffset:15,
-    stack:[{name:"Solana",logo:"https://cryptologos.cc/logos/solana-sol-logo.png?v=032",status:"SVM CORE"},{name:"Pyth Network",logo:"https://cryptologos.cc/logos/pyth-network-pyth-logo.png?v=032",status:"ORACLE"},{name:"Jupiter",logo:"https://static.jup.ag/jup/tokens/jup.png",status:"AGGREGATOR"}],
-    desc:'Active: <strong>SVM</strong> — Solana Virtual Machine. Parallel tx processing. Rust-based.'},
-  MOVE:{finality:45,fStatus:'SECURE',integrity:'5 / 5',iStatus:'SYNCHRONIZED',color:'#7c5cfc',gaugeOffset:55,
-    stack:[{name:"Sui",logo:"https://cryptologos.cc/logos/sui-sui-logo.png?v=032",status:"OBJECT-VM"},{name:"Aptos",logo:"https://cryptologos.cc/logos/aptos-apt-logo.png?v=032",status:"MOVE-CORE"},{name:"Movement",logo:"https://avatars.githubusercontent.com/u/131062835?s=200&v=4",status:"M2 STACK"}],
-    desc:'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset management.'}
+  EVM:{
+    finality:50,fStatus:'OPTIMAL',integrity:'3 / 3',iStatus:'VERIFIED',color:'#4ade80',gaugeOffset:40,
+    stack:[
+      {name:"Ethereum", logo:"images/eth.png", status:"SETTLEMENT"},
+      {name:"Arbitrum", logo:"images/arb.png", status:"L2 EXECUTION"},
+      {name:"Optimism", logo:"images/op.png", status:"SCALING"}
+    ],
+    desc:'Active: <strong>EVM</strong> — Ethereum-compatible execution. Sepolia Testnet. Gas: FREE.'
+  },
+  SVM:{
+    finality:22,fStatus:'ULTRA FAST',integrity:'12 / 12',iStatus:'STABLE',color:'#22d3ee',gaugeOffset:15,
+    stack:[
+      {name:"Solana", logo:"images/sol.png", status:"SVM CORE"},
+      {name:"Pyth Network", logo:"images/pyth.png", status:"ORACLE"},
+      {name:"Jupiter", logo:"images/jup.png", status:"AGGREGATOR"}
+    ],
+    desc:'Active: <strong>SVM</strong> — Solana Virtual Machine. Parallel tx processing. Rust-based.'
+  },
+  MOVE:{
+    finality:45,fStatus:'SECURE',integrity:'5 / 5',iStatus:'SYNCHRONIZED',color:'#7c5cfc',gaugeOffset:55,
+    stack:[
+      {name:"Sui", logo:"images/sui.png", status:"OBJECT-VM"},
+      {name:"Aptos", logo:"images/apt.png", status:"MOVE-CORE"},
+      {name:"Movement", logo:"images/move.png", status:"M2 STACK"}
+    ],
+    desc:'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset management.'
+  }
 };
-
 function updateGasUI(baseFee, priorityFee){
   const elBase=document.getElementById('gas-base');if(elBase){elBase.textContent=`${baseFee.toFixed(4)} GWEI`;elBase.classList.remove('pulse');}
   const elPriority=document.getElementById('gas-priority');if(elPriority)elPriority.textContent=`${priorityFee.toFixed(2)} GWEI`;
