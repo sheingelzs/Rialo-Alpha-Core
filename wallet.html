@@ -19,6 +19,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 @keyframes lpulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes slideup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
 /* NAV */
 .nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,.95);backdrop-filter:blur(16px);}
@@ -108,16 +109,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .action-btn.needs-wallet{background:transparent;color:var(--accent);border:1px solid rgba(74,222,128,.35);}
 .action-btn.needs-wallet:hover{background:rgba(74,222,128,.07);}
 
-/* TX states */
-.tx-pending{display:none;text-align:center;padding:1.25rem .5rem;}
-.tx-spin{width:40px;height:40px;border:3px solid rgba(74,222,128,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .85rem;}
-.tx-title{font-family:var(--font-head);font-size:1.05rem;font-weight:800;margin-bottom:.35rem;}
-.tx-sub{font-size:.78rem;color:var(--muted);}
-.tx-hash-row{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);margin-top:.5rem;word-break:break-all;}
-.tx-success{display:none;text-align:center;padding:.75rem .5rem;}
-.tx-icon{font-size:2.8rem;margin-bottom:.5rem;animation:float 2s ease-in-out infinite;}
-.tx-success-title{font-family:var(--font-head);font-size:1.3rem;font-weight:800;color:var(--accent);margin-bottom:.25rem;}
-
 /* Recent txns */
 .recent-txns{margin-top:1.5rem;display:none;}
 .recent-txns h4{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem;}
@@ -127,6 +118,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .txn-detail{font-weight:600;}
 .txn-time{font-size:.63rem;color:var(--muted);margin-top:1px;}
 .txn-ok{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(74,222,128,.1);color:var(--accent);}
+
+/* TOAST — same as Garage */
+.tx-toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;max-width:340px;}
+.toast{display:flex;align-items:flex-start;gap:.65rem;padding:.75rem 1rem;border-radius:12px;border:1px solid;font-size:.75rem;animation:slideup .3s ease;backdrop-filter:blur(12px);}
+.toast.pending{background:rgba(250,204,21,.07);border-color:rgba(250,204,21,.25);color:var(--amber);}
+.toast.success{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.25);color:var(--accent);}
+.toast.error{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.25);color:var(--red);}
+.toast-ico{font-size:1rem;flex-shrink:0;margin-top:1px;}
+.toast-msg{flex:1;line-height:1.6;}
+.toast-msg a{color:inherit;opacity:.7;font-family:var(--font-mono);font-size:.65rem;word-break:break-all;}
 
 /* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;display:none;align-items:center;justify-content:center;padding:1rem;}
@@ -155,11 +156,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .m-btn{display:block;width:100%;padding:.7rem;margin-top:.5rem;background:var(--accent);color:#050810;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.88rem;}
 .m-btn:hover{background:#86efac;}
 
-@media(max-width:700px){.nav-links{display:none;}}
+@media(max-width:700px){.nav-links{display:none;}.tx-toast{left:1rem;right:1rem;max-width:unset;}}
 </style>
 </head>
 <body>
 <canvas id="net-canvas"></canvas>
+
+<!-- TOAST CONTAINER — same as Garage -->
+<div id="tx-toast" class="tx-toast"></div>
+
 <nav class="nav">
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
   <div class="nav-right">
@@ -238,23 +243,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
       <div class="net-notice">🔗 Sepolia Testnet · RIALO contract uses mock swap — no real assets are exchanged on mainnet.</div>
 
-      <!-- TX pending -->
-      <div class="tx-pending" id="tx-pending">
-        <div class="tx-spin"></div>
-        <div class="tx-title">Processing Swap…</div>
-        <div class="tx-sub">Waiting for wallet confirmation.</div>
-        <div class="tx-hash-row" id="tx-hash-row"></div>
-      </div>
-
-      <!-- TX success -->
-      <div class="tx-success" id="tx-success">
-        <div class="tx-icon">✅</div>
-        <div class="tx-success-title">Swap Confirmed!</div>
-        <div class="tx-sub" id="tx-msg"></div>
-        <div class="tx-hash-row" id="tx-hash"></div>
-        <button class="action-btn ready" style="margin-top:1rem" onclick="resetSwap()">Swap Again</button>
-      </div>
-
       <button class="action-btn" id="action-btn">Connect Wallet</button>
     </div>
 
@@ -274,97 +262,74 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </div>
 
 <script>
-/* ── CANVAS — menu.html style ── */
+/* ── CANVAS ── */
 (function(){
   const canvas = document.getElementById('net-canvas');
   const ctx = canvas.getContext('2d');
   const particleCount = 110;
   const connectionDistance = 150;
   let particles = [];
-
-  function resize(){
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+  window.addEventListener('resize',resize);resize();
+  class Particle{
+    constructor(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.radius=1.2;}
+    update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>canvas.width)this.vx*=-1;if(this.y<0||this.y>canvas.height)this.vy*=-1;}
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);ctx.fillStyle='rgba(0,255,150,0.4)';ctx.fill();}
   }
-  window.addEventListener('resize', resize);
-  resize();
-
-  class Particle {
-    constructor(){
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.vx = (Math.random() - 0.5) * 0.4;
-      this.vy = (Math.random() - 0.5) * 0.4;
-      this.radius = 1.2;
-    }
-    update(){
-      this.x += this.vx;
-      this.y += this.vy;
-      if(this.x < 0 || this.x > canvas.width)  this.vx *= -1;
-      if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
-    }
-    draw(){
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0, 255, 150, 0.4)';
-      ctx.fill();
-    }
-  }
-
-  function init(){
-    particles = [];
-    for(let i = 0; i < particleCount; i++) particles.push(new Particle());
-  }
-
+  function init(){particles=[];for(let i=0;i<particleCount;i++)particles.push(new Particle());}
   function animate(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for(let i = 0; i < particles.length; i++){
-      particles[i].update();
-      particles[i].draw();
-      for(let j = i + 1; j < particles.length; j++){
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < connectionDistance){
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(0, 255, 150, ${1 - dist / connectionDistance})`;
-          ctx.lineWidth = 0.6;
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=0;i<particles.length;i++){
+      particles[i].update();particles[i].draw();
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<connectionDistance){ctx.beginPath();ctx.strokeStyle=`rgba(0,255,150,${1-dist/connectionDistance})`;ctx.lineWidth=.6;ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke();}
       }
     }
     requestAnimationFrame(animate);
   }
-
-  init();
-  animate();
+  init();animate();
 })();
 
 /* ── RATE JITTER ── */
 const RATE = 1250;
 let rateJitter = RATE;
-setInterval(() => {
-  rateJitter = RATE + Math.floor((Math.random()-0.5)*20);
-  document.getElementById('live-rate').textContent = rateJitter.toLocaleString() + ' RIALO';
+setInterval(()=>{
+  rateJitter = RATE + Math.floor((Math.random()-.5)*20);
+  document.getElementById('live-rate').textContent = rateJitter.toLocaleString()+' RIALO';
   calcSwap();
-}, 5000);
+},5000);
+
+/* ── TOAST — same as Garage ── */
+const _toastTimers={};
+function showToast(id,type,msg){
+  const box=document.getElementById('tx-toast');
+  let el=document.getElementById('t-'+id);
+  if(!el){el=document.createElement('div');el.id='t-'+id;box.appendChild(el);}
+  el.className=`toast ${type}`;
+  el.innerHTML=`<span class="toast-ico">${type==='pending'?'⏳':type==='success'?'✅':'❌'}</span><span class="toast-msg">${msg}</span>`;
+  if(_toastTimers[id])clearTimeout(_toastTimers[id]);
+  if(type!=='pending')_toastTimers[id]=setTimeout(()=>{el.remove();},9000);
+}
 
 /* ── STATE ── */
 let wallet=null, prov=null;
-let ethBalance = 0;
-let rialoBal = 0;
+let ethBalance=0, rialoBal=0;
 let txns=[], busy=false;
+
+/* ── HELPER ── */
+function ethToHex(eth){
+  return '0x'+BigInt(Math.round(parseFloat(eth)*1e18)).toString(16);
+}
 
 /* ── PROVIDERS ── */
 function getProvList(){const e=window.ethereum;if(!e)return[];return e.providers||[e];}
 function findProv(key){
   const L=getProvList();
-  if(key==='okx') return window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)||null;
-  if(key==='metamask') return L.find(p=>p.isMetaMask&&!p.isPhantom)||null;
-  if(key==='phantom') return L.find(p=>p.isPhantom)||null;
-  if(key==='coinbase') return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;
+  if(key==='okx')return window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)||null;
+  if(key==='metamask')return L.find(p=>p.isMetaMask&&!p.isPhantom)||null;
+  if(key==='phantom')return L.find(p=>p.isPhantom)||null;
+  if(key==='coinbase')return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;
   return window.ethereum||null;
 }
 function detectW(){
@@ -386,11 +351,10 @@ function bindProv(p){
 
 /* ── BALANCE ── */
 async function fetchBalance(){
-  if(!wallet||!prov) return;
+  if(!wallet||!prov)return;
   try{
-    const hex = await prov.request({method:'eth_getBalance',params:[wallet,'latest']});
-    ethBalance = parseInt(hex,16)/1e18;
-    updateUI();
+    const hex=await prov.request({method:'eth_getBalance',params:[wallet,'latest']});
+    ethBalance=parseInt(hex,16)/1e18;updateUI();
   }catch(e){ethBalance=0;updateUI();}
 }
 
@@ -405,12 +369,12 @@ function navClick(){wallet?doDisconnect():openModal();}
 /* ── DISCONNECT ── */
 function doDisconnect(){
   wallet=null;prov=null;ethBalance=0;rialoBal=0;
-  setNavBtn(null);renderWalletArea();
+  setNavBtn(null);renderWalletArea();updateActionBtn();
 }
 
 /* ── MODAL ── */
 function closeModal(e){
-  if(!e||e.target===document.getElementById('modal')) document.getElementById('modal').classList.remove('open');
+  if(!e||e.target===document.getElementById('modal'))document.getElementById('modal').classList.remove('open');
 }
 function openModal(){
   const isMob=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -478,8 +442,8 @@ async function connectWallet(key,name){
   }
   try{
     const accounts=await p.request({method:'eth_requestAccounts'});
-    if(!accounts||!accounts.length) throw new Error('No accounts returned.');
-    wallet=accounts[0]; prov=p;
+    if(!accounts||!accounts.length)throw new Error('No accounts returned.');
+    wallet=accounts[0];prov=p;
     bindProv(p);
     setNavBtn(wallet);
     document.getElementById('modal').classList.remove('open');
@@ -513,7 +477,7 @@ function renderWalletArea(){
         </div>
       </div>`;
     updateUI();
-  } else {
+  }else{
     area.innerHTML=`
       <button class="connect-cta" onclick="openModal()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/><circle cx="16" cy="14" r="1" fill="currentColor"/></svg>
@@ -527,6 +491,7 @@ function renderWalletArea(){
 function updateUI(){
   const fb=document.getElementById('from-bal');if(fb)fb.textContent=ethBalance.toFixed(6)+' ETH';
   const tb=document.getElementById('to-bal');if(tb)tb.textContent=rialoBal.toFixed(2)+' RIALO';
+  const wb=document.getElementById('ws-bal');if(wb)wb.textContent=`ETH: ${ethBalance.toFixed(4)} | RIALO: ${rialoBal.toFixed(2)}`;
   calcSwap();
 }
 function setMax(){
@@ -544,7 +509,7 @@ function calcSwap(){
     ri.style.display='block';
     const rr=document.getElementById('rr-rate');if(rr)rr.textContent=`1 ETH = ${rateJitter} RIALO`;
     const rm=document.getElementById('rr-min');if(rm)rm.textContent=(out*0.995).toFixed(4)+' RIALO';
-  } else if(ri) ri.style.display='none';
+  }else if(ri)ri.style.display='none';
   updateActionBtn();
 }
 function updateActionBtn(){
@@ -557,60 +522,55 @@ function updateActionBtn(){
   btn.textContent=`Swap ${amt.toFixed(4)} ETH → RIALO`;btn.className='action-btn ready';btn.onclick=doSwap;
 }
 
+/* ── SWAP — same pattern as doStake/doSend in Garage ── */
 async function doSwap(){
-  if(busy||!wallet)return;
+  if(busy||!wallet||!prov)return;
   const amt=parseFloat(document.getElementById('from-amt')?.value)||0;
   const out=parseFloat(document.getElementById('to-amt')?.value)||0;
   if(amt<=0||amt>ethBalance||out<=0)return;
+
   busy=true;
-  document.getElementById('tx-pending').style.display='block';
-  document.getElementById('tx-success').style.display='none';
-  document.getElementById('action-btn').style.display='none';
-  document.getElementById('route-info').style.display='none';
-  document.getElementById('tx-hash-row').textContent='';
   updateActionBtn();
+  showToast('swap','pending',`Waiting for swap confirmation in your wallet…`);
+
   try{
-    const weiAmt='0x'+Math.floor(amt*1e18).toString(16);
-    const txHash = await prov.request({
+    const tx=await prov.request({
       method:'eth_sendTransaction',
-      params:[{from:wallet,to:'0x0000000000000000000000000000000000000000',value:weiAmt,data:'0x'}]
+      params:[{
+        from:wallet,
+        to:'0x0000000000000000000000000000000000000000',
+        value:ethToHex(amt),
+        gas:'0x7A120'
+      }]
     });
-    document.getElementById('tx-hash-row').textContent='Tx: '+txHash.slice(0,20)+'…';
-    setTimeout(()=>swapDone(amt,out,txHash),2000);
+
+    // Update balances
+    ethBalance=Math.max(0,parseFloat((ethBalance-amt).toFixed(6)));
+    rialoBal=parseFloat((rialoBal+out).toFixed(4));
+    updateUI();
+
+    // Record txn
+    txns.unshift({amtIn:amt,amtOut:out,hash:tx,time:'Just now'});
+    renderTxns();
+
+    showToast('swap','success',
+      `Swap successful! 🎉 ${amt.toFixed(4)} ETH → ${out.toFixed(4)} RIALO<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`
+    );
+
+    // Reset inputs
+    document.getElementById('from-amt').value='';
+    document.getElementById('to-amt').value='';
+    document.getElementById('route-info').style.display='none';
+    document.getElementById('from-usd').textContent='≈ 0 RIALO';
+    document.getElementById('to-usd').textContent='≈ $0.00';
+
   }catch(e){
+    const msg=e.code===4001?'Swap rejected.':(e.message||'Swap failed.');
+    showToast('swap','error',msg);
+  }finally{
     busy=false;
-    document.getElementById('tx-pending').style.display='none';
-    document.getElementById('action-btn').style.display='block';
     updateActionBtn();
-    alert('Transaction rejected or failed: '+(e.message||'unknown error'));
   }
-}
-
-function swapDone(amtIn,amtOut,hash){
-  busy=false;
-  ethBalance=Math.max(0,parseFloat((ethBalance-amtIn).toFixed(6)));
-  rialoBal=parseFloat((rialoBal+amtOut).toFixed(4));
-  txns.unshift({amtIn,amtOut,hash,time:'Just now'});
-  document.getElementById('tx-pending').style.display='none';
-  document.getElementById('tx-success').style.display='block';
-  const tm=document.getElementById('tx-msg');if(tm)tm.textContent=`${amtIn.toFixed(4)} ETH → ${amtOut.toFixed(4)} RIALO`;
-  const th=document.getElementById('tx-hash');if(th)th.textContent='Tx: '+(hash?hash.slice(0,22)+'…':'confirmed');
-  const wb=document.getElementById('ws-bal');if(wb)wb.textContent=`ETH: ${ethBalance.toFixed(4)} | RIALO: ${rialoBal.toFixed(2)}`;
-  renderTxns();
-  const fb=document.getElementById('from-bal');if(fb)fb.textContent=ethBalance.toFixed(6)+' ETH';
-  const tb=document.getElementById('to-bal');if(tb)tb.textContent=rialoBal.toFixed(2)+' RIALO';
-}
-
-function resetSwap(){
-  busy=false;
-  document.getElementById('from-amt').value='';
-  document.getElementById('to-amt').value='';
-  document.getElementById('tx-success').style.display='none';
-  document.getElementById('action-btn').style.display='block';
-  document.getElementById('route-info').style.display='none';
-  document.getElementById('from-usd').textContent='≈ 0 RIALO';
-  document.getElementById('to-usd').textContent='≈ $0.00';
-  updateActionBtn();
 }
 
 function renderTxns(){
