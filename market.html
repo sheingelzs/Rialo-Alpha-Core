@@ -17,7 +17,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
-#net-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh;}
+#net-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
 
 /* NAV */
 .nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,0.95);backdrop-filter:blur(16px);}
@@ -202,32 +202,75 @@ tr:hover td{background:rgba(124,92,252,0.04);}
 </div>
 
 <script>
-// ── NETWORK CANVAS ──
+/* ── CANVAS — menu.html style ── */
 (function(){
   const canvas = document.getElementById('net-canvas');
   const ctx = canvas.getContext('2d');
-  const NODE_COUNT = 90, MAX_DIST = 160;
-  let W, H, angle = 0;
-  const nodes = Array.from({length: NODE_COUNT}, () => ({
-    bx: (Math.random()-0.5)*2200, by: (Math.random()-0.5)*1400,
-    vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4,
-    r: Math.random()*2+1
-  }));
-  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resize); resize();
-  function draw(){
-    ctx.clearRect(0,0,W,H); angle += 0.0008;
-    const cos = Math.cos(angle), sin = Math.sin(angle), cx = W/2, cy = H/2;
-    nodes.forEach(n => { n.bx += n.vx; n.by += n.vy; if(n.bx<-1200)n.bx=1200; if(n.bx>1200)n.bx=-1200; if(n.by<-800)n.by=800; if(n.by>800)n.by=-800; });
-    const pts = nodes.map(n => ({ x:cx+n.bx*cos-n.by*sin, y:cy+n.bx*sin+n.by*cos, r:n.r }));
-    for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){ const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy); if(d<MAX_DIST){ ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/MAX_DIST)*0.45})`;ctx.lineWidth=0.7;ctx.stroke(); } }
-    pts.forEach(p => { ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(74,222,128,0.7)';ctx.fill(); });
-    requestAnimationFrame(draw);
+  const particleCount = 110;
+  const connectionDistance = 150;
+  let particles = [];
+
+  function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
-  draw();
+  window.addEventListener('resize', resize);
+  resize();
+
+  class Particle {
+    constructor(){
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.radius = 1.2;
+    }
+    update(){
+      this.x += this.vx;
+      this.y += this.vy;
+      if(this.x < 0 || this.x > canvas.width)  this.vx *= -1;
+      if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+    draw(){
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 255, 150, 0.4)';
+      ctx.fill();
+    }
+  }
+
+  function init(){
+    particles = [];
+    for(let i = 0; i < particleCount; i++) particles.push(new Particle());
+  }
+
+  function animate(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for(let i = 0; i < particles.length; i++){
+      particles[i].update();
+      particles[i].draw();
+      for(let j = i + 1; j < particles.length; j++){
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < connectionDistance){
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(0, 255, 150, ${1 - dist / connectionDistance})`;
+          ctx.lineWidth = 0.6;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  init();
+  animate();
 })();
 
-// ── MARKET DATA ──
+/* ── MARKET DATA ── */
 let allCoins=[], selectedCoinId='bitcoin', currentDays=1, mainChartInst=null, sparkCharts={};
 let sortKey='rank', sortDir=1, gainTabMode='gain', refreshInterval=null;
 
@@ -360,7 +403,6 @@ async function loadMarketData(){
   }
 }
 
-// Init
 loadMarketData();
 </script>
 </body>
