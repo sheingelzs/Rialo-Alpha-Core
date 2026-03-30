@@ -194,34 +194,32 @@ function listenLeaderboard(){
 
   // ✅ Coba Firebase dulu, fallback ke localStorage
   try {
-    const q=query(ref(db,'leaderboard'),orderByChild('xp'),limitToLast(50));
+    const q=query(ref(db,'leaderboard'),orderByChild('exp'),limitToLast(50));
     onValue(q, snap=>{
       const firebaseEntries=[];
       snap.forEach(child=>{firebaseEntries.push(child.val());});
 
-      // ✅ Merge Firebase + localStorage (deduplikasi by wallet, ambil xp tertinggi)
+      // ✅ Merge Firebase + localStorage (deduplikasi by wallet, ambil exp tertinggi)
       const localEntries = getLBLocal();
       const merged = [...firebaseEntries];
       localEntries.forEach(le => {
         const existIdx = merged.findIndex(fe => fe.wallet && le.wallet && fe.wallet.toLowerCase() === le.wallet.toLowerCase());
-        if(existIdx < 0) merged.push(le); // tambah yang belum ada di Firebase
-        else if(le.xp > merged[existIdx].xp) merged[existIdx] = le; // update jika local lebih tinggi
+        if(existIdx < 0) merged.push(le);
+        else if((le.exp||0) > (merged[existIdx].exp||0)) merged[existIdx] = le;
       });
 
-      merged.sort((a,b) => b.xp - a.xp || (b.correct||0) - (a.correct||0));
+      merged.sort((a,b) => (b.exp||0) - (a.exp||0));
       renderLeaderboard(merged);
     }, err => {
-      // Firebase error → fallback ke localStorage saja
       console.warn('Firebase error, using localStorage:', err);
       const local = getLBLocal();
-      local.sort((a,b) => b.xp - a.xp || (b.correct||0) - (a.correct||0));
+      local.sort((a,b) => (b.exp||0) - (a.exp||0));
       renderLeaderboard(local);
     });
   } catch(e) {
-    // Firebase tidak tersedia → localStorage saja
     console.warn('Firebase unavailable, using localStorage:', e);
     const local = getLBLocal();
-    local.sort((a,b) => b.xp - a.xp || (b.correct||0) - (a.correct||0));
+    local.sort((a,b) => (b.exp||0) - (a.exp||0));
     renderLeaderboard(local);
   }
 }
@@ -230,7 +228,6 @@ function renderLeaderboard(entries){
   const lbBody=document.getElementById('lb-body');
   if(!entries.length){
     lbBody.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem">No scores yet. Complete the quiz to be first!</div>`;
-    // Update "Your Position" card
     if(wallet){
       document.getElementById('mr-num').textContent='—';
       document.getElementById('mr-addr').textContent=fmtAddr(wallet)+' — Complete the quiz!';
@@ -239,17 +236,16 @@ function renderLeaderboard(entries){
     }
     return;
   }
-  // ✅ Urutkan XP tertinggi ke terendah
-  entries.sort((a,b) => b.xp - a.xp || (b.correct||0) - (a.correct||0));
+  // ✅ Urutkan exp tertinggi ke terendah
+  entries.sort((a,b) => (b.exp||0) - (a.exp||0));
 
   const myIdx=wallet?entries.findIndex(e=>e.wallet&&e.wallet.toLowerCase()===wallet.toLowerCase()):-1;
   if(myIdx>=0){
     const me=entries[myIdx];
     document.getElementById('mr-num').textContent='#'+(myIdx+1);
-    // ✅ Tampilkan nama DAN alamat wallet dengan jelas
     document.getElementById('mr-addr').textContent=(me.name||'Anonymous')+' · '+fmtAddr(me.wallet);
-    document.getElementById('mr-rank').textContent='Rank: '+getRank(me.xp).name;
-    document.getElementById('mr-xp').textContent=me.xp+' XP';
+    document.getElementById('mr-rank').textContent='Rank: '+getRank(me.exp||0).name;
+    document.getElementById('mr-xp').textContent=(me.exp||0)+' XP';
   } else if(wallet){
     document.getElementById('mr-num').textContent='—';
     document.getElementById('mr-addr').textContent=fmtAddr(wallet)+' — Complete the quiz!';
@@ -259,11 +255,10 @@ function renderLeaderboard(entries){
 
   lbBody.innerHTML=entries.map((e,i)=>{
     const pos=i+1;
-    const rank=getRank(e.xp);
     const medal=pos<=3?MEDALS[pos-1]:'';
     const isMe=wallet&&e.wallet&&e.wallet.toLowerCase()===wallet.toLowerCase();
     const cls=isMe?'me':pos===1?'top1':pos===2?'top2':pos===3?'top3':'';
-    const rankColor=e.xp>=1125?'#c4b5fd':e.xp>=900?'#22d3ee':e.xp>=500?'#4ade80':'#64748b';
+    const rankColor=e.exp>=1125?'#c4b5fd':e.exp>=900?'#22d3ee':e.exp>=500?'#4ade80':'#64748b';
     return `<div class="lb-row ${cls}" style="animation-delay:${i*0.04}s">
       <div class="rank-num">${medal||pos}</div>
       <div class="lb-addr-cell">
@@ -273,8 +268,8 @@ function renderLeaderboard(entries){
           <div class="lb-addr ${isMe?'me':''}">${fmtAddr(e.wallet)}</div>
         </div>
       </div>
-      <div class="lb-rank-cell"><div class="lb-rank-dot" style="background:${rankColor}"></div>${rank.name}</div>
-      <div class="lb-xp ${isMe?'me':''}">${e.xp} XP</div>
+      <div class="lb-rank-cell"><div class="lb-rank-dot" style="background:${rankColor}"></div>${getRank(e.exp||0).name}</div>
+      <div class="lb-xp ${isMe?'me':''}">${e.exp||0} XP</div>
     </div>`;
   }).join('');
 }
