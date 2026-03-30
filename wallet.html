@@ -129,32 +129,34 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .toast-msg{flex:1;line-height:1.6;}
 .toast-msg a{color:inherit;opacity:.7;font-family:var(--font-mono);font-size:.65rem;word-break:break-all;}
 
-/* Modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;display:none;align-items:center;justify-content:center;padding:1rem;}
-.modal-overlay.open{display:flex;animation:fadein .2s ease;}
-.modal{background:#090f1c;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:1.75rem;width:100%;max-width:420px;position:relative;box-shadow:0 32px 80px rgba(0,0,0,.6);}
-.modal-x{position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,.3);font-size:1.1rem;cursor:pointer;transition:color .2s;}
-.modal-x:hover{color:#fff;}
-.modal-title{font-family:var(--font-head);font-size:1.2rem;font-weight:800;margin-bottom:.25rem;}
-.modal-sub{font-size:.8rem;color:rgba(255,255,255,.38);margin-bottom:1.5rem;}
-.wlist{display:flex;flex-direction:column;gap:.55rem;}
-.witem{display:flex;align-items:center;gap:.85rem;padding:.85rem .95rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;transition:all .2s;}
-.witem:hover:not(.dim){background:rgba(255,255,255,.08);border-color:rgba(74,222,128,.3);}
-.witem.dim{opacity:.5;cursor:not-allowed;}
-.wlogo{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
-.winfo{flex:1;}
-.wname{font-weight:600;font-size:.88rem;}
-.wtype{font-size:.7rem;color:rgba(255,255,255,.3);margin-top:1px;}
-.wstat{font-size:.72rem;font-weight:600;}
-.wstat.ok{color:var(--accent);}
-.wstat.no{color:var(--red);}
-.m-hint{font-size:.65rem;color:var(--muted);margin-top:.75rem;text-align:center;line-height:1.6;}
-.spinner{width:44px;height:44px;border:3px solid rgba(74,222,128,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem;}
-.center-m{text-align:center;padding:.5rem 0;}
-.m-big{font-family:var(--font-head);font-size:1.1rem;font-weight:800;margin-bottom:.35rem;}
-.m-desc{font-size:.8rem;color:rgba(255,255,255,.38);line-height:1.6;margin-bottom:1.25rem;}
-.m-btn{display:block;width:100%;padding:.7rem;margin-top:.5rem;background:var(--accent);color:#050810;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:.88rem;}
-.m-btn:hover{background:#86efac;}
+/* Inline wallet picker — same as Garage */
+.wpicker-wrap{width:100%;margin-bottom:1.1rem;}
+.wpicker-note{font-size:.68rem;color:rgba(200,180,255,.5);font-family:var(--font-mono);margin-bottom:.5rem;display:flex;align-items:center;gap:6px;background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.15);padding:.4rem .85rem;border-radius:8px;}
+.wpicker{display:flex;flex-direction:column;gap:.45rem;}
+.witem{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;width:100%;}
+.witem:hover:not(.dim){background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.3);transform:translateY(-1px);}
+.witem:active:not(.dim){transform:scale(.98);}
+.witem.dim{opacity:.35;cursor:not-allowed;}
+.wlogo{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;}
+.winfo{flex:1;text-align:left;}
+.wname{font-weight:600;font-size:.85rem;}
+.wsub{font-size:.66rem;color:var(--muted);margin-top:2px;}
+.wbadge{font-size:.65rem;font-weight:700;flex-shrink:0;}
+.wbadge.ok{color:var(--accent);}
+.wbadge.no{color:rgba(255,255,255,.22);}
+.conn-state{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1.5rem 0;}
+.conn-spin{width:40px;height:40px;border:3px solid rgba(74,222,128,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+.conn-lbl{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);}
+.err-box{display:flex;flex-direction:column;align-items:center;gap:.75rem;padding:1rem;}
+.err-msg{font-size:.82rem;color:var(--red);text-align:center;line-height:1.55;}
+.retry-btn{padding:.5rem 1.25rem;background:transparent;border:1px solid rgba(74,222,128,.3);color:var(--accent);border-radius:8px;font-family:var(--font);font-size:.8rem;font-weight:600;cursor:pointer;}
+.retry-btn:hover{background:rgba(74,222,128,.08);}
+.no-wallet-warn{margin-top:.5rem;padding:.65rem 1rem;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:10px;font-size:.75rem;color:rgba(248,113,113,.85);line-height:1.55;text-align:left;}
+.faucet-note{margin-top:.6rem;padding:.55rem .85rem;background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.15);border-radius:8px;font-size:.67rem;font-family:var(--font-mono);color:rgba(200,180,255,.6);line-height:1.6;text-align:center;}
+.faucet-note a{color:var(--accent2);text-decoration:none;}
+.faucet-note a:hover{text-decoration:underline;}
+.mobile-link{display:block;text-align:center;margin-top:.5rem;font-size:.68rem;color:rgba(74,222,128,.6);font-family:var(--font-mono);text-decoration:none;}
+.mobile-link:hover{color:var(--accent);}
 
 @media(max-width:700px){.nav-links{display:none;}.tx-toast{left:1rem;right:1rem;max-width:unset;}}
 </style>
@@ -253,13 +255,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   </div>
 </div>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal" onclick="event.stopPropagation()">
-    <button class="modal-x" onclick="closeModal()">✕</button>
-    <div id="modal-body"></div>
-  </div>
-</div>
+
 
 <script>
 /* ── CANVAS ── */
@@ -332,15 +328,6 @@ function findProv(key){
   if(key==='coinbase')return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;
   return window.ethereum||null;
 }
-function detectW(){
-  const L=getProvList();
-  return{
-    metamask:!!(L.find(p=>p.isMetaMask&&!p.isPhantom)),
-    phantom:!!(L.find(p=>p.isPhantom)),
-    okx:!!(window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)),
-    coinbase:!!(L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)),
-  };
-}
 function bindProv(p){
   if(!p||!p.on)return;
   p.on('accountsChanged',accs=>{
@@ -364,7 +351,7 @@ function setNavBtn(addr){
   if(addr){btn.classList.add('on');btn.innerHTML=`<span class="wdot"></span>${addr.slice(0,6)}…${addr.slice(-4)}`;}
   else{btn.classList.remove('on');btn.textContent='Connect Wallet';}
 }
-function navClick(){wallet?doDisconnect():openModal();}
+function navClick(){wallet?doDisconnect():renderWalletArea();}
 
 /* ── DISCONNECT ── */
 function doDisconnect(){
@@ -372,95 +359,11 @@ function doDisconnect(){
   setNavBtn(null);renderWalletArea();updateActionBtn();
 }
 
-/* ── MODAL ── */
-function closeModal(e){
-  if(!e||e.target===document.getElementById('modal'))document.getElementById('modal').classList.remove('open');
-}
-function openModal(){
-  const isMob=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const hasEth=!!(window.ethereum||window.okxwallet);
-  if(!hasEth&&!isMob){showNoWalletModal();return;}
-  isMob?showMobileModal():showDesktopModal();
-}
-function showDesktopModal(){
-  const d=detectW();
-  const ws=[
-    {key:'metamask',icon:'🦊',bg:'rgba(247,147,26,.15)',name:'MetaMask',type:'Browser Extension',ok:d.metamask,url:'https://metamask.io/download/'},
-    {key:'phantom',icon:'👻',bg:'rgba(153,69,255,.15)',name:'Phantom',type:'Solana & EVM · Extension',ok:d.phantom,url:'https://phantom.app/download'},
-    {key:'okx',icon:'⬛',bg:'rgba(0,0,0,.3)',name:'OKX Wallet',type:'Extension & Mobile',ok:d.okx,url:'https://www.okx.com/web3'},
-    {key:'coinbase',icon:'🔵',bg:'rgba(22,82,240,.15)',name:'Coinbase Wallet',type:'Extension · Mobile',ok:d.coinbase,url:'https://www.coinbase.com/wallet'},
-  ];
-  document.getElementById('modal-body').innerHTML=`
-    <div class="modal-title">Connect Wallet</div>
-    <div class="modal-sub">Choose a wallet to connect and start swapping.</div>
-    <div class="wlist">
-      ${ws.map(w=>w.ok
-        ?`<div class="witem" onclick="connectWallet('${w.key}','${w.name}')"><div class="wlogo" style="background:${w.bg}">${w.icon}</div><div class="winfo"><div class="wname">${w.name}</div><div class="wtype">${w.type}</div></div><div class="wstat ok">● Detected</div></div>`
-        :`<div class="witem dim" onclick="window.open('${w.url}','_blank')"><div class="wlogo" style="background:${w.bg};opacity:.5">${w.icon}</div><div class="winfo"><div class="wname">${w.name}</div><div class="wtype">${w.type}</div></div><div class="wstat no">Install ↗</div></div>`
-      ).join('')}
-    </div>
-    <p class="m-hint">Only wallets marked <span style="color:var(--accent)">● Detected</span> are installed.</p>`;
-  document.getElementById('modal').classList.add('open');
-}
-function showNoWalletModal(){
-  document.getElementById('modal-body').innerHTML=`
-    <div class="center-m">
-      <div style="font-size:2.5rem;margin-bottom:1rem">🔑</div>
-      <div class="m-big">No Wallet Detected</div>
-      <div class="m-desc">Install a browser wallet extension to continue.</div>
-      <a href="https://metamask.io/download/" target="_blank" style="display:block;padding:.75rem;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.3);color:#f7931a;text-decoration:none;font-weight:600;border-radius:10px;text-align:center;margin-top:.5rem">🦊 Install MetaMask</a>
-      <a href="https://phantom.app/download" target="_blank" style="display:block;padding:.75rem;background:rgba(153,69,255,.1);border:1px solid rgba(153,69,255,.3);color:#9945ff;text-decoration:none;font-weight:600;border-radius:10px;text-align:center;margin-top:.5rem">👻 Install Phantom</a>
-    </div>`;
-  document.getElementById('modal').classList.add('open');
-}
-function showMobileModal(){
-  const cur=encodeURIComponent(location.href);
-  const links=[
-    {icon:'🦊',name:'MetaMask',type:'Open in MetaMask Browser',href:`https://metamask.app.link/dapp/${location.host}${location.pathname}`},
-    {icon:'👻',name:'Phantom',type:'Open in Phantom Browser',href:`https://phantom.app/ul/browse/${cur}?ref=${cur}`},
-    {icon:'⬛',name:'OKX Wallet',type:'Open in OKX Browser',href:`okx://wallet/dapp/url?dappUrl=${cur}`},
-    {icon:'🔵',name:'Coinbase Wallet',type:'Open in Coinbase Browser',href:`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(location.href)}`},
-  ];
-  document.getElementById('modal-body').innerHTML=`
-    <div class="modal-title">Open with Wallet App</div>
-    <div class="modal-sub">Select your wallet to open this dApp.</div>
-    <div class="wlist">
-      ${links.map(l=>`<div class="witem" onclick="location.href='${l.href}'"><div class="wlogo" style="background:rgba(255,255,255,.06)">${l.icon}</div><div class="winfo"><div class="wname">${l.name}</div><div class="wtype">${l.type}</div></div><div class="wstat ok">Open ↗</div></div>`).join('')}
-    </div>`;
-  document.getElementById('modal').classList.add('open');
-}
-
-/* ── CONNECT ── */
-async function connectWallet(key,name){
-  document.getElementById('modal-body').innerHTML=`
-    <div class="center-m"><div class="spinner"></div><div class="m-big">Connecting ${name}…</div><div class="m-desc">Approve the connection in your wallet.</div></div>`;
-  const p=findProv(key);
-  if(!p){
-    document.getElementById('modal-body').innerHTML=`
-      <div class="center-m"><div style="font-size:2rem;margin-bottom:.75rem">⚠️</div><div class="m-big">${name} Not Available</div><div class="m-desc">Provider not found.</div><button class="m-btn" onclick="showDesktopModal()">Back</button></div>`;
-    return;
-  }
-  try{
-    const accounts=await p.request({method:'eth_requestAccounts'});
-    if(!accounts||!accounts.length)throw new Error('No accounts returned.');
-    wallet=accounts[0];prov=p;
-    bindProv(p);
-    setNavBtn(wallet);
-    document.getElementById('modal').classList.remove('open');
-    await fetchBalance();
-    renderWalletArea();
-    updateActionBtn();
-  }catch(e){
-    const msg=e.code===4001?'Connection rejected.':(e.message||'Unknown error.');
-    document.getElementById('modal-body').innerHTML=`
-      <div class="center-m"><div style="font-size:2rem;margin-bottom:.75rem">⚠️</div><div class="m-big">Connection Failed</div><div class="m-desc">${msg}</div><button class="m-btn" onclick="showDesktopModal()">Try Again</button></div>`;
-  }
-}
-
-/* ── WALLET AREA ── */
+/* ── INLINE WALLET PICKER — same as Garage ── */
 function renderWalletArea(){
   const area=document.getElementById('wallet-area');
   if(!area)return;
+
   if(wallet){
     area.innerHTML=`
       <div class="wallet-strip">
@@ -477,13 +380,98 @@ function renderWalletArea(){
         </div>
       </div>`;
     updateUI();
-  }else{
+    return;
+  }
+
+  const hasMM=!!findProv('metamask'),hasCB=!!findProv('coinbase'),hasPH=!!findProv('phantom'),hasOKX=!!findProv('okx');
+  const anyFound=hasMM||hasCB||hasPH||hasOKX||!!window.ethereum;
+  const isMob=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const pageUrl=encodeURIComponent(location.href);
+
+  if(isMob){
     area.innerHTML=`
-      <button class="connect-cta" onclick="openModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/><circle cx="16" cy="14" r="1" fill="currentColor"/></svg>
-        Connect Wallet to Swap
-      </button>`;
+      <div class="wpicker-wrap">
+        <div class="wpicker-note">📱 Open from your wallet's built-in browser</div>
+        <div class="wpicker">
+          <div class="witem" onclick="location.href='https://metamask.app.link/dapp/${location.host}${location.pathname}'">
+            <div class="wlogo" style="background:rgba(247,147,26,.12)">🦊</div>
+            <div class="winfo"><div class="wname">MetaMask</div><div class="wsub">Open in MetaMask Browser</div></div>
+            <span class="wbadge ok">Open ↗</span>
+          </div>
+          <div class="witem" onclick="location.href='okx://wallet/dapp/url?dappUrl=${pageUrl}'">
+            <div class="wlogo" style="background:rgba(255,255,255,.06)">⚫</div>
+            <div class="winfo"><div class="wname">OKX Wallet</div><div class="wsub">Open in OKX Browser</div></div>
+            <span class="wbadge ok">Open ↗</span>
+          </div>
+          <div class="witem" onclick="location.href='https://phantom.app/ul/browse/${pageUrl}?ref=${pageUrl}'">
+            <div class="wlogo" style="background:rgba(153,69,255,.12)">👻</div>
+            <div class="winfo"><div class="wname">Phantom</div><div class="wsub">Open in Phantom Browser</div></div>
+            <span class="wbadge ok">Open ↗</span>
+          </div>
+          <div class="witem" onclick="location.href='https://go.cb-w.com/dapp?cb_url=${pageUrl}'">
+            <div class="wlogo" style="background:rgba(0,82,255,.12)">🔵</div>
+            <div class="winfo"><div class="wname">Coinbase Wallet</div><div class="wsub">Open in Coinbase Browser</div></div>
+            <span class="wbadge ok">Open ↗</span>
+          </div>
+        </div>
+        <div class="faucet-note">💧 Need free SepoliaETH? → <a href="https://sepoliafaucet.com" target="_blank">sepoliafaucet.com</a></div>
+      </div>`;
     updateActionBtn();
+    return;
+  }
+
+  area.innerHTML=`
+    <div class="wpicker-wrap">
+      <div class="wpicker-note">🧪 Sepolia Testnet · No real costs · Free gas</div>
+      <div class="wpicker">
+        <div class="witem${hasMM?'':' dim'}" onclick="${hasMM?'connectWallet(\'metamask\')':'void(0)'}">
+          <div class="wlogo" style="background:rgba(247,147,26,.12)">🦊</div>
+          <div class="winfo"><div class="wname">MetaMask</div><div class="wsub">Extension · Sepolia Testnet</div></div>
+          <span class="wbadge ${hasMM?'ok':'no'}">${hasMM?'● Detected':'○ Not Found'}</span>
+        </div>
+        <div class="witem${hasCB?'':' dim'}" onclick="${hasCB?'connectWallet(\'coinbase\')':'void(0)'}">
+          <div class="wlogo" style="background:rgba(0,82,255,.12)">🔵</div>
+          <div class="winfo"><div class="wname">Coinbase Wallet</div><div class="wsub">Extension · Sepolia Testnet</div></div>
+          <span class="wbadge ${hasCB?'ok':'no'}">${hasCB?'● Detected':'○ Not Found'}</span>
+        </div>
+        <div class="witem${hasPH?'':' dim'}" onclick="${hasPH?'connectWallet(\'phantom\')':'void(0)'}">
+          <div class="wlogo" style="background:rgba(153,69,255,.12)">👻</div>
+          <div class="winfo"><div class="wname">Phantom</div><div class="wsub">Extension · Sepolia Testnet</div></div>
+          <span class="wbadge ${hasPH?'ok':'no'}">${hasPH?'● Detected':'○ Not Found'}</span>
+        </div>
+        <div class="witem${hasOKX?'':' dim'}" onclick="${hasOKX?'connectWallet(\'okx\')':'void(0)'}">
+          <div class="wlogo" style="background:rgba(255,255,255,.06)">⚫</div>
+          <div class="winfo"><div class="wname">OKX Wallet</div><div class="wsub">Extension · Sepolia Testnet</div></div>
+          <span class="wbadge ${hasOKX?'ok':'no'}">${hasOKX?'● Detected':'○ Not Found'}</span>
+        </div>
+        ${!anyFound?`<div class="no-wallet-warn">⚠️ No wallet detected. Install MetaMask or another EVM wallet extension to continue.</div>`:''}
+      </div>
+      <div class="faucet-note">💧 Need free SepoliaETH? → <a href="https://sepoliafaucet.com" target="_blank">sepoliafaucet.com</a> · <a href="https://faucet.sepolia.dev" target="_blank">faucet.sepolia.dev</a></div>
+    </div>`;
+  updateActionBtn();
+}
+
+/* ── CONNECT ── */
+async function connectWallet(key){
+  const area=document.getElementById('wallet-area');
+  area.innerHTML=`<div class="conn-state"><div class="conn-spin"></div><div class="conn-lbl">Waiting for wallet confirmation…</div></div>`;
+  const p=findProv(key);
+  if(!p){
+    area.innerHTML=`<div class="err-box"><div class="err-msg">⚠️ Provider not found.</div><button class="retry-btn" onclick="renderWalletArea()">↩ Back</button></div>`;
+    return;
+  }
+  try{
+    const accounts=await p.request({method:'eth_requestAccounts'});
+    if(!accounts||!accounts.length)throw new Error('No accounts returned.');
+    wallet=accounts[0];prov=p;
+    bindProv(p);
+    setNavBtn(wallet);
+    await fetchBalance();
+    renderWalletArea();
+    updateActionBtn();
+  }catch(e){
+    const msg=e.code===4001?'Connection rejected.':(e.message||'Unknown error.');
+    area.innerHTML=`<div class="err-box"><div class="err-msg">⚠️ ${msg}</div><button class="retry-btn" onclick="renderWalletArea()">↩ Back</button></div>`;
   }
 }
 
