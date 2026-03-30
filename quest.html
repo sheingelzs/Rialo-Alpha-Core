@@ -278,6 +278,40 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </div>
 
 <script type="module">
+  function renderQuestion() {
+  if (currentQ >= totalQ) {
+    endQuiz();
+    return;
+  }
+
+  answered = false;
+  document.getElementById('timeout-notice').style.display = 'none';
+  
+  const q = QUESTIONS[currentQ];
+  
+  // Update progres teks dan bar
+  document.getElementById('q-progress').textContent = `Question ${currentQ + 1} / ${totalQ}`;
+  document.getElementById('q-num-tag').textContent = `Q${currentQ + 1}`;
+  document.getElementById('progress-bar').style.width = `${((currentQ + 1) / totalQ) * 100}%`;
+  
+  // Masukkan teks pertanyaan
+  document.getElementById('q-text').textContent = q.q;
+  
+  // Generate tombol jawaban secara dinamis
+  const optionsGrid = document.getElementById('options-grid');
+  optionsGrid.innerHTML = '';
+  
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<div class="opt-letter">${String.fromCharCode(65 + i)}</div><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optionsGrid.appendChild(btn);
+  });
+
+  startTimer(); // Ini yang akan menjalankan timer secara otomatis
+}
+window.renderQuestion = renderQuestion;
 /* ── CANVAS — menu.html style ── */
 (function(){
   const canvas = document.getElementById('net-canvas');
