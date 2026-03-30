@@ -626,11 +626,10 @@ window.selectAnswer     = selectAnswer;
 window.renderWalletConnect = renderWalletConnect;
 
 function finishQuiz() {
- function finishQuiz() {
   stopConfetti();
   const score = correct * 50; 
 
-  // Mengambil nama dari input ID 'player-name'
+  // Pakai ID 'player-name' karena itu yang ada di HTML kamu
   const userName = document.getElementById('player-name')?.value || "Anonymous";
   const userWallet = currentWalletAddress || "Disconnected";
   const LB_KEY = 'rialo_final_lb'; 
@@ -644,8 +643,16 @@ function finishQuiz() {
       date: new Date().toLocaleString()
     });
     localStorage.setItem(LB_KEY, JSON.stringify(currentLB));
-    console.log("Skor Berhasil Disimpan!");
   } catch (e) {
+    console.error("Gagal simpan skor:", e);
+  }
+
+  // Update skor di lingkaran (ID-nya 'final-xp')
+  const finalXpEl = document.getElementById('final-xp');
+  if(finalXpEl) finalXpEl.textContent = score;
+  
+  showScreen('scr-result');
+}catch (e) {
     console.error("Gagal simpan skor:", e);
   }
 
@@ -655,7 +662,8 @@ function finishQuiz() {
   
   showScreen('scr-result');
 }
-function startTimer(){
+
+  function startTimer(){
   timeLeft=15;clearInterval(timerInterval);updateTimerUI(15);
   timerInterval=setInterval(()=>{
     timeLeft--;updateTimerUI(timeLeft);
@@ -672,7 +680,7 @@ function updateTimerUI(t){
   else if(pct>0.25)circle.style.stroke='var(--amber)';
   else circle.style.stroke='var(--red)';
 }
-function timeOut(){
+  function timeOut(){
   answered=true;wrong++;
   const q=QUESTIONS[currentQ];
   document.querySelectorAll('.opt-btn').forEach((btn,i)=>{
