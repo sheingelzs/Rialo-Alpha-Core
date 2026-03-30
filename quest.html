@@ -627,33 +627,33 @@ window.renderWalletConnect = renderWalletConnect;
 
 function finishQuiz() {
   stopConfetti();
-  const totalQ = questions.length;
-  const score = correct * 50; // 50 EXP per jawaban benar
+  const score = correct * 50; 
 
-  // Ambil Nama dan Wallet dari input/state
+  // Ambil Nama & Wallet
   const userName = document.getElementById('user-name-input')?.value || "Anonymous";
-  const userWallet = currentWalletAddress || "0x...Disconnected";
-
-  // LOGIKA SIMPAN KE LOCALSTORAGE
-  // 1. Ambil data lama (kalau gak ada, bikin array kosong)
-  let currentLB = JSON.parse(localStorage.getItem('rialo_final_lb') || '[]');
-
-  // 2. Tambah data baru
-  const newEntry = {
-    name: userName,
-    wallet: userWallet,
-    exp: score,
-    date: new Date().toISOString()
-  };
-  currentLB.push(newEntry);
-
-  // 3. Simpan kembali
-  localStorage.setItem('rialo_final_lb', JSON.stringify(currentLB));
-
-  // Tampilkan hasil di UI
-  document.getElementById('result-score').textContent = score;
-  showScreen('scr-result');
+  const userWallet = currentWalletAddress || "Disconnected";
+  const LB_KEY = 'rialo_final_lb'; 
   
+  try {
+    // Proses Simpan
+    let currentLB = JSON.parse(localStorage.getItem(LB_KEY) || '[]');
+    currentLB.push({
+      name: userName,
+      wallet: userWallet,
+      exp: score,
+      date: new Date().toLocaleString()
+    });
+    localStorage.setItem(LB_KEY, JSON.stringify(currentLB));
+    console.log("Data tersimpan di rialo_final_lb!");
+  } catch (e) {
+    console.error("Gagal simpan:", e);
+  }
+
+  // Tampilkan hasil
+  const scoreEl = document.getElementById('result-score');
+  if(scoreEl) scoreEl.textContent = score;
+  showScreen('scr-result');
+}
   console.log("Data berhasil disimpan ke leaderboard!", newEntry);
 }
 
