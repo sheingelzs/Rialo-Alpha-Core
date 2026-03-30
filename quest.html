@@ -511,17 +511,12 @@ function checkStartReady(){
 }
 
 async function saveScoreToFirebase(name, walletAddr, xpVal, correctVal, total){
-  // ✅ Selalu simpan ke localStorage dulu sebagai primary (sinkron dengan leaderboard.html)
+  // ✅ Ambil data lama dulu, lalu push entry baru (TIDAK overwrite)
   const lb = getLB();
-  // Cek apakah wallet sudah pernah submit — update jika skor lebih tinggi
-  const existingIdx = lb.findIndex(e => e.wallet && walletAddr && e.wallet.toLowerCase() === walletAddr.toLowerCase());
-  const entry = {name: name||'Anonymous', wallet: walletAddr, xp: xpVal, correct: correctVal, total, date: new Date().toLocaleDateString(), ts: Date.now()};
-  if(existingIdx >= 0){
-    if(xpVal > lb[existingIdx].xp) lb[existingIdx] = entry; // update hanya jika skor lebih tinggi
-  } else {
-    lb.push(entry);
-  }
-  lb.sort((a,b) => b.xp - a.xp || (b.correct||0) - (a.correct||0));
+  const entry = { name: name||'Anonymous', wallet: walletAddr, exp: xpVal };
+  lb.push(entry);
+  // Urutkan exp tertinggi ke terendah
+  lb.sort((a,b) => (b.exp||0) - (a.exp||0));
   saveLB(lb);
 
   // Coba simpan ke Firebase juga (opsional, tidak blokir)
@@ -529,10 +524,7 @@ async function saveScoreToFirebase(name, walletAddr, xpVal, correctVal, total){
     await push(ref(db,'leaderboard'),{
       name:   name||'Anonymous',
       wallet: walletAddr,
-      xp:     xpVal,
-      correct:correctVal,
-      total:  total,
-      ts:     Date.now()
+      exp:    xpVal
     });
   }catch(e){
     console.warn('Firebase save failed (localStorage sudah tersimpan):', e);
@@ -540,11 +532,11 @@ async function saveScoreToFirebase(name, walletAddr, xpVal, correctVal, total){
 }
 
 function listenLB(){
-  const q=query(ref(db,'leaderboard'),orderByChild('xp'),limitToLast(50));
+  const q=query(ref(db,'leaderboard'),orderByChild('exp'),limitToLast(50));
   onValue(q, snap=>{
     const entries=[];
     snap.forEach(child=>{entries.push(child.val());});
-    entries.sort((a,b)=>b.xp-a.xp||b.correct-a.correct);
+    entries.sort((a,b)=>(b.exp||0)-(a.exp||0));
     renderLBEntries(entries);
   });
 }
@@ -607,14 +599,13 @@ function renderLBEntries(lb){
     <div class="lb-row ${rankClass(i)}${connectedWallet&&entry.wallet===connectedWallet?' me':''}" style="animation-delay:${i*0.05}s">
       ${rankLabel(i)}
       <div class="lb-name">${escHtml(entry.name||'Anonymous')}<span style="font-size:.62rem;color:var(--muted);font-family:var(--font-mono);margin-left:6px">${entry.wallet?entry.wallet.slice(0,6)+'…'+entry.wallet.slice(-4):''}</span></div>
-      <div class="lb-correct">${entry.correct}/${entry.total}</div>
-      <div class="lb-xp">${entry.xp} XP</div>
+      <div class="lb-xp">${entry.exp} XP</div>
     </div>
   `).join('');
 }
 
 function renderLB(){
-  try{listenLB();}catch(e){const lb=getLB();renderLBEntries(lb);}
+  try{listenLB();}catch(e){const lb=getLB();lb.sort((a,b)=>(b.exp||0)-(a.exp||0));renderLBEntries(lb);}
 }
 
 function escHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
