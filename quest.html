@@ -14,7 +14,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
-#net-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+#net-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
 
 /* NAV */
 .nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,.95);backdrop-filter:blur(16px);}
@@ -126,7 +126,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 /* ── LEADERBOARD SCREEN ── */
 .lb-wrap{max-width:580px;margin:0 auto;padding:2.5rem 1.5rem;display:flex;flex-direction:column;gap:1.25rem;}
 .lb-hdr{display:flex;align-items:center;justify-content:space-between;}
-.lb-title-group{}
 .lb-eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.3rem;}
 .lb-title{font-family:var(--font-head);font-size:1.5rem;font-weight:800;letter-spacing:-.02em;}
 .lb-back{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-family:var(--font);font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:9px;cursor:pointer;transition:all .2s;}
@@ -249,7 +248,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   <div id="scr-lb" class="screen">
     <div class="lb-wrap">
       <div class="lb-hdr">
-        <div class="lb-title-group">
+        <div>
           <div class="lb-eyebrow">All Time Rankings</div>
           <div class="lb-title">🏆 Leaderboard</div>
         </div>
@@ -273,6 +272,74 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </div>
 
 <script>
+/* ── CANVAS — menu.html style ── */
+(function(){
+  const canvas = document.getElementById('net-canvas');
+  const ctx = canvas.getContext('2d');
+  const particleCount = 110;
+  const connectionDistance = 150;
+  let particles = [];
+
+  function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  class Particle {
+    constructor(){
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.radius = 1.2;
+    }
+    update(){
+      this.x += this.vx;
+      this.y += this.vy;
+      if(this.x < 0 || this.x > canvas.width)  this.vx *= -1;
+      if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+    draw(){
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 255, 150, 0.4)';
+      ctx.fill();
+    }
+  }
+
+  function init(){
+    particles = [];
+    for(let i = 0; i < particleCount; i++) particles.push(new Particle());
+  }
+
+  function animate(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for(let i = 0; i < particles.length; i++){
+      particles[i].update();
+      particles[i].draw();
+      for(let j = i + 1; j < particles.length; j++){
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < connectionDistance){
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(0, 255, 150, ${1 - dist / connectionDistance})`;
+          ctx.lineWidth = 0.6;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  init();
+  animate();
+})();
+
 /* ── QUESTIONS ── */
 const QUESTIONS = [
   {q:"Why do onchain lenders currently ignore a borrower's real-world credit score?",opts:["They consider credit scores outdated","They legally cannot store credit information","They have no visibility into offchain credit data","They prefer to focus only on crypto trading history"],ans:2},
@@ -318,242 +385,171 @@ let timeLeft = 15;
 let answered = false;
 let totalQ = QUESTIONS.length;
 
-/* ── STORAGE KEY ── */
+/* ── STORAGE ── */
 const LB_KEY = 'rialo_quiz_leaderboard_v2';
-
-function getLB(){
-  try{
-    const raw = localStorage.getItem(LB_KEY);
-    return raw ? JSON.parse(raw) : [];
-  }catch(e){return [];}
-}
-function saveLB(entries){ localStorage.setItem(LB_KEY, JSON.stringify(entries)); }
-
-function addToLB(name, xpVal, correctVal, total){
-  const lb = getLB();
-  lb.push({name, xp: xpVal, correct: correctVal, total, date: new Date().toLocaleDateString()});
-  lb.sort((a,b) => b.xp - a.xp || b.correct - a.correct);
+function getLB(){try{const raw=localStorage.getItem(LB_KEY);return raw?JSON.parse(raw):[];}catch(e){return[];}}
+function saveLB(entries){localStorage.setItem(LB_KEY,JSON.stringify(entries));}
+function addToLB(name,xpVal,correctVal,total){
+  const lb=getLB();
+  lb.push({name,xp:xpVal,correct:correctVal,total,date:new Date().toLocaleDateString()});
+  lb.sort((a,b)=>b.xp-a.xp||b.correct-a.correct);
   saveLB(lb);
 }
 
 /* ── SCREENS ── */
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function showStart(){showScreen('scr-start');}
+function showLeaderboard(){renderLB();showScreen('scr-lb');}
 
-function showStart(){ showScreen('scr-start'); }
-function showLeaderboard(){ renderLB(); showScreen('scr-lb'); }
-
-/* ── START QUIZ ── */
+/* ── START ── */
 function startQuiz(){
-  const nameEl = document.getElementById('player-name');
-  playerName = (nameEl && nameEl.value.trim()) || 'Anonymous';
-  currentQ = 0; xp = 0; correct = 0; wrong = 0;
-  document.getElementById('xp-count').textContent = '0';
+  const nameEl=document.getElementById('player-name');
+  playerName=(nameEl&&nameEl.value.trim())||'Anonymous';
+  currentQ=0;xp=0;correct=0;wrong=0;
+  document.getElementById('xp-count').textContent='0';
   showScreen('scr-quiz');
   renderQuestion();
 }
 
 /* ── RENDER QUESTION ── */
 function renderQuestion(){
-  if(currentQ >= totalQ){ endQuiz(); return; }
-  answered = false;
-  const q = QUESTIONS[currentQ];
-  const pct = (currentQ / totalQ) * 100;
-  document.getElementById('q-progress').textContent = `Question ${currentQ+1} / ${totalQ}`;
-  document.getElementById('q-num-tag').textContent = `Q${currentQ+1}`;
-  document.getElementById('q-text').textContent = q.q;
-  document.getElementById('progress-bar').style.width = pct + '%';
-  document.getElementById('timeout-notice').style.display = 'none';
-
-  const grid = document.getElementById('options-grid');
-  const letters = ['A','B','C','D'];
-  grid.innerHTML = q.opts.map((opt, i) => `
+  if(currentQ>=totalQ){endQuiz();return;}
+  answered=false;
+  const q=QUESTIONS[currentQ];
+  const pct=(currentQ/totalQ)*100;
+  document.getElementById('q-progress').textContent=`Question ${currentQ+1} / ${totalQ}`;
+  document.getElementById('q-num-tag').textContent=`Q${currentQ+1}`;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('progress-bar').style.width=pct+'%';
+  document.getElementById('timeout-notice').style.display='none';
+  const grid=document.getElementById('options-grid');
+  const letters=['A','B','C','D'];
+  grid.innerHTML=q.opts.map((opt,i)=>`
     <button class="opt-btn" id="opt-${i}" onclick="selectAnswer(${i})">
       <div class="opt-letter">${letters[i]}</div>
       <span>${opt}</span>
     </button>
   `).join('');
-
   startTimer();
 }
 
 /* ── TIMER ── */
 function startTimer(){
-  timeLeft = 15;
-  clearInterval(timerInterval);
-  updateTimerUI(15);
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    updateTimerUI(timeLeft);
-    if(timeLeft <= 0){
-      clearInterval(timerInterval);
-      if(!answered) timeOut();
-    }
-  }, 1000);
+  timeLeft=15;clearInterval(timerInterval);updateTimerUI(15);
+  timerInterval=setInterval(()=>{
+    timeLeft--;updateTimerUI(timeLeft);
+    if(timeLeft<=0){clearInterval(timerInterval);if(!answered)timeOut();}
+  },1000);
 }
-
 function updateTimerUI(t){
-  document.getElementById('timer-num').textContent = t;
-  const circle = document.getElementById('timer-circle');
-  const circumference = 150.8;
-  const offset = circumference - (t / 15) * circumference;
-  circle.style.strokeDashoffset = offset;
-  const pct = t / 15;
-  if(pct > 0.5) circle.style.stroke = 'var(--accent)';
-  else if(pct > 0.25) circle.style.stroke = 'var(--amber)';
-  else circle.style.stroke = 'var(--red)';
+  document.getElementById('timer-num').textContent=t;
+  const circle=document.getElementById('timer-circle');
+  const circumference=150.8;
+  circle.style.strokeDashoffset=circumference-(t/15)*circumference;
+  const pct=t/15;
+  if(pct>0.5)circle.style.stroke='var(--accent)';
+  else if(pct>0.25)circle.style.stroke='var(--amber)';
+  else circle.style.stroke='var(--red)';
 }
-
 function timeOut(){
-  answered = true;
-  wrong++;
-  const q = QUESTIONS[currentQ];
-  // reveal correct
-  const opts = document.querySelectorAll('.opt-btn');
-  opts.forEach((btn, i) => {
-    btn.disabled = true;
-    if(i === q.ans) btn.classList.add('correct');
-    else btn.classList.add('reveal');
+  answered=true;wrong++;
+  const q=QUESTIONS[currentQ];
+  document.querySelectorAll('.opt-btn').forEach((btn,i)=>{
+    btn.disabled=true;
+    if(i===q.ans)btn.classList.add('correct');else btn.classList.add('reveal');
   });
-  document.getElementById('timeout-notice').style.display = 'block';
-  setTimeout(() => { currentQ++; renderQuestion(); }, 2000);
+  document.getElementById('timeout-notice').style.display='block';
+  setTimeout(()=>{currentQ++;renderQuestion();},2000);
 }
 
 /* ── SELECT ANSWER ── */
 function selectAnswer(idx){
-  if(answered) return;
-  answered = true;
-  clearInterval(timerInterval);
-
-  const q = QUESTIONS[currentQ];
-  const opts = document.querySelectorAll('.opt-btn');
-  opts.forEach(btn => btn.disabled = true);
-
-  if(idx === q.ans){
-    opts[idx].classList.add('correct');
-    correct++;
-    xp += 50;
-    document.getElementById('xp-count').textContent = xp;
+  if(answered)return;
+  answered=true;clearInterval(timerInterval);
+  const q=QUESTIONS[currentQ];
+  const opts=document.querySelectorAll('.opt-btn');
+  opts.forEach(btn=>btn.disabled=true);
+  if(idx===q.ans){
+    opts[idx].classList.add('correct');correct++;xp+=50;
+    document.getElementById('xp-count').textContent=xp;
     showCongratsAnim();
-    setTimeout(() => { currentQ++; renderQuestion(); }, 2200);
-  } else {
-    opts[idx].classList.add('wrong');
-    opts[q.ans].classList.add('correct');
-    opts.forEach((btn, i) => { if(i !== idx && i !== q.ans) btn.classList.add('reveal'); });
+    setTimeout(()=>{currentQ++;renderQuestion();},2200);
+  }else{
+    opts[idx].classList.add('wrong');opts[q.ans].classList.add('correct');
+    opts.forEach((btn,i)=>{if(i!==idx&&i!==q.ans)btn.classList.add('reveal');});
     wrong++;
-    setTimeout(() => { currentQ++; renderQuestion(); }, 1800);
+    setTimeout(()=>{currentQ++;renderQuestion();},1800);
   }
 }
 
-/* ── CONFETTI / CONGRATS ── */
+/* ── CONFETTI ── */
 function showCongratsAnim(){
-  const overlay = document.getElementById('congrats-overlay');
-  const canvas = document.getElementById('confetti-canvas');
-  overlay.style.display = 'block';
-  overlay.style.pointerEvents = 'none';
+  const overlay=document.getElementById('congrats-overlay');
+  const canvas=document.getElementById('confetti-canvas');
+  overlay.style.display='block';overlay.style.pointerEvents='none';
   spawnConfetti(canvas);
-  setTimeout(() => {
-    overlay.style.display = 'none';
-    stopConfetti();
-  }, 2000);
+  setTimeout(()=>{overlay.style.display='none';stopConfetti();},2000);
 }
-
-let confettiParticles = [];
-let confettiRAF = null;
-
+let confettiParticles=[],confettiRAF=null;
 function spawnConfetti(canvas){
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  confettiParticles = [];
-  const colors = ['#4ade80','#22d3ee','#facc15','#7c5cfc','#f87171','#fff'];
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  confettiParticles=[];
+  const colors=['#4ade80','#22d3ee','#facc15','#7c5cfc','#f87171','#fff'];
   for(let i=0;i<120;i++){
-    confettiParticles.push({
-      x: Math.random()*canvas.width,
-      y: -10 - Math.random()*200,
-      vx: (Math.random()-0.5)*4,
-      vy: 2+Math.random()*5,
-      rot: Math.random()*360,
-      rotV: (Math.random()-0.5)*8,
-      w: 8+Math.random()*10,
-      h: 4+Math.random()*6,
-      color: colors[Math.floor(Math.random()*colors.length)],
-      opacity: 1
-    });
+    confettiParticles.push({x:Math.random()*canvas.width,y:-10-Math.random()*200,vx:(Math.random()-0.5)*4,vy:2+Math.random()*5,rot:Math.random()*360,rotV:(Math.random()-0.5)*8,w:8+Math.random()*10,h:4+Math.random()*6,color:colors[Math.floor(Math.random()*colors.length)],opacity:1});
   }
   function loop(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    confettiParticles.forEach(p => {
-      p.x += p.vx; p.y += p.vy; p.rot += p.rotV;
-      if(p.y > canvas.height+20) p.y = -20;
-      ctx.save();
-      ctx.globalAlpha = p.opacity;
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot * Math.PI/180);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-      ctx.restore();
+    confettiParticles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.rot+=p.rotV;
+      if(p.y>canvas.height+20)p.y=-20;
+      ctx.save();ctx.globalAlpha=p.opacity;ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
     });
-    confettiRAF = requestAnimationFrame(loop);
+    confettiRAF=requestAnimationFrame(loop);
   }
   loop();
 }
-
 function stopConfetti(){
-  if(confettiRAF) cancelAnimationFrame(confettiRAF);
-  const canvas = document.getElementById('confetti-canvas');
-  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  if(confettiRAF)cancelAnimationFrame(confettiRAF);
+  document.getElementById('confetti-canvas').getContext('2d').clearRect(0,0,window.innerWidth,window.innerHeight);
 }
 
 /* ── END QUIZ ── */
 function endQuiz(){
   clearInterval(timerInterval);
-  addToLB(playerName, xp, correct, totalQ);
-
-  document.getElementById('final-xp').textContent = xp;
-  document.getElementById('stat-correct').textContent = correct;
-  document.getElementById('stat-wrong').textContent = wrong;
-  const acc = Math.round((correct/totalQ)*100);
-  document.getElementById('stat-acc').textContent = acc + '%';
-
-  let title = 'Quiz Complete!';
-  let sub = 'Your score has been saved to the leaderboard.';
-  if(acc >= 80) { title = '🔥 Rialo Expert!'; sub = 'Outstanding performance. You truly know the Rialo protocol!'; }
-  else if(acc >= 60) { title = '💡 Well Played!'; sub = 'Solid knowledge. Keep building and come back for more!'; }
-  else { title = 'Keep Learning!'; sub = 'Study the Rialo protocol deeper and try again!'; }
-  document.getElementById('result-title').textContent = title;
-  document.getElementById('result-sub').textContent = sub;
-
-  // Animate ring
-  const circumference = 339.3;
-  const fill = document.getElementById('rs-fill');
-  fill.style.strokeDashoffset = circumference;
-  setTimeout(() => {
-    const offset = circumference - (correct/totalQ)*circumference;
-    fill.style.strokeDashoffset = offset;
-  }, 100);
-
+  addToLB(playerName,xp,correct,totalQ);
+  document.getElementById('final-xp').textContent=xp;
+  document.getElementById('stat-correct').textContent=correct;
+  document.getElementById('stat-wrong').textContent=wrong;
+  const acc=Math.round((correct/totalQ)*100);
+  document.getElementById('stat-acc').textContent=acc+'%';
+  let title='Quiz Complete!',sub='Your score has been saved to the leaderboard.';
+  if(acc>=80){title='🔥 Rialo Expert!';sub='Outstanding performance. You truly know the Rialo protocol!';}
+  else if(acc>=60){title='💡 Well Played!';sub='Solid knowledge. Keep building and come back for more!';}
+  else{title='Keep Learning!';sub='Study the Rialo protocol deeper and try again!';}
+  document.getElementById('result-title').textContent=title;
+  document.getElementById('result-sub').textContent=sub;
+  const circumference=339.3;
+  const fill=document.getElementById('rs-fill');
+  fill.style.strokeDashoffset=circumference;
+  setTimeout(()=>{fill.style.strokeDashoffset=circumference-(correct/totalQ)*circumference;},100);
   showScreen('scr-result');
 }
 
 /* ── LEADERBOARD ── */
 function renderLB(){
-  const lb = getLB();
-  const list = document.getElementById('lb-list');
-  if(!lb.length){
-    list.innerHTML = '<div class="lb-empty">No scores yet. Be the first to complete the quiz!</div>';
-    return;
-  }
-  const rankClass = (i) => i===0?'top1':i===1?'top2':i===2?'top3':'';
-  const rankLabel = (i) => {
-    if(i===0) return '<span class="lb-rank gold">🥇</span>';
-    if(i===1) return '<span class="lb-rank silver">🥈</span>';
-    if(i===2) return '<span class="lb-rank bronze">🥉</span>';
-    return `<span class="lb-rank">#${i+1}</span>`;
+  const lb=getLB();
+  const list=document.getElementById('lb-list');
+  if(!lb.length){list.innerHTML='<div class="lb-empty">No scores yet. Be the first to complete the quiz!</div>';return;}
+  const rankClass=(i)=>i===0?'top1':i===1?'top2':i===2?'top3':'';
+  const rankLabel=(i)=>{
+    if(i===0)return'<span class="lb-rank gold">🥇</span>';
+    if(i===1)return'<span class="lb-rank silver">🥈</span>';
+    if(i===2)return'<span class="lb-rank bronze">🥉</span>';
+    return`<span class="lb-rank">#${i+1}</span>`;
   };
-  list.innerHTML = lb.slice(0,50).map((entry, i) => `
+  list.innerHTML=lb.slice(0,50).map((entry,i)=>`
     <div class="lb-row ${rankClass(i)}" style="animation-delay:${i*0.05}s">
       ${rankLabel(i)}
       <div class="lb-name">${escHtml(entry.name)}</div>
@@ -562,33 +558,7 @@ function renderLB(){
     </div>
   `).join('');
 }
-
-function escHtml(str){
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-/* ── BACKGROUND CANVAS ── */
-(function(){
-  const cv=document.getElementById('net-canvas'),ctx=cv.getContext('2d');
-  let W,H,ang=0;
-  const nodes=Array.from({length:160},()=>({bx:(Math.random()-.5)*2400,by:(Math.random()-.5)*1600,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*1.8+0.8}));
-  function res(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
-  window.onresize=res; res();
-  (function draw(){
-    ctx.clearRect(0,0,W,H);ang+=.0006;
-    const cs=Math.cos(ang),sn=Math.sin(ang),cx=W/2,cy=H/2;
-    nodes.forEach(n=>{n.bx+=n.vx;n.by+=n.vy;if(n.bx<-1300)n.bx=1300;if(n.bx>1300)n.bx=-1300;if(n.by<-900)n.by=900;if(n.by>900)n.by=-900;});
-    const pts=nodes.map(n=>({x:cx+n.bx*cs-n.by*sn,y:cy+n.bx*sn+n.by*cs,r:n.r}));
-    pts.forEach((p,i)=>{
-      for(let j=i+1;j<pts.length;j++){
-        const d=Math.hypot(p.x-pts[j].x,p.y-pts[j].y);
-        if(d<150){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,222,128,${(1-d/150)*.45})`;ctx.lineWidth=.6;ctx.stroke();}
-      }
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle='rgba(74,222,128,.65)';ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  })();
-})();
+function escHtml(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 </script>
 </body>
 </html>
