@@ -511,9 +511,23 @@ function checkStartReady(){
 }
 
 async function saveScoreToFirebase(name, walletAddr, xpVal, correctVal, total){
+  // ✅ Selalu simpan ke localStorage dulu sebagai primary (sinkron dengan leaderboard.html)
+  const lb = getLB();
+  // Cek apakah wallet sudah pernah submit — update jika skor lebih tinggi
+  const existingIdx = lb.findIndex(e => e.wallet && walletAddr && e.wallet.toLowerCase() === walletAddr.toLowerCase());
+  const entry = {name: name||'Anonymous', wallet: walletAddr, xp: xpVal, correct: correctVal, total, date: new Date().toLocaleDateString(), ts: Date.now()};
+  if(existingIdx >= 0){
+    if(xpVal > lb[existingIdx].xp) lb[existingIdx] = entry; // update hanya jika skor lebih tinggi
+  } else {
+    lb.push(entry);
+  }
+  lb.sort((a,b) => b.xp - a.xp || (b.correct||0) - (a.correct||0));
+  saveLB(lb);
+
+  // Coba simpan ke Firebase juga (opsional, tidak blokir)
   try{
     await push(ref(db,'leaderboard'),{
-      name:   name,
+      name:   name||'Anonymous',
       wallet: walletAddr,
       xp:     xpVal,
       correct:correctVal,
@@ -521,11 +535,7 @@ async function saveScoreToFirebase(name, walletAddr, xpVal, correctVal, total){
       ts:     Date.now()
     });
   }catch(e){
-    console.warn('Firebase save failed, falling back to localStorage', e);
-    const lb=getLB();
-    lb.push({name,wallet:walletAddr,xp:xpVal,correct:correctVal,total,date:new Date().toLocaleDateString()});
-    lb.sort((a,b)=>b.xp-a.xp||b.correct-a.correct);
-    saveLB(lb);
+    console.warn('Firebase save failed (localStorage sudah tersimpan):', e);
   }
 }
 
@@ -539,7 +549,7 @@ function listenLB(){
   });
 }
 
-const LB_KEY = 'rialo_quiz_leaderboard_v2';
+const LB_KEY = 'rialo_lb'; // ✅ key sinkron dengan leaderboard.html
 function getLB(){try{const raw=localStorage.getItem(LB_KEY);return raw?JSON.parse(raw):[];}catch(e){return[];}}
 function saveLB(entries){localStorage.setItem(LB_KEY,JSON.stringify(entries));}
 
@@ -551,7 +561,8 @@ function startQuiz(){
   const nameEl=document.getElementById('player-name');
   playerName=(nameEl&&nameEl.value.trim())||'Anonymous';
   if(!connectedWallet){alert('Please connect your wallet first!');return;}
-  if(playerName.length<2){alert('Please enter your name first!');return;}
+  if(playerName.length<2){alert('Please enter your name first (min. 2 characters)!');return;}
+  window._quizPlayerName = playerName; // ✅ simpan ke global sebagai backup
   currentQ=0;xp=0;correct=0;wrong=0;
   document.getElementById('xp-count').textContent='0';
   showScreen('scr-quiz');
@@ -560,7 +571,10 @@ function startQuiz(){
 
 function endQuiz(){
   clearInterval(timerInterval);
-  saveScoreToFirebase(playerName, connectedWallet||'Anonymous', xp, correct, totalQ);
+  // ✅ Pastikan nama tidak kosong (ambil dari global backup jika perlu)
+  const finalName = playerName || window._quizPlayerName || 'Anonymous';
+  const finalWallet = connectedWallet || window.connectedWallet || null;
+  saveScoreToFirebase(finalName, finalWallet, xp, correct, totalQ);
   document.getElementById('final-xp').textContent=xp;
   document.getElementById('stat-correct').textContent=correct;
   document.getElementById('stat-wrong').textContent=wrong;
