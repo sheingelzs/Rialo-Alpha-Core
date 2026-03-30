@@ -186,7 +186,25 @@ let wallet=null;
 
 // ✅ localStorage — key sinkron dengan quest.html
 const LB_KEY = 'rialo_lb';
-function getLBLocal(){try{const raw=localStorage.getItem(LB_KEY);return raw?JSON.parse(raw):[];}catch(e){return[];}}
+// 1. The Key must be identical to the one in quest.html
+const LB_KEY = 'rialo_final_lb'; 
+
+// 2. This function only grabs YOUR real data from the browser
+function getLBLocal() {
+  try {
+    const raw = localStorage.getItem(LB_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error("Error fetching leaderboard:", e);
+    return [];
+  }
+}
+
+// 3. This function sorts the players by highest EXP
+function getLB() {
+  const localData = getLBLocal();
+  return localData.sort((a, b) => b.exp - a.exp);
+}
 
 function listenLeaderboard(){
   const lbBody=document.getElementById('lb-body');
