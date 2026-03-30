@@ -526,9 +526,8 @@ async function doSwap(){
       method:'eth_sendTransaction',
       params:[{
         from:wallet,
-        to:wallet,        // kirim ke diri sendiri — simulasi swap, no null warning
-        value:ethToHex(amt),
-        gas:'0x5208'      // 21000 — standard ETH transfer, cukup untuk self-send
+        to:wallet,
+        value:ethToHex(amt)
       }]
     });
 
