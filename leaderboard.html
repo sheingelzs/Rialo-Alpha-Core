@@ -20,7 +20,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes rowIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
-
 .nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,.95);backdrop-filter:blur(16px);}
 .nav-logo{font-family:var(--font-head);font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
 .logo-dot{width:9px;height:9px;background:var(--accent);border-radius:50%;animation:lpulse 2s infinite;}
@@ -32,10 +31,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .nav-btn{padding:.4rem .9rem;border-radius:8px;border:1px solid rgba(74,222,128,.35);background:rgba(74,222,128,.08);color:var(--accent);font-family:var(--font);font-size:.77rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
 .nav-btn.on{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.75);}
 .wdot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
-
 .page{position:relative;z-index:1;animation:fadein .25s ease;}
-
-/* LOCK */
 #lock-screen{min-height:85vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;}
 .lock-icon{font-size:3rem;margin-bottom:1.5rem;opacity:.5;}
 .lock-title{font-family:var(--font-head);font-size:2rem;font-weight:800;margin-bottom:.75rem;}
@@ -54,16 +50,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .conn-state{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1.5rem 0;}
 .conn-spin{width:40px;height:40px;border:3px solid rgba(74,222,128,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
 .conn-lbl{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);}
-
-/* MAIN */
 #main-screen{display:none;}
 .board-wrap{max-width:800px;margin:0 auto;padding:2rem 1.5rem;}
 .board-hdr{margin-bottom:1.75rem;}
 .hdr-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;}
 .hdr-title{font-family:var(--font-head);font-size:1.8rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.3rem;}
 .hdr-sub{font-size:.82rem;color:var(--muted);}
-
-/* MY RANK */
 .my-rank-card{background:linear-gradient(135deg,rgba(124,92,252,.1),rgba(74,222,128,.06));border:1px solid rgba(124,92,252,.3);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
 .mr-num{font-family:var(--font-head);font-size:2rem;font-weight:800;color:#c4b5fd;min-width:50px;text-align:center;}
 .mr-info{flex:1;}
@@ -71,8 +63,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .mr-rank{font-size:.7rem;color:#c4b5fd;font-family:var(--font-mono);margin-top:2px;}
 .mr-xp{font-family:var(--font-head);font-size:1.2rem;font-weight:800;color:var(--accent);}
 .mr-xp-lbl{font-size:.62rem;color:var(--muted);font-family:var(--font-mono);}
-
-/* TABLE */
 .lb-table{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
 .lb-thead{display:grid;grid-template-columns:50px 1fr 120px 100px;gap:.5rem;padding:.7rem 1.2rem;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02);}
 .lb-th{font-family:var(--font-mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
@@ -93,16 +83,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .lb-rank-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
 .lb-xp{font-family:var(--font-head);font-size:.9rem;font-weight:800;color:var(--accent);}
 .lb-xp.me{color:#c4b5fd;}
-
 .sec-title{font-family:var(--font-head);font-weight:800;font-size:1rem;letter-spacing:-.3px;margin:1.5rem 0 .85rem;display:flex;align-items:center;gap:10px;color:var(--text);}
 .sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
-
 .disc-btn{font-size:.68rem;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--font);transition:color .2s;margin-top:.5rem;}
 .disc-btn:hover{color:var(--red);}
-
 .live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:var(--accent);padding:.2rem .6rem;border-radius:99px;font-size:.65rem;font-family:var(--font-mono);font-weight:700;margin-bottom:.75rem;}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.5s infinite;}
-
 @media(max-width:600px){
   .nav-links{display:none;}
   .lb-thead,.lb-row{grid-template-columns:40px 1fr 80px;}
@@ -116,7 +102,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
   <div class="nav-right">
     <div class="nav-links">
-       <a class="nav-link active" href="menu.html">Home</a>
+      <a class="nav-link" href="menu.html">Home</a>
       <a class="nav-link" href="wallet.html">Swap</a>
       <a class="nav-link" href="garage.html">Garage</a>
       <a class="nav-link" href="market.html">Market</a>
@@ -142,9 +128,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
         <div class="hdr-title">Validator Leaderboard</div>
         <div class="hdr-sub">Rankings based on total XP from quest completion.</div>
       </div>
-
       <div class="live-badge"><div class="live-dot"></div>LIVE · SEPOLIA TESTNET</div>
-
       <div class="sec-title">📍 Your Position</div>
       <div class="my-rank-card" id="my-rank-card">
         <div class="mr-num" id="mr-num">#—</div>
@@ -158,7 +142,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
         </div>
       </div>
       <button class="disc-btn" onclick="doDisconnect()">Disconnect ↗</button>
-
       <div class="sec-title">🏅 Top Operators</div>
       <div class="lb-table">
         <div class="lb-thead">
@@ -174,9 +157,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </div>
 
 <script type="module">
-/* ══════════════════════════════════════════
-   FIREBASE CONFIG — sama dengan quest.html
-   ══════════════════════════════════════════ */
 const FB_CONFIG = {
   apiKey:            "GANTI_API_KEY_KAMU",
   authDomain:        "GANTI_PROJECT.firebaseapp.com",
@@ -204,23 +184,18 @@ function fmtAddr(addr){if(!addr)return'—';return addr.slice(0,6)+'...'+addr.sl
 
 let wallet=null;
 
-/* ── FIREBASE LEADERBOARD LISTENER ── */
 function listenLeaderboard(){
   const lbBody=document.getElementById('lb-body');
   lbBody.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem;font-family:var(--font-mono)">Loading leaderboard…</div>`;
-
   const q=query(ref(db,'leaderboard'),orderByChild('xp'),limitToLast(50));
   onValue(q, snap=>{
     const entries=[];
     snap.forEach(child=>{entries.push(child.val());});
     entries.sort((a,b)=>b.xp-a.xp||(b.correct||0)-(a.correct||0));
-
     if(!entries.length){
       lbBody.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem">No scores yet. Complete the quiz to be first!</div>`;
       return;
     }
-
-    // Update "Your Position" card
     const myIdx=wallet?entries.findIndex(e=>e.wallet&&e.wallet.toLowerCase()===wallet.toLowerCase()):-1;
     if(myIdx>=0){
       const me=entries[myIdx];
@@ -234,7 +209,6 @@ function listenLeaderboard(){
       document.getElementById('mr-rank').textContent='Rank: Recruit';
       document.getElementById('mr-xp').textContent='0';
     }
-
     lbBody.innerHTML=entries.map((e,i)=>{
       const pos=i+1;
       const rank=getRank(e.xp);
@@ -260,7 +234,6 @@ function listenLeaderboard(){
 
 function escHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-/* ── WALLET ── */
 function getProvList(){const e=window.ethereum;if(!e)return[];return e.providers||[e];}
 function findProv(key){const L=getProvList();if(key==='okx')return window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)||null;if(key==='metamask')return L.find(p=>p.isMetaMask&&!p.isPhantom)||null;if(key==='phantom')return L.find(p=>p.isPhantom)||null;if(key==='coinbase')return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;return window.ethereum||null;}
 function detectW(){const L=getProvList();return{metamask:!!(L.find(p=>p.isMetaMask&&!p.isPhantom)),phantom:!!(L.find(p=>p.isPhantom)),okx:!!(window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)),coinbase:!!(L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser))};}
@@ -299,77 +272,61 @@ async function connectWallet(key,name){
   }catch(e){renderPicker();}
 }
 
-// Make functions accessible from inline onclick
 window.navClick=navClick;
 window.doDisconnect=doDisconnect;
 window.connectWallet=connectWallet;
 
 renderPicker();
+
 (function(){
   const canvas = document.getElementById('net-canvas');
   const ctx = canvas.getContext('2d');
-  const particleCount = 110;
-  const connectionDistance = 150;
+  const particleCount = 110, connectionDistance = 150;
   let particles = [];
-
-  function resize(){
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+  window.addEventListener('resize',resize);resize();
+  class Particle{
+    constructor(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.radius=1.2;}
+    update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>canvas.width)this.vx*=-1;if(this.y<0||this.y>canvas.height)this.vy*=-1;}
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);ctx.fillStyle='rgba(0,255,150,0.4)';ctx.fill();}
   }
-  window.addEventListener('resize', resize);
-  resize();
-
-  class Particle {
-    constructor(){
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.vx = (Math.random() - 0.5) * 0.4;
-      this.vy = (Math.random() - 0.5) * 0.4;
-      this.radius = 1.2;
-    }
-    update(){
-      this.x += this.vx;
-      this.y += this.vy;
-      if(this.x < 0 || this.x > canvas.width)  this.vx *= -1;
-      if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
-    }
-    draw(){
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0, 255, 150, 0.4)';
-      ctx.fill();
-    }
-  }
-
-  function init(){
-    particles = [];
-    for(let i = 0; i < particleCount; i++) particles.push(new Particle());
-  }
-
+  function init(){particles=[];for(let i=0;i<particleCount;i++)particles.push(new Particle());}
   function animate(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for(let i = 0; i < particles.length; i++){
-      particles[i].update();
-      particles[i].draw();
-      for(let j = i + 1; j < particles.length; j++){
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < connectionDistance){
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(0, 255, 150, ${1 - dist / connectionDistance})`;
-          ctx.lineWidth = 0.6;
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=0;i<particles.length;i++){
+      particles[i].update();particles[i].draw();
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<connectionDistance){ctx.beginPath();ctx.strokeStyle=`rgba(0,255,150,${1-dist/connectionDistance})`;ctx.lineWidth=.6;ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke();}
       }
     }
     requestAnimationFrame(animate);
   }
+  init();animate();
+})();
+</script>
 
-  init();
-  animate();
+<!-- ✅ NAV ACTIVE FIX -->
+<script>
+(function() {
+  const filename = window.location.pathname.split('/').pop() || 'menu.html';
+  const pageMap = {
+    'menu.html':        'Home',
+    'wallet.html':      'Swap',
+    'garage.html':      'Garage',
+    'market.html':      'Market',
+    'quiz.html':        'Quests',
+    'quest.html':       'Quests',
+    'leaderboard.html': 'Leaderboard'
+  };
+  const activeLabel = pageMap[filename];
+  if (!activeLabel) return;
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.textContent.trim() === activeLabel) {
+      link.classList.add('active');
+    }
+  });
 })();
 </script>
 </body>
