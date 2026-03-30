@@ -507,26 +507,77 @@ const VM={
     desc:'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset management.'}
 };
 
-/* ── GAS SEPOLIA LIVE ── */
-async function fetchSepoliaGas(){
-  try{
-    const r=await fetch(SEPOLIA_RPC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',method:'eth_gasPrice',params:[],id:1})});
-    const j=await r.json();
-    if(j.result){
-      const gwei=(parseInt(j.result,16)/1e9).toFixed(4);
-      const elBase=document.getElementById('gas-base');
-      if(elBase){elBase.textContent=`${gwei} GWEI`;elBase.classList.remove('pulse');}
-      document.getElementById('gas-priority').textContent='0 GWEI';
-      document.getElementById('gas-cost').textContent='$0.00';
-      document.getElementById('subsidy-status').textContent='ACTIVE ⚡';
-      document.getElementById('gas-tele-val').textContent='FREE';
-    }
-  }catch{
-    const elBase=document.getElementById('gas-base');
-    if(elBase&&elBase.classList.contains('pulse')){elBase.textContent='~1 GWEI';elBase.classList.remove('pulse');}
-  }
+/* ── GAS SEPOLIA LIVE + SIMULATION ── */
+const SIM_ETH_PRICE = 3200; // harga ETH simulasi dalam USD
+let _lastBaseFee = 12; // fallback simulasi awal
+
+function updateGasUI(baseFee, priorityFee){
+  // Base Fee
+  const elBase = document.getElementById('gas-base');
+  if(elBase){ elBase.textContent = `${baseFee.toFixed(4)} GWEI`; elBase.classList.remove('pulse'); }
+
+  // Priority Fee — dinamis kecil antara 1.0–2.5 GWEI
+  const elPriority = document.getElementById('gas-priority');
+  if(elPriority) elPriority.textContent = `${priorityFee.toFixed(2)} GWEI`;
+
+  // Tx Cost — estimasi: 21000 gas * (baseFee + priorityFee) * harga ETH
+  const totalGwei = baseFee + priorityFee;
+  const txCostUSD = (21000 * totalGwei * 1e-9) * SIM_ETH_PRICE;
+  const elCost = document.getElementById('gas-cost');
+  if(elCost) elCost.textContent = txCostUSD < 0.01 ? '~$0.00' : `~$${txCostUSD.toFixed(4)}`;
+
+  // Subsidy Status — tetap ACTIVE dengan efek blink CSS
+  const elSub = document.getElementById('subsidy-status');
+  if(elSub){ elSub.textContent = 'ACTIVE ⚡'; elSub.style.animation = 'blink 1.8s infinite'; }
+
+  // Telemetry card gas
+  const elTele = document.getElementById('gas-tele-val');
+  if(elTele) elTele.textContent = 'FREE';
 }
-function startGasPolling(){fetchSepoliaGas();if(gasInterval)clearInterval(gasInterval);gasInterval=setInterval(fetchSepoliaGas,10000);}
+
+async function fetchSepoliaGas(){
+  // Priority fee dinamis — acak 1.0 – 2.5
+  const priorityFee = 1.0 + Math.random() * 1.5;
+
+  // Coba ambil data asli dari RPC jika wallet tersambung
+  const activeProv = window._rialoProv || window.ethereum;
+  if(activeProv){
+    try{
+      const hex = await activeProv.request({method:'eth_gasPrice', params:[]});
+      const baseFee = parseInt(hex, 16) / 1e9;
+      _lastBaseFee = baseFee;
+      updateGasUI(baseFee, priorityFee);
+      return;
+    }catch(e){ /* fallthrough ke simulasi */ }
+  }
+
+  // Fallback: coba fetch langsung ke RPC publik
+  try{
+    const r = await fetch(SEPOLIA_RPC, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({jsonrpc:'2.0', method:'eth_gasPrice', params:[], id:1})
+    });
+    const j = await r.json();
+    if(j.result){
+      const baseFee = parseInt(j.result, 16) / 1e9;
+      _lastBaseFee = baseFee;
+      updateGasUI(baseFee, priorityFee);
+      return;
+    }
+  }catch(e){ /* fallthrough ke simulasi */ }
+
+  // Simulasi: angka acak 10–20 GWEI bergerak dari nilai terakhir
+  const drift = (Math.random() - 0.5) * 2;
+  _lastBaseFee = Math.min(20, Math.max(10, _lastBaseFee + drift));
+  updateGasUI(_lastBaseFee, priorityFee);
+}
+
+function startGasPolling(){
+  fetchSepoliaGas();
+  if(gasInterval) clearInterval(gasInterval);
+  gasInterval = setInterval(fetchSepoliaGas, 5000); // update tiap 5 detik
+}
 
 /* ── TOAST ── */
 const _timers={};
