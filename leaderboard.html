@@ -159,17 +159,7 @@ async function connectAndUnlock() {
 // Jalankan pengecekan saat halaman dibuka
 window.addEventListener('DOMContentLoaded', checkWalletAndUnlock);
 window.connectAndUnlock = connectAndUnlock;
-  #lock-screen {
-  text-align: center;
-  padding: 60px 20px;
-  background: rgba(15, 25, 41, 0.8);
-  border: 1px dashed var(--cyan);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-}
-.lock-icon { font-size: 4rem; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--cyan)); }
-.lock-title { font-family: var(--font-head); font-size: 1.8rem; color: var(--cyan); }
-.lock-sub { color: var(--muted); margin-top: 10px; max-width: 400px; margin-inline: auto; }
+
   <div id="main-screen">
     <div class="board-wrap">
       <div class="board-hdr">
