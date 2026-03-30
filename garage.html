@@ -383,8 +383,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
               </div>
               <div class="vpack-desc">Approve a contract for ERC-20 token access on Sepolia. No real costs.</div>
               <div class="vpack-input">
-                <input class="vpack-field" id="approve-token" type="text" placeholder="Token address 0x…"/>
-                <input class="vpack-field" id="approve-contract" type="text" placeholder="Spender 0x…"/>
+                <input class="vpack-field" id="approve-token" type="text" placeholder="Default: WETH Sepolia"/>
+                <input class="vpack-field" id="approve-contract" type="text" placeholder="Default: OpenSea Spender"/>
                 <button class="vpack-btn" id="approve-btn" onclick="doApprove()">Approve →</button>
               </div>
             </div>
@@ -395,8 +395,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
               </div>
               <div class="vpack-desc">Revoke approval from a contract on Sepolia.</div>
               <div class="vpack-input">
-                <input class="vpack-field" id="revoke-token" type="text" placeholder="Token address 0x…"/>
-                <input class="vpack-field" id="revoke-contract" type="text" placeholder="Spender 0x…"/>
+                <input class="vpack-field" id="revoke-token" type="text" placeholder="Default: WETH Sepolia"/>
+                <input class="vpack-field" id="revoke-contract" type="text" placeholder="Default: OpenSea Spender"/>
                 <button class="vpack-btn" id="revoke-btn" onclick="doRevoke()">Revoke →</button>
               </div>
             </div>
@@ -654,36 +654,50 @@ async function doSend(){
   finally{btn.disabled=false;btn.textContent='Send →';}
 }
 
+// WETH Sepolia — placeholder token resmi sampai kontrak Rialo di-deploy
+const WETH_SEPOLIA = '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9';
+// OpenSea Seaport — spender dummy untuk simulasi approve/revoke
+const OPENSEA_SPENDER = '0x1E0049783F008A0085193E00003D00cd54003c71';
+
 async function doApprove(){
   const prov=AP();if(!prov||!walletAddress){showToast('approve','error','Wallet not connected.');return;}
-  const token=document.getElementById('approve-token').value.trim();
-  const spender=document.getElementById('approve-contract').value.trim();
+  // Pakai input user jika diisi, fallback ke WETH Sepolia
+  const token=(document.getElementById('approve-token').value.trim())||WETH_SEPOLIA;
+  const spender=(document.getElementById('approve-contract').value.trim())||OPENSEA_SPENDER;
   if(!token||token.length!==42||!token.startsWith('0x')){showToast('approve','error','Invalid token address.');return;}
   if(!spender||spender.length!==42||!spender.startsWith('0x')){showToast('approve','error','Invalid spender address.');return;}
   const btn=document.getElementById('approve-btn');btn.disabled=true;btn.textContent='Waiting…';
-  showToast('approve','pending','Waiting for approve confirmation in your wallet…');
+  showToast('approve','pending','Calling approve() on WETH Sepolia — waiting for wallet confirmation…');
   try{
     const tx=await prov.request({method:'eth_sendTransaction',params:[{
-      from:walletAddress,to:token,data:encodeApprove(spender,MAX_UINT256),gas:'0x30D40',value:'0x0'
+      from:walletAddress,
+      to:token,
+      data:encodeApprove(spender, MAX_UINT256),
+      value:'0x0'
     }]});
-    showToast('approve','success',`Sepolia approve successful! ✅<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
+    showToast('approve','success',`Approve successful! ✅ Spender diberi akses penuh.<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
   }catch(e){showToast('approve','error',e.code===4001?'Rejected.':e.message||'Approve failed.');}
   finally{btn.disabled=false;btn.textContent='Approve →';}
 }
 
 async function doRevoke(){
   const prov=AP();if(!prov||!walletAddress){showToast('revoke','error','Wallet not connected.');return;}
-  const token=document.getElementById('revoke-token').value.trim();
-  const spender=document.getElementById('revoke-contract').value.trim();
+  // Pakai input user jika diisi, fallback ke WETH Sepolia + OpenSea
+  const token=(document.getElementById('revoke-token').value.trim())||WETH_SEPOLIA;
+  const spender=(document.getElementById('revoke-contract').value.trim())||OPENSEA_SPENDER;
   if(!token||token.length!==42||!token.startsWith('0x')){showToast('revoke','error','Invalid token address.');return;}
   if(!spender||spender.length!==42||!spender.startsWith('0x')){showToast('revoke','error','Invalid spender address.');return;}
   const btn=document.getElementById('revoke-btn');btn.disabled=true;btn.textContent='Waiting…';
-  showToast('revoke','pending','Waiting for revoke confirmation in your wallet…');
+  showToast('revoke','pending','Calling approve(0) on WETH Sepolia — revoking access…');
   try{
+    // Revoke = approve dengan amount 0x0 (zero allowance)
     const tx=await prov.request({method:'eth_sendTransaction',params:[{
-      from:walletAddress,to:token,data:encodeApprove(spender,'0x0000000000000000000000000000000000000000000000000000000000000000'),gas:'0x30D40',value:'0x0'
+      from:walletAddress,
+      to:token,
+      data:encodeApprove(spender, '0x0000000000000000000000000000000000000000000000000000000000000000'),
+      value:'0x0'
     }]});
-    showToast('revoke','success',`Sepolia revoke successful! 🔄<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
+    showToast('revoke','success',`Revoke successful! 🔒 Akses spender dicabut.<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
   }catch(e){showToast('revoke','error',e.code===4001?'Rejected.':e.message||'Revoke failed.');}
   finally{btn.disabled=false;btn.textContent='Revoke →';}
 }
