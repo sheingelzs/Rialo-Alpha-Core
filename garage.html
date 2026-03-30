@@ -197,32 +197,38 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .li-name{font-size:.82rem;font-weight:700;}
 .li-pill{font-family:var(--font-mono);font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:99px;}
 
+/* TX TOAST container */
+#tx-toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;display:flex;flex-direction:column;gap:.5rem;max-width:340px;}
+
 @media(max-width:700px){
   .tele-grid{grid-template-columns:1fr 1fr;}
   .mod-grid{grid-template-columns:1fr;}
   .dash-wrap{padding:1rem;}
   .nav-links{display:none;}
-  .tx-toast{left:1rem;right:1rem;max-width:unset;}
+  #tx-toast{left:1rem;right:1rem;max-width:unset;}
 }
 </style>
 </head>
 <body>
 <canvas id="net-canvas"></canvas>
+
+<!-- FIX: nav-btn sekarang di dalam nav-right, struktur benar -->
 <nav class="nav">
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
   <div class="nav-right">
     <div class="nav-links">
-      <a class="nav-link active" href="menu.html">Home</a>
+      <a class="nav-link" href="menu.html">Home</a>
       <a class="nav-link" href="wallet.html">Swap</a>
       <a class="nav-link" href="garage.html">Garage</a>
       <a class="nav-link" href="market.html">Market</a>
-      <a class="nav-link" href="quest.html">Quests</a>
+      <a class="nav-link" href="quiz.html">Quests</a>
       <a class="nav-link" href="leaderboard.html">Leaderboard</a>
-    </div>
     </div>
     <button class="nav-btn" id="nav-btn" onclick="navClick()">Insert Validator Key</button>
   </div>
 </nav>
+
+<div id="tx-toast"></div>
 
 <div class="page">
   <div class="status-row">
@@ -271,7 +277,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
         </div>
       </div>
 
-      <!-- Testnet banner -->
       <div class="testnet-banner">
         🧪 <div><strong>Sepolia Testnet</strong> — No real ETH is used. Free gas from faucet. No real costs. &nbsp;<a href="https://sepoliafaucet.com" target="_blank">Get SepoliaETH →</a></div>
       </div>
@@ -306,7 +311,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
       <div class="sec-title">Supermodular Diagnostic Suite</div>
       <div class="mod-grid">
-
         <div class="mod-card">
           <div class="card-lbl">⚙ Modular VM Interface</div>
           <div class="vm-tabs">
@@ -316,8 +320,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
           </div>
           <div class="vm-desc" id="vm-desc">Active: <strong>EVM</strong> — Ethereum-compatible execution. Sepolia Testnet. Gas: FREE.</div>
         </div>
-
-        <!-- GAS SEPOLIA LIVE -->
         <div class="mod-card">
           <div class="card-lbl">⛽ Gas System — Sepolia Testnet · Live</div>
           <div class="gas-rows">
@@ -328,7 +330,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
           </div>
           <div class="gas-note">🧪 Sepolia Testnet · Gas has no real monetary value · Free from faucet</div>
         </div>
-
         <div class="mod-card" style="display:flex;flex-direction:column;align-items:center;">
           <div class="card-lbl" style="align-self:flex-start">🏁 Finality Gauge</div>
           <svg viewBox="0 0 140 80" style="width:160px;height:90px">
@@ -337,14 +338,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
             <text id="gauge-val" x="70" y="60" text-anchor="middle" font-family="Syne" font-size="26" font-weight="800" fill="#4ade80">50</text>
           </svg>
         </div>
-
         <div class="mod-card" id="stack-card"></div>
       </div>
 
-      <!-- VALIDATOR PACK -->
       <div class="sec-title">🔥 Validator Pack — Sepolia Transactions</div>
       <div class="mod-grid">
-
         <div class="mod-card">
           <div class="card-lbl">🥩 Stake &amp; Send · Sepolia ETH</div>
           <div class="vpack">
@@ -373,7 +371,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
             </div>
           </div>
         </div>
-
         <div class="mod-card">
           <div class="card-lbl">🔐 Approve &amp; Revoke · Sepolia</div>
           <div class="vpack">
@@ -403,99 +400,49 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </div>
 
 <script>
-/* ── CANVAS — menu.html style ── */
 (function(){
   const canvas = document.getElementById('net-canvas');
   const ctx = canvas.getContext('2d');
-  const particleCount = 110;
-  const connectionDistance = 150;
+  const particleCount = 110, connectionDistance = 150;
   let particles = [];
-
-  function resize(){
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+  window.addEventListener('resize',resize);resize();
+  class Particle{
+    constructor(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.radius=1.2;}
+    update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>canvas.width)this.vx*=-1;if(this.y<0||this.y>canvas.height)this.vy*=-1;}
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);ctx.fillStyle='rgba(0,255,150,0.4)';ctx.fill();}
   }
-  window.addEventListener('resize', resize);
-  resize();
-
-  class Particle {
-    constructor(){
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.vx = (Math.random() - 0.5) * 0.4;
-      this.vy = (Math.random() - 0.5) * 0.4;
-      this.radius = 1.2;
-    }
-    update(){
-      this.x += this.vx;
-      this.y += this.vy;
-      if(this.x < 0 || this.x > canvas.width)  this.vx *= -1;
-      if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
-    }
-    draw(){
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0, 255, 150, 0.4)';
-      ctx.fill();
-    }
-  }
-
-  function init(){
-    particles = [];
-    for(let i = 0; i < particleCount; i++) particles.push(new Particle());
-  }
-
+  function init(){particles=[];for(let i=0;i<particleCount;i++)particles.push(new Particle());}
   function animate(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for(let i = 0; i < particles.length; i++){
-      particles[i].update();
-      particles[i].draw();
-      for(let j = i + 1; j < particles.length; j++){
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < connectionDistance){
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(0, 255, 150, ${1 - dist / connectionDistance})`;
-          ctx.lineWidth = 0.6;
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=0;i<particles.length;i++){
+      particles[i].update();particles[i].draw();
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<connectionDistance){ctx.beginPath();ctx.strokeStyle=`rgba(0,255,150,${1-dist/connectionDistance})`;ctx.lineWidth=.6;ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke();}
       }
     }
     requestAnimationFrame(animate);
   }
-
-  init();
-  animate();
+  init();animate();
 })();
 
-/* ── STATE ── */
 let walletAddress=null,currentVM='EVM',gasInterval=null;
-
-// Sepolia Testnet
-const CHAIN_ID='0xaa36a7'; // 11155111
+const CHAIN_ID='0xaa36a7';
 const CHAIN_NAME='Sepolia Testnet';
-const CHAIN_CONFIG={
-  chainId:CHAIN_ID,
-  chainName:CHAIN_NAME,
-  nativeCurrency:{name:'Sepolia ETH',symbol:'ETH',decimals:18},
-  rpcUrls:['https://rpc.sepolia.org'],
-  blockExplorerUrls:['https://sepolia.etherscan.io']
-};
+const CHAIN_CONFIG={chainId:CHAIN_ID,chainName:CHAIN_NAME,nativeCurrency:{name:'Sepolia ETH',symbol:'ETH',decimals:18},rpcUrls:['https://rpc.sepolia.org'],blockExplorerUrls:['https://sepolia.etherscan.io']};
 const SEPOLIA_RPC='https://rpc.sepolia.org';
 const DEPOSIT_CONTRACT='0x7f268357A8c2552623316e2562D90e642bB538E5';
 const MAX_UINT256='ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+const SIM_ETH_PRICE = 3200;
+let _lastBaseFee = 12;
 
-/* ── VM DATA ── */
 const VM={
   EVM:{finality:50,fStatus:'OPTIMAL',integrity:'3 / 3',iStatus:'VERIFIED',color:'#4ade80',gaugeOffset:40,
     stack:[{name:"Ethereum",logo:"https://cryptologos.cc/logos/ethereum-eth-logo.png?v=032",status:"SETTLEMENT"},{name:"Arbitrum",logo:"https://cryptologos.cc/logos/arbitrum-arb-logo.png?v=032",status:"L2 EXECUTION"},{name:"Optimism",logo:"https://cryptologos.cc/logos/optimism-ethereum-op-logo.png?v=032",status:"SCALING"}],
@@ -508,79 +455,29 @@ const VM={
     desc:'Active: <strong>MOVE</strong> — Move language VM. Resource-oriented, safe asset management.'}
 };
 
-/* ── GAS SEPOLIA LIVE + SIMULATION ── */
-const SIM_ETH_PRICE = 3200; // harga ETH simulasi dalam USD
-let _lastBaseFee = 12; // fallback simulasi awal
-
 function updateGasUI(baseFee, priorityFee){
-  // Base Fee
-  const elBase = document.getElementById('gas-base');
-  if(elBase){ elBase.textContent = `${baseFee.toFixed(4)} GWEI`; elBase.classList.remove('pulse'); }
-
-  // Priority Fee — dinamis kecil antara 1.0–2.5 GWEI
-  const elPriority = document.getElementById('gas-priority');
-  if(elPriority) elPriority.textContent = `${priorityFee.toFixed(2)} GWEI`;
-
-  // Tx Cost — estimasi: 21000 gas * (baseFee + priorityFee) * harga ETH
-  const totalGwei = baseFee + priorityFee;
-  const txCostUSD = (21000 * totalGwei * 1e-9) * SIM_ETH_PRICE;
-  const elCost = document.getElementById('gas-cost');
-  if(elCost) elCost.textContent = txCostUSD < 0.01 ? '~$0.00' : `~$${txCostUSD.toFixed(4)}`;
-
-  // Subsidy Status — tetap ACTIVE dengan efek blink CSS
-  const elSub = document.getElementById('subsidy-status');
-  if(elSub){ elSub.textContent = 'ACTIVE ⚡'; elSub.style.animation = 'blink 1.8s infinite'; }
-
-  // Telemetry card gas
-  const elTele = document.getElementById('gas-tele-val');
-  if(elTele) elTele.textContent = 'FREE';
+  const elBase=document.getElementById('gas-base');if(elBase){elBase.textContent=`${baseFee.toFixed(4)} GWEI`;elBase.classList.remove('pulse');}
+  const elPriority=document.getElementById('gas-priority');if(elPriority)elPriority.textContent=`${priorityFee.toFixed(2)} GWEI`;
+  const totalGwei=baseFee+priorityFee;
+  const txCostUSD=(21000*totalGwei*1e-9)*SIM_ETH_PRICE;
+  const elCost=document.getElementById('gas-cost');if(elCost)elCost.textContent=txCostUSD<0.01?'~$0.00':`~$${txCostUSD.toFixed(4)}`;
+  const elSub=document.getElementById('subsidy-status');if(elSub){elSub.textContent='ACTIVE ⚡';elSub.style.animation='blink 1.8s infinite';}
+  const elTele=document.getElementById('gas-tele-val');if(elTele)elTele.textContent='FREE';
 }
 
 async function fetchSepoliaGas(){
-  // Priority fee dinamis — acak 1.0 – 2.5
-  const priorityFee = 1.0 + Math.random() * 1.5;
-
-  // Coba ambil data asli dari RPC jika wallet tersambung
-  const activeProv = window._rialoProv || window.ethereum;
-  if(activeProv){
-    try{
-      const hex = await activeProv.request({method:'eth_gasPrice', params:[]});
-      const baseFee = parseInt(hex, 16) / 1e9;
-      _lastBaseFee = baseFee;
-      updateGasUI(baseFee, priorityFee);
-      return;
-    }catch(e){ /* fallthrough ke simulasi */ }
-  }
-
-  // Fallback: coba fetch langsung ke RPC publik
+  const priorityFee=1.0+Math.random()*1.5;
+  const activeProv=window._rialoProv||window.ethereum;
+  if(activeProv){try{const hex=await activeProv.request({method:'eth_gasPrice',params:[]});const baseFee=parseInt(hex,16)/1e9;_lastBaseFee=baseFee;updateGasUI(baseFee,priorityFee);return;}catch(e){}}
   try{
-    const r = await fetch(SEPOLIA_RPC, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({jsonrpc:'2.0', method:'eth_gasPrice', params:[], id:1})
-    });
-    const j = await r.json();
-    if(j.result){
-      const baseFee = parseInt(j.result, 16) / 1e9;
-      _lastBaseFee = baseFee;
-      updateGasUI(baseFee, priorityFee);
-      return;
-    }
-  }catch(e){ /* fallthrough ke simulasi */ }
-
-  // Simulasi: angka acak 10–20 GWEI bergerak dari nilai terakhir
-  const drift = (Math.random() - 0.5) * 2;
-  _lastBaseFee = Math.min(20, Math.max(10, _lastBaseFee + drift));
-  updateGasUI(_lastBaseFee, priorityFee);
+    const r=await fetch(SEPOLIA_RPC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',method:'eth_gasPrice',params:[],id:1})});
+    const j=await r.json();if(j.result){const baseFee=parseInt(j.result,16)/1e9;_lastBaseFee=baseFee;updateGasUI(baseFee,priorityFee);return;}
+  }catch(e){}
+  const drift=(Math.random()-0.5)*2;_lastBaseFee=Math.min(20,Math.max(10,_lastBaseFee+drift));updateGasUI(_lastBaseFee,priorityFee);
 }
 
-function startGasPolling(){
-  fetchSepoliaGas();
-  if(gasInterval) clearInterval(gasInterval);
-  gasInterval = setInterval(fetchSepoliaGas, 5000); // update tiap 5 detik
-}
+function startGasPolling(){fetchSepoliaGas();if(gasInterval)clearInterval(gasInterval);gasInterval=setInterval(fetchSepoliaGas,5000);}
 
-/* ── TOAST ── */
 const _timers={};
 function showToast(id,type,msg){
   const box=document.getElementById('tx-toast');
@@ -592,15 +489,9 @@ function showToast(id,type,msg){
   if(type!=='pending')_timers[id]=setTimeout(()=>{el.remove();},9000);
 }
 
-/* ── ABI ── */
-function encodeApprove(spender,amountHex){
-  return '0x095ea7b3'+spender.toLowerCase().replace('0x','').padStart(64,'0')+amountHex.replace('0x','').padStart(64,'0');
-}
-function ethToHex(eth){
-  return '0x'+BigInt(Math.round(parseFloat(eth)*1e18)).toString(16);
-}
+function encodeApprove(spender,amountHex){return '0x095ea7b3'+spender.toLowerCase().replace('0x','').padStart(64,'0')+amountHex.replace('0x','').padStart(64,'0');}
+function ethToHex(eth){return '0x'+BigInt(Math.round(parseFloat(eth)*1e18)).toString(16);}
 
-/* ── PROVIDER ── */
 function getProvider(type){
   const pp=window.ethereum?.providers||[];
   if(type==='metamask'){if(pp.length){const p=pp.find(x=>x.isMetaMask&&!x.isBraveWallet&&!x.isCoinbaseWallet);if(p)return p;}if(window.ethereum?.isMetaMask)return window.ethereum;return null;}
@@ -611,18 +502,11 @@ function getProvider(type){
 }
 const AP=()=>window._rialoProv||window.ethereum;
 
-/* ── SWITCH TO SEPOLIA ── */
 async function switchToSepolia(provider){
-  try{
-    await provider.request({method:'wallet_switchEthereumChain',params:[{chainId:CHAIN_ID}]});
-  }catch(e){
-    if(e.code===4902){
-      await provider.request({method:'wallet_addEthereumChain',params:[CHAIN_CONFIG]});
-    }
-  }
+  try{await provider.request({method:'wallet_switchEthereumChain',params:[{chainId:CHAIN_ID}]});}
+  catch(e){if(e.code===4902){await provider.request({method:'wallet_addEthereumChain',params:[CHAIN_CONFIG]});}}
 }
 
-/* ── TRANSACTIONS ── */
 async function doStake(){
   const prov=AP();if(!prov||!walletAddress){showToast('stake','error','Wallet not connected.');return;}
   const amt=parseFloat(document.getElementById('stake-amount').value);
@@ -630,9 +514,7 @@ async function doStake(){
   const btn=document.getElementById('stake-btn');btn.disabled=true;btn.textContent='Waiting…';
   showToast('stake','pending','Waiting for stake confirmation in your wallet…');
   try{
-    const tx=await prov.request({method:'eth_sendTransaction',params:[{
-      from:walletAddress,to:DEPOSIT_CONTRACT,value:ethToHex(amt),gas:'0x7A120'
-    }]});
+    const tx=await prov.request({method:'eth_sendTransaction',params:[{from:walletAddress,to:DEPOSIT_CONTRACT,value:ethToHex(amt),gas:'0x7A120'}]});
     showToast('stake','success',`Sepolia stake successful! 🎉<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
   }catch(e){showToast('stake','error',e.code===4001?'Rejected.':e.message||'Stake failed.');}
   finally{btn.disabled=false;btn.textContent='Stake →';}
@@ -647,22 +529,17 @@ async function doSend(){
   const btn=document.getElementById('send-btn');btn.disabled=true;btn.textContent='Waiting…';
   showToast('send','pending','Waiting for send confirmation in your wallet…');
   try{
-    const tx=await prov.request({method:'eth_sendTransaction',params:[{
-      from:walletAddress,to,value:ethToHex(amt),gas:'0x5208'
-    }]});
+    const tx=await prov.request({method:'eth_sendTransaction',params:[{from:walletAddress,to,value:ethToHex(amt),gas:'0x5208'}]});
     showToast('send','success',`Sepolia send successful! 📤<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
   }catch(e){showToast('send','error',e.code===4001?'Rejected.':e.message||'Send failed.');}
   finally{btn.disabled=false;btn.textContent='Send →';}
 }
 
-// WETH Sepolia — placeholder token resmi sampai kontrak Rialo di-deploy
-const WETH_SEPOLIA = '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9';
-// OpenSea Seaport — spender dummy untuk simulasi approve/revoke
-const OPENSEA_SPENDER = '0x1E0049783F008A0085193E00003D00cd54003c71';
+const WETH_SEPOLIA='0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9';
+const OPENSEA_SPENDER='0x1E0049783F008A0085193E00003D00cd54003c71';
 
 async function doApprove(){
   const prov=AP();if(!prov||!walletAddress){showToast('approve','error','Wallet not connected.');return;}
-  // Pakai input user jika diisi, fallback ke WETH Sepolia
   const token=(document.getElementById('approve-token').value.trim())||WETH_SEPOLIA;
   const spender=(document.getElementById('approve-contract').value.trim())||OPENSEA_SPENDER;
   if(!token||token.length!==42||!token.startsWith('0x')){showToast('approve','error','Invalid token address.');return;}
@@ -670,20 +547,14 @@ async function doApprove(){
   const btn=document.getElementById('approve-btn');btn.disabled=true;btn.textContent='Waiting…';
   showToast('approve','pending','Calling approve() on WETH Sepolia — waiting for wallet confirmation…');
   try{
-    const tx=await prov.request({method:'eth_sendTransaction',params:[{
-      from:walletAddress,
-      to:token,
-      data:encodeApprove(spender, MAX_UINT256),
-      value:'0x0'
-    }]});
-    showToast('approve','success',`Approve successful! ✅ Spender diberi akses penuh.<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
+    const tx=await prov.request({method:'eth_sendTransaction',params:[{from:walletAddress,to:token,data:encodeApprove(spender,MAX_UINT256),value:'0x0'}]});
+    showToast('approve','success',`Approve successful! ✅<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
   }catch(e){showToast('approve','error',e.code===4001?'Rejected.':e.message||'Approve failed.');}
   finally{btn.disabled=false;btn.textContent='Approve →';}
 }
 
 async function doRevoke(){
   const prov=AP();if(!prov||!walletAddress){showToast('revoke','error','Wallet not connected.');return;}
-  // Pakai input user jika diisi, fallback ke WETH Sepolia + OpenSea
   const token=(document.getElementById('revoke-token').value.trim())||WETH_SEPOLIA;
   const spender=(document.getElementById('revoke-contract').value.trim())||OPENSEA_SPENDER;
   if(!token||token.length!==42||!token.startsWith('0x')){showToast('revoke','error','Invalid token address.');return;}
@@ -691,19 +562,12 @@ async function doRevoke(){
   const btn=document.getElementById('revoke-btn');btn.disabled=true;btn.textContent='Waiting…';
   showToast('revoke','pending','Calling approve(0) on WETH Sepolia — revoking access…');
   try{
-    // Revoke = approve dengan amount 0x0 (zero allowance)
-    const tx=await prov.request({method:'eth_sendTransaction',params:[{
-      from:walletAddress,
-      to:token,
-      data:encodeApprove(spender, '0x0000000000000000000000000000000000000000000000000000000000000000'),
-      value:'0x0'
-    }]});
-    showToast('revoke','success',`Revoke successful! 🔒 Akses spender dicabut.<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
+    const tx=await prov.request({method:'eth_sendTransaction',params:[{from:walletAddress,to:token,data:encodeApprove(spender,'0x0000000000000000000000000000000000000000000000000000000000000000'),value:'0x0'}]});
+    showToast('revoke','success',`Revoke successful! 🔒<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
   }catch(e){showToast('revoke','error',e.code===4001?'Rejected.':e.message||'Revoke failed.');}
   finally{btn.disabled=false;btn.textContent='Revoke →';}
 }
 
-/* ── SCREEN ── */
 function showScreen(n){document.querySelectorAll('.screen').forEach(s=>s.style.display='none');document.getElementById('scr-'+n).style.display='flex';}
 function setNavBtn(a){const b=document.getElementById('nav-btn');b.innerHTML=a?`<span class="wdot"></span>${a.slice(0,6)}…${a.slice(-4)}`:'Insert Validator Key';b.className=a?'nav-btn on':'nav-btn';}
 function navClick(){walletAddress?doDisconnect():renderPicker();}
@@ -716,7 +580,6 @@ function doDisconnect(){
   showScreen('standby');renderPicker();
 }
 
-/* ── WALLET PICKER ── */
 function renderPicker(){
   const hasMM=!!getProvider('metamask'),hasCB=!!getProvider('coinbase'),hasPH=!!getProvider('phantom'),hasOKX=!!getProvider('okx');
   const anyFound=hasMM||hasCB||hasPH||hasOKX||!!window.ethereum;
@@ -747,13 +610,13 @@ function renderPicker(){
         </div>
         ${!anyFound?`<div class="no-wallet-warn">⚠️ No wallet detected.<br>If on mobile, open from your <strong>wallet's built-in browser</strong> (MetaMask, OKX, Phantom).</div>`:''}
         <div class="faucet-note">
-        <a class="mobile-link" href="https://metamask.app.link/dapp/${pageUrl}">📱 Open in MetaMask Mobile →</a>
-        <a class="mobile-link" href="https://okx.com/download?deeplink=${pageUrl}" style="color:rgba(255,255,255,.3);">📱 Open in OKX App →</a>
+          <a class="mobile-link" href="https://metamask.app.link/dapp/${pageUrl}">📱 Open in MetaMask Mobile →</a>
+          <a class="mobile-link" href="https://okx.com/download?deeplink=${pageUrl}" style="color:rgba(255,255,255,.3);">📱 Open in OKX App →</a>
+        </div>
       </div>
     </div>`;
 }
 
-/* ── CONNECT ── */
 async function connectWallet(type){
   const provider=getProvider(type);
   if(!provider){showToast('conn','error','Provider not found.');return;}
@@ -773,7 +636,6 @@ async function connectWallet(type){
   }
 }
 
-/* ── FLOW ── */
 function onConnected(){setNavBtn(walletAddress);runAssembly();}
 function runAssembly(){
   showScreen('assembly');
@@ -796,7 +658,6 @@ function initDash(){
   startGasPolling();
 }
 
-/* ── VM SWITCH ── */
 function switchVM(vm,btn){
   currentVM=vm;const d=VM[vm];
   document.querySelectorAll('.vm-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
@@ -818,8 +679,31 @@ function switchVM(vm,btn){
   document.getElementById('vm-desc').innerHTML=d.desc;
 }
 
-/* ── INIT ── */
 renderPicker();
+</script>
+
+<!-- ✅ NAV ACTIVE FIX -->
+<script>
+(function() {
+  const filename = window.location.pathname.split('/').pop() || 'menu.html';
+  const pageMap = {
+    'menu.html':        'Home',
+    'wallet.html':      'Swap',
+    'garage.html':      'Garage',
+    'market.html':      'Market',
+    'quiz.html':        'Quests',
+    'quest.html':       'Quests',
+    'leaderboard.html': 'Leaderboard'
+  };
+  const activeLabel = pageMap[filename];
+  if (!activeLabel) return;
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.textContent.trim() === activeLabel) {
+      link.classList.add('active');
+    }
+  });
+})();
 </script>
 </body>
 </html>
