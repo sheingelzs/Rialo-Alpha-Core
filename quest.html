@@ -160,12 +160,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 <nav class="nav">
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
   <div class="nav-links">
-          <a class="nav-link active" href="menu.html">Home</a>
-      <a class="nav-link" href="wallet.html">Swap</a>
-      <a class="nav-link" href="garage.html">Garage</a>
-      <a class="nav-link" href="market.html">Market</a>
-      <a class="nav-link" href="quiz.html">Quests</a>
-      <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+    <a class="nav-link" href="menu.html">Home</a>
+    <a class="nav-link" href="wallet.html">Swap</a>
+    <a class="nav-link" href="garage.html">Garage</a>
+    <a class="nav-link" href="market.html">Market</a>
+    <a class="nav-link" href="quiz.html">Quests</a>
+    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
   </div>
 </nav>
 
@@ -391,11 +391,6 @@ let timeLeft = 15;
 let answered = false;
 let totalQ = QUESTIONS.length;
 
-/* ══════════════════════════════════════════
-   FIREBASE CONFIG
-   Ganti nilai di bawah dengan config Firebase kamu.
-   Cara dapat: Firebase Console → Project Settings → Your Apps → SDK setup
-   ══════════════════════════════════════════ */
 const FB_CONFIG = {
   apiKey:            "GANTI_API_KEY_KAMU",
   authDomain:        "GANTI_PROJECT.firebaseapp.com",
@@ -414,7 +409,7 @@ import { getDatabase, ref, push, onValue, query, orderByChild, limitToLast }
 const fbApp = initializeApp(FB_CONFIG);
 const db    = getDatabase(fbApp);
 
-/* ── WALLET DETECT (simple, no modal) ── */
+/* ── WALLET DETECT ── */
 let connectedWallet = null;
 function getProvList(){const e=window.ethereum;if(!e)return[];return e.providers||[e];}
 function findProv(key){
@@ -435,7 +430,6 @@ function detectW(){
   };
 }
 
-/* ── WALLET AREA (inline, no modal) ── */
 function renderWalletConnect(){
   const area = document.getElementById('wallet-connect-area');
   if(!area) return;
@@ -494,7 +488,6 @@ async function connectQuizWallet(key){
   }catch(e){renderWalletConnect();}
 }
 
-/* ── START GATE: wallet + username required ── */
 function checkStartReady(){
   const name=(document.getElementById('player-name')?.value||'').trim();
   const btn=document.getElementById('start-btn');
@@ -510,7 +503,6 @@ function checkStartReady(){
   }
 }
 
-/* ── FIREBASE: SAVE SCORE ── */
 async function saveScoreToFirebase(name, walletAddr, xpVal, correctVal, total){
   try{
     await push(ref(db,'leaderboard'),{
@@ -523,7 +515,6 @@ async function saveScoreToFirebase(name, walletAddr, xpVal, correctVal, total){
     });
   }catch(e){
     console.warn('Firebase save failed, falling back to localStorage', e);
-    // fallback localStorage
     const lb=getLB();
     lb.push({name,wallet:walletAddr,xp:xpVal,correct:correctVal,total,date:new Date().toLocaleDateString()});
     lb.sort((a,b)=>b.xp-a.xp||b.correct-a.correct);
@@ -531,7 +522,6 @@ async function saveScoreToFirebase(name, walletAddr, xpVal, correctVal, total){
   }
 }
 
-/* ── FIREBASE: REALTIME LEADERBOARD ── */
 function listenLB(){
   const q=query(ref(db,'leaderboard'),orderByChild('xp'),limitToLast(50));
   onValue(q, snap=>{
@@ -542,17 +532,14 @@ function listenLB(){
   });
 }
 
-/* ── LOCAL STORAGE (fallback) ── */
 const LB_KEY = 'rialo_quiz_leaderboard_v2';
 function getLB(){try{const raw=localStorage.getItem(LB_KEY);return raw?JSON.parse(raw):[];}catch(e){return[];}}
 function saveLB(entries){localStorage.setItem(LB_KEY,JSON.stringify(entries));}
 
-/* ── SCREENS ── */
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function showStart(){showScreen('scr-start');}
 function showLeaderboard(){listenLB();showScreen('scr-lb');}
 
-/* ── START ── */
 function startQuiz(){
   const nameEl=document.getElementById('player-name');
   playerName=(nameEl&&nameEl.value.trim())||'Anonymous';
@@ -564,13 +551,9 @@ function startQuiz(){
   renderQuestion();
 }
 
-/* ── END QUIZ ── */
 function endQuiz(){
   clearInterval(timerInterval);
-
-  // Save ke Firebase (+ localStorage fallback)
   saveScoreToFirebase(playerName, connectedWallet||'Anonymous', xp, correct, totalQ);
-
   document.getElementById('final-xp').textContent=xp;
   document.getElementById('stat-correct').textContent=correct;
   document.getElementById('stat-wrong').textContent=wrong;
@@ -589,7 +572,6 @@ function endQuiz(){
   showScreen('scr-result');
 }
 
-/* ── RENDER LEADERBOARD ── */
 function renderLBEntries(lb){
   const list=document.getElementById('lb-list');
   if(!lb.length){list.innerHTML='<div class="lb-empty">No scores yet. Be the first to complete the quiz!</div>';return;}
@@ -611,26 +593,19 @@ function renderLBEntries(lb){
 }
 
 function renderLB(){
-  // coba Firebase realtime, fallback localStorage
-  try{
-    listenLB();
-  }catch(e){
-    const lb=getLB();
-    renderLBEntries(lb);
-  }
+  try{listenLB();}catch(e){const lb=getLB();renderLBEntries(lb);}
 }
 
 function escHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-/* ── INIT: render wallet picker on load ── */
 renderWalletConnect();
-// Disable start button until wallet+name ready
 window.addEventListener('DOMContentLoaded',()=>{
   const btn=document.getElementById('start-btn');
   if(btn){btn.disabled=true;btn.style.opacity='.4';btn.style.cursor='not-allowed';}
   const nameInput=document.getElementById('player-name');
   if(nameInput) nameInput.addEventListener('input', checkStartReady);
 });
+
 function renderQuestion(){
   if(currentQ>=totalQ){endQuiz();return;}
   answered=false;
@@ -652,7 +627,6 @@ function renderQuestion(){
   startTimer();
 }
 
-/* ── TIMER ── */
 function startTimer(){
   timeLeft=15;clearInterval(timerInterval);updateTimerUI(15);
   timerInterval=setInterval(()=>{
@@ -681,7 +655,6 @@ function timeOut(){
   setTimeout(()=>{currentQ++;renderQuestion();},2000);
 }
 
-/* ── SELECT ANSWER ── */
 function selectAnswer(idx){
   if(answered)return;
   answered=true;clearInterval(timerInterval);
@@ -701,7 +674,6 @@ function selectAnswer(idx){
   }
 }
 
-/* ── CONFETTI ── */
 function showCongratsAnim(){
   const overlay=document.getElementById('congrats-overlay');
   const canvas=document.getElementById('confetti-canvas');
@@ -733,9 +705,30 @@ function stopConfetti(){
   if(confettiRAF)cancelAnimationFrame(confettiRAF);
   document.getElementById('confetti-canvas').getContext('2d').clearRect(0,0,window.innerWidth,window.innerHeight);
 }
+</script>
 
-/* ── RENDER QUESTION ── */
-function renderQuestion(){
+<!-- ✅ NAV ACTIVE FIX -->
+<script>
+(function() {
+  const filename = window.location.pathname.split('/').pop() || 'menu.html';
+  const pageMap = {
+    'menu.html':        'Home',
+    'wallet.html':      'Swap',
+    'garage.html':      'Garage',
+    'market.html':      'Market',
+    'quiz.html':        'Quests',
+    'quest.html':       'Quests',
+    'leaderboard.html': 'Leaderboard'
+  };
+  const activeLabel = pageMap[filename];
+  if (!activeLabel) return;
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.textContent.trim() === activeLabel) {
+      link.classList.add('active');
+    }
+  });
+})();
 </script>
 </body>
 </html>
