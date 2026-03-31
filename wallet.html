@@ -503,6 +503,9 @@ function updateUI(){
   const tb=document.getElementById('to-bal');if(tb)tb.textContent=rialoBal.toFixed(2)+' RIALO';
   const wb=document.getElementById('ws-bal');if(wb)wb.textContent=`ETH: ${ethBalance.toFixed(4)} | RIALO: ${rialoBal.toFixed(2)}`;
 
+  // ✅ SINKRONISASI: simpan saldo RIALO terbaru ke localStorage agar garage.html bisa baca real-time
+  localStorage.setItem('rialoBalance', rialoBal.toFixed(4));
+
   // ── Sinkronisasi saldo ke section Approve & Revoke ──
   const abd=document.getElementById('approve-bal-display');
   if(abd){
