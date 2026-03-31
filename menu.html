@@ -155,12 +155,13 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
 @keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 
 /* ============ HERO ============ */
+/* FIX: Reduced min-height and font sizes so it doesn't feel too zoomed in */
 .hero{
   position:relative;z-index:1;
-  min-height:90vh;
+  min-height:75vh;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  padding:4rem 2rem 2rem;
+  padding:3rem 2rem 2rem;
   text-align:center;
 }
 
@@ -171,7 +172,7 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
   background:var(--accent-glow);
   border:1px solid var(--border);
   padding:0.3rem 1rem;border-radius:2px;
-  margin-bottom:1.5rem;
+  margin-bottom:1.2rem;
   text-transform:uppercase;
   position:relative;overflow:hidden;
 }
@@ -192,9 +193,10 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
   margin-bottom:0.5rem;
 }
 
+/* FIX: clamp reduced from 3.5rem-8rem to 2.2rem-5rem */
 .hero-title{
   font-family:var(--font-head);
-  font-size:clamp(3.5rem,9vw,8rem);
+  font-size:clamp(2.2rem,6vw,5rem);
   font-weight:900;
   line-height:0.9;
   letter-spacing:-0.04em;
@@ -202,7 +204,7 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
   position:relative;
 }
 .hero-title .line1{
-  display:block;color:rgba(255,255,255,0.08);
+  display:block;
   font-size:0.35em;letter-spacing:0.3em;
   font-family:var(--font-data);font-weight:400;
   margin-bottom:0.3em;
@@ -227,15 +229,16 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
 
 .hero-data-row{
   display:flex;gap:2rem;justify-content:center;align-items:center;
-  margin:1.5rem 0;
+  margin:1.2rem 0;
   flex-wrap:wrap;
 }
 .hero-stat{
   display:flex;flex-direction:column;align-items:center;gap:2px;
 }
+/* FIX: val font reduced from 1.6rem to 1.2rem */
 .hero-stat .val{
   font-family:var(--font-head);
-  font-size:1.6rem;font-weight:900;
+  font-size:1.2rem;font-weight:900;
   color:var(--accent);
   font-style:italic;
 }
@@ -247,17 +250,17 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
   text-transform:uppercase;
 }
 .stat-divider{
-  width:1px;height:40px;
+  width:1px;height:32px;
   background:linear-gradient(180deg,transparent,rgba(74,222,128,0.3),transparent);
 }
 
 .hero-sub{
   font-family:var(--font-data);
-  font-size:0.78rem;
+  font-size:0.75rem;
   color:rgba(255,255,255,0.35);
   max-width:480px;
   line-height:1.8;
-  margin-bottom:2rem;
+  margin-bottom:1.5rem;
 }
 
 .cta-row{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;}
@@ -377,6 +380,7 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
 }
 
 /* ============ MODULE CARDS ============ */
+/* FIX: changed to 3-col top row + 3-col bottom row via auto-fill */
 .module-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -387,7 +391,7 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
   background:var(--card);
   border:1px solid var(--border2);
   border-radius:4px;
-  padding:1.75rem;
+  padding:1.5rem;
   cursor:pointer;
   text-decoration:none;color:var(--text);
   position:relative;overflow:hidden;
@@ -421,7 +425,6 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
 }
 .module-card:hover::before,
 .module-card:hover::after{opacity:1;}
-/* glitch on hover */
 .module-card:hover .card-title{
   animation:glitch-text 0.5s steps(2) 1;
 }
@@ -435,14 +438,14 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
 
 .card-header{
   display:flex;justify-content:space-between;align-items:flex-start;
-  margin-bottom:1.25rem;
+  margin-bottom:1rem;
 }
 .card-icon-box{
-  width:46px;height:46px;
+  width:42px;height:42px;
   border:1px solid var(--border);
   border-radius:3px;
   display:flex;align-items:center;justify-content:center;
-  font-size:1.3rem;
+  font-size:1.2rem;
   background:rgba(74,222,128,0.05);
   position:relative;
 }
@@ -468,37 +471,42 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
   border:1px solid rgba(250,204,21,0.25);
   color:var(--amber);
 }
+.card-badge.soon{
+  background:rgba(124,92,252,0.1);
+  border:1px solid rgba(124,92,252,0.25);
+  color:#a78bfa;
+}
 .card-title{
   font-family:var(--font-head);
-  font-size:1.3rem;font-weight:800;
+  font-size:1.15rem;font-weight:800;
   letter-spacing:-0.02em;
-  margin-bottom:0.4rem;
+  margin-bottom:0.35rem;
   color:#fff;
 }
 .card-desc{
   font-family:var(--font-data);
-  font-size:0.7rem;
+  font-size:0.68rem;
   color:rgba(255,255,255,0.3);
   line-height:1.7;
-  margin-bottom:1.25rem;
+  margin-bottom:1rem;
 }
 .card-stats{
   display:flex;gap:1rem;
-  padding-top:1rem;
+  padding-top:0.9rem;
   border-top:1px solid rgba(255,255,255,0.05);
 }
 .c-stat{display:flex;flex-direction:column;gap:2px;}
 .c-stat .cv{
-  font-family:var(--font-data);font-size:0.8rem;
+  font-family:var(--font-data);font-size:0.78rem;
   color:var(--accent);
 }
 .c-stat .cl{
-  font-family:var(--font-data);font-size:0.55rem;
+  font-family:var(--font-data);font-size:0.52rem;
   color:rgba(255,255,255,0.22);
   letter-spacing:0.1em;text-transform:uppercase;
 }
 .card-arrow{
-  margin-top:1rem;
+  margin-top:0.85rem;
   font-family:var(--font-data);font-size:0.68rem;
   color:rgba(74,222,128,0.5);
   display:flex;align-items:center;gap:6px;
@@ -685,13 +693,14 @@ footer{
 
 /* ============ RESPONSIVE ============ */
 @media(max-width:900px){
-  .module-grid{grid-template-columns:1fr;}
+  .module-grid{grid-template-columns:repeat(2,1fr);}
   .steps-grid{grid-template-columns:1fr 1fr;}
   .stack-grid{grid-template-columns:1fr;}
   .footer-grid{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:600px){
   .nav-links{display:none;}
+  .module-grid{grid-template-columns:1fr;}
   .steps-grid{grid-template-columns:1fr;}
   .footer-grid{grid-template-columns:1fr;}
   .telemetry-bar{flex-wrap:wrap;}
@@ -705,17 +714,17 @@ footer{
 
 <!-- NAV -->
 <nav class="nav">
-  <a class="nav-logo" href="#">
+  <a class="nav-logo" href="menu.html">
     <div class="logo-dot"></div>
     RIALO
   </a>
   <div class="nav-links">
-    <a class="nav-link active" href="#">Home</a>
-    <a class="nav-link" href="#">Swap</a>
-    <a class="nav-link" href="#">Garage</a>
-    <a class="nav-link" href="#">Market</a>
-    <a class="nav-link" href="#">Quiz</a>
-    <a class="nav-link" href="#">Leaderboard</a>
+    <a class="nav-link" href="menu.html">Home</a>
+    <a class="nav-link" href="wallet.html">Swap</a>
+    <a class="nav-link" href="garage.html">Garage</a>
+    <a class="nav-link" href="market.html">Market</a>
+    <a class="nav-link" href="quest.html">Quiz</a>
+    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
   </div>
   <div class="nav-status">
     NODE_CONNECTED · SEPOLIA
@@ -763,9 +772,9 @@ footer{
     Sovereignty by design.
   </p>
   <div class="cta-row">
-    <a class="btn-primary" href="#">⚙ OPEN GARAGE</a>
-    <a class="btn-ghost" href="#">📊 LIVE MARKETS</a>
-    <a class="btn-ghost" href="#">🔄 SWAP ETH</a>
+    <a class="btn-primary" href="garage.html">⚙ OPEN GARAGE</a>
+    <a class="btn-ghost" href="market.html">📊 LIVE MARKETS</a>
+    <a class="btn-ghost" href="wallet.html">🔄 SWAP ETH</a>
   </div>
 </section>
 
@@ -811,14 +820,14 @@ footer{
   <div class="binary-overlay"></div>
 </div>
 
-<!-- MODULE CARDS -->
+<!-- MODULE CARDS — FIX: 6 cards total, 2 rows of 3 -->
 <div class="section">
   <p class="section-label">Core Modules</p>
   <h2 class="section-title">Access The Stack</h2>
   <div class="module-grid">
 
     <!-- SWAP -->
-    <a class="module-card" href="#">
+    <a class="module-card" href="wallet.html">
       <div class="card-header">
         <div class="card-icon-box">
           <span>🔄</span>
@@ -837,7 +846,7 @@ footer{
     </a>
 
     <!-- GARAGE -->
-    <a class="module-card" href="#">
+    <a class="module-card" href="garage.html">
       <div class="card-header">
         <div class="card-icon-box">
           <span>⚙️</span>
@@ -856,7 +865,7 @@ footer{
     </a>
 
     <!-- MARKET -->
-    <a class="module-card" href="#">
+    <a class="module-card" href="market.html">
       <div class="card-header">
         <div class="card-icon-box">
           <span>📊</span>
@@ -872,6 +881,63 @@ footer{
         <div class="c-stat"><span class="cv">CEX+DEX</span><span class="cl">Source</span></div>
       </div>
       <div class="card-arrow">OPEN MODULE →</div>
+    </a>
+
+    <!-- QUIZ -->
+    <a class="module-card" href="quest.html">
+      <div class="card-header">
+        <div class="card-icon-box">
+          <span>🧠</span>
+          <div class="corner-tl"></div>
+        </div>
+        <span class="card-badge live">LIVE</span>
+      </div>
+      <div class="card-title">Protocol Quiz</div>
+      <div class="card-desc">Test your knowledge of the Rialo L1, modular blockchain concepts, and consensus mechanics. Earn XP for every correct answer.</div>
+      <div class="card-stats">
+        <div class="c-stat"><span class="cv">50+</span><span class="cl">Questions</span></div>
+        <div class="c-stat"><span class="cv">XP</span><span class="cl">Rewards</span></div>
+        <div class="c-stat"><span class="cv">Live</span><span class="cl">Ranking</span></div>
+      </div>
+      <div class="card-arrow">OPEN MODULE →</div>
+    </a>
+
+    <!-- LEADERBOARD -->
+    <a class="module-card" href="leaderboard.html">
+      <div class="card-header">
+        <div class="card-icon-box">
+          <span>🏆</span>
+          <div class="corner-tl"></div>
+        </div>
+        <span class="card-badge live">LIVE</span>
+      </div>
+      <div class="card-title">Leaderboard</div>
+      <div class="card-desc">Global validator and quiz rankings. Track your position across the Rialo testnet community. Compete for top-node status.</div>
+      <div class="card-stats">
+        <div class="c-stat"><span class="cv">Global</span><span class="cl">Rank</span></div>
+        <div class="c-stat"><span class="cv">Live</span><span class="cl">Updates</span></div>
+        <div class="c-stat"><span class="cv">Epoch</span><span class="cl">Resets</span></div>
+      </div>
+      <div class="card-arrow">OPEN MODULE →</div>
+    </a>
+
+    <!-- NODE DOCS (placeholder 6th card) -->
+    <a class="module-card" href="#">
+      <div class="card-header">
+        <div class="card-icon-box">
+          <span>📡</span>
+          <div class="corner-tl"></div>
+        </div>
+        <span class="card-badge soon">SOON</span>
+      </div>
+      <div class="card-title">Node Explorer</div>
+      <div class="card-desc">Browse live node topology, peer maps, and layer-by-layer execution traces on the Rialo testnet in real time.</div>
+      <div class="card-stats">
+        <div class="c-stat"><span class="cv">P2P</span><span class="cl">Mesh</span></div>
+        <div class="c-stat"><span class="cv">Trace</span><span class="cl">Mode</span></div>
+        <div class="c-stat"><span class="cv">Q3 '25</span><span class="cl">Launch</span></div>
+      </div>
+      <div class="card-arrow">COMING SOON →</div>
     </a>
 
   </div>
@@ -950,10 +1016,10 @@ footer{
     </div>
     <div class="footer-col">
       <h4>Product</h4>
-      <a href="#">Validator Garage</a>
-      <a href="#">Swap</a>
-      <a href="#">Markets</a>
-      <a href="#">Leaderboard</a>
+      <a href="garage.html">Validator Garage</a>
+      <a href="wallet.html">Swap</a>
+      <a href="market.html">Markets</a>
+      <a href="leaderboard.html">Leaderboard</a>
     </div>
     <div class="footer-col">
       <h4>Docs</h4>
@@ -976,6 +1042,33 @@ footer{
 
 <script>
 /* ===========================
+   NAV ACTIVE LINK — FIX
+   Pakai DOMContentLoaded agar
+   DOM pasti sudah siap sebelum
+   script jalan, dan gunakan
+   includes() supaya lebih robust
+=========================== */
+document.addEventListener('DOMContentLoaded', function() {
+  const filename = window.location.pathname.split('/').pop() || 'menu.html';
+  const pageMap = {
+    'menu.html':        'Home',
+    'wallet.html':      'Swap',
+    'garage.html':      'Garage',
+    'market.html':      'Market',
+    'quest.html':       'Quiz',
+    'leaderboard.html': 'Leaderboard'
+  };
+  const activeLabel = pageMap[filename];
+  if (!activeLabel) return;
+  document.querySelectorAll('.nav-link').forEach(function(link) {
+    link.classList.remove('active');
+    if (link.textContent.trim() === activeLabel) {
+      link.classList.add('active');
+    }
+  });
+});
+
+/* ===========================
    BACKGROUND CANVAS
 =========================== */
 (function(){
@@ -990,7 +1083,6 @@ footer{
   window.addEventListener('resize', resize);
   resize();
 
-  /* --- NEURAL NET NODES --- */
   const NODES = [];
   const NODE_COUNT = 80;
   const CONNECT_DIST = 140;
@@ -1014,7 +1106,6 @@ footer{
   }
   for(let i=0;i<NODE_COUNT;i++) NODES.push(new Node());
 
-  /* --- DATA STREAMS --- */
   const STREAMS = [];
   const STREAM_COUNT = 25;
   class Stream {
@@ -1027,10 +1118,7 @@ footer{
       this.alpha = Math.random()*0.35+0.05;
       this.bright = Math.random() > 0.85;
     }
-    update(){
-      this.x += this.speed;
-      if(this.x > W+200) this.reset(false);
-    }
+    update(){ this.x += this.speed; if(this.x > W+200) this.reset(false); }
     draw(){
       const grad = ctx.createLinearGradient(this.x,0,this.x+this.w,0);
       grad.addColorStop(0,'transparent');
@@ -1044,7 +1132,6 @@ footer{
   }
   for(let i=0;i<STREAM_COUNT;i++) STREAMS.push(new Stream());
 
-  /* --- BINARY RAIN --- */
   const COLS = Math.floor(W/14);
   const drops = Array.from({length:COLS},()=>Math.random()*-100);
   const CHARS = '01アイウエオカキクケコ';
@@ -1065,17 +1152,12 @@ footer{
     }
   }
 
-  /* --- GRID LINES --- */
   function drawGrid(){
     ctx.strokeStyle = 'rgba(74,222,128,0.03)';
     ctx.lineWidth = 1;
     const gs = 80;
-    for(let x=0;x<W;x+=gs){
-      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
-    }
-    for(let y=0;y<H;y+=gs){
-      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
-    }
+    for(let x=0;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
   }
 
   let frame=0;
@@ -1084,12 +1166,8 @@ footer{
     ctx.clearRect(0,0,W,H);
     drawGrid();
     drawBinaryRain();
-
-    // DATA STREAMS
     ctx.shadowBlur=0;
     STREAMS.forEach(s=>{s.update();s.draw();});
-
-    // NEURAL NODES & CONNECTIONS
     NODES.forEach(n=>n.update());
     ctx.shadowBlur=0;
     for(let i=0;i<NODES.length;i++){
@@ -1118,14 +1196,11 @@ footer{
       ctx.shadowColor='rgba(74,222,128,0.8)';
       ctx.fill();
     });
-
-    // FLOATING DATA PACKETS
     if(frame%40===0){
       ctx.fillStyle='rgba(34,211,238,0.6)';
       ctx.shadowBlur=8;ctx.shadowColor='rgba(34,211,238,0.8)';
       ctx.fillRect(Math.random()*W,Math.random()*H,2,2);
     }
-
     requestAnimationFrame(animate);
   }
   animate();
@@ -1156,7 +1231,7 @@ footer{
   const el = document.getElementById('ticker-inner');
   const make = (t)=>`<span class="ticker-item">${t.sym} <span class="${t.up?'up':'dn'}">${t.price} ${t.chg}</span></span>`;
   const html = tokens.map(make).join('');
-  el.innerHTML = html + html; // duplicate for seamless loop
+  el.innerHTML = html + html;
 })();
 
 /* ===========================
@@ -1184,7 +1259,6 @@ footer{
     if(valEl) valEl.textContent = val.toLocaleString();
   },5000);
 
-  /* footer hash */
   const hashEl = document.getElementById('footer-hash');
   const HEXC='0123456789abcdef';
   setInterval(()=>{
