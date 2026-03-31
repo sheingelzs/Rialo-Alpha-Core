@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RIALO · Menu Alpha</title>
+<title>RIALO · Menu Alpha Overdrive</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
 :root {
@@ -14,18 +14,19 @@
   --font:'Space Grotesk',sans-serif;--font-head:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;}
-body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
+html,body{height:100%;background:var(--bg);}
+body{color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
 
-/* Background Canvas - Scanning Code Circuit */
-#net-canvas{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  z-index:-1; /* Pastikan di bawah konten */
-  pointer-events:none;
+/* High-Density Data Canvas */
+#net-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--bg);
 }
 
 .nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,0.95);backdrop-filter:blur(16px);}
@@ -47,16 +48,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
-.landing h1{font-family:var(--font-head);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;line-height:1.05;letter-spacing:-0.03em;margin-bottom:1rem;}
-.landing h1 .accent{color:var(--accent);}
+.landing h1{font-family:var(--font-head);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;line-height:1.05;letter-spacing:-0.03em;margin-bottom:1rem;text-shadow: 0 10px 30px rgba(0,0,0,0.5);}
+.landing h1 .accent{color:var(--accent); text-shadow: 0 0 20px rgba(74,222,128,0.3);}
 .landing .hero-sub{color:rgba(255,255,255,0.45);font-size:1rem;max-width:460px;line-height:1.7;margin-bottom:0.75rem;}
 
 .parlay-hook{display:inline-flex;align-items:center;gap:8px;background:rgba(124,92,252,0.1);border:1px solid rgba(124,92,252,0.25);color:rgba(255,255,255,0.6);padding:0.45rem 1rem;border-radius:8px;font-size:0.82rem;margin-bottom:1.75rem;max-width:480px;}
 .parlay-hook span{color:var(--accent2);}
 
 .cta-group{display:flex;gap:0.65rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;}
-.btn-primary{background:var(--accent);color:#050810;font-family:var(--font);font-size:0.88rem;font-weight:700;padding:0.75rem 1.6rem;border-radius:9px;border:none;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block;}
-.btn-primary:hover{background:#86efac;transform:translateY(-1px);}
+.btn-primary{background:var(--accent);color:#050810;font-family:var(--font);font-size:0.88rem;font-weight:700;padding:0.75rem 1.6rem;border-radius:9px;border:none;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block;box-shadow: 0 4px 15px rgba(74,222,128,0.2);}
+.btn-primary:hover{background:#86efac;transform:translateY(-1px);box-shadow: 0 6px 20px rgba(74,222,128,0.3);}
 .btn-ghost{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.75);font-family:var(--font);font-size:0.88rem;font-weight:500;padding:0.75rem 1.6rem;border-radius:9px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block;}
 .btn-ghost:hover{background:rgba(255,255,255,0.09);}
 
@@ -65,10 +66,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .explore-wrap .sub{color:rgba(255,255,255,0.35);font-size:0.82rem;margin-bottom:1.75rem;}
 
 .menu-cards{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;}
-.menu-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.35rem;cursor:pointer;transition:all 0.25s;display:flex;flex-direction:column;gap:0.85rem;position:relative;overflow:hidden;text-decoration:none;color:var(--text);}
+.menu-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.35rem;cursor:pointer;transition:all 0.25s;display:flex;flex-direction:column;gap:0.85rem;position:relative;overflow:hidden;text-decoration:none;color:var(--text);backdrop-filter: blur(4px);}
 .menu-card:hover{background:rgba(255,255,255,0.07);border-color:rgba(74,222,128,0.3);transform:translateY(-2px);}
-.menu-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#22d3ee);opacity:0;transition:opacity 0.25s;}
-.menu-card:hover::after{opacity:1;}
 
 .card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
 .card-icon.yellow{background:rgba(250,204,21,0.15);}
@@ -78,13 +77,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 .card-title{font-weight:600;font-size:0.95rem;}
 .card-desc{font-size:0.75rem;color:rgba(255,255,255,0.35);line-height:1.5;}
-.card-arrow{font-size:.75rem;color:rgba(255,255,255,.22);}
 
 .how-section{max-width:860px;margin:0 auto;padding:1rem 2rem 4rem;}
 .how-label{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
 .how-title{font-family:var(--font-head);font-size:1.6rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:2rem;}
 .how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;}
-.how-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.25rem;}
+.how-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.25rem;backdrop-filter: blur(2px);}
 .how-num{font-family:var(--font-mono);font-size:0.68rem;color:var(--accent);margin-bottom:0.6rem;}
 .how-card h3{font-size:0.9rem;font-weight:700;margin-bottom:0.4rem;}
 .how-card p{font-size:0.78rem;color:rgba(255,255,255,0.38);line-height:1.6;}
@@ -92,12 +90,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .site-footer{border-top:1px solid rgba(255,255,255,0.06);padding:2rem 1.5rem;background:rgba(5,8,16,0.9);position:relative;z-index:1;}
 .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;}
 .footer-logo{font-family:var(--font-head);font-size:1.1rem;font-weight:800;margin-bottom:0.5rem;display:flex;align-items:center;gap:7px;}
-.footer-tagline{font-size:0.78rem;color:rgba(255,255,255,0.3);line-height:1.6;max-width:280px;}
-
-.footer-col h4{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:0.75rem;}
-.footer-links{display:flex;flex-direction:column;gap:0.45rem;}
-.footer-links a{font-size:0.8rem;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;}
-.footer-links a:hover{color:rgba(255,255,255,0.8);}
 
 .footer-bottom{max-width:1100px;margin:1.5rem auto 0;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;}
 .footer-bottom p{font-size:0.72rem;color:rgba(255,255,255,0.2);}
@@ -109,7 +101,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </style>
 </head>
 <body>
+
 <canvas id="net-canvas"></canvas>
+
 <nav class="nav">
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
   <div class="nav-right">
@@ -145,22 +139,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <a class="menu-card" href="wallet.html">
         <div class="card-icon yellow">🔄</div>
         <div><div class="card-title">Swap</div><div class="card-desc">Swap Sepolia ETH to RIALO token on testnet</div></div>
-        <div class="card-arrow">→</div>
       </a>
       <a class="menu-card" href="garage.html">
         <div class="card-icon green">⚙️</div>
         <div><div class="card-title">Validator Garage</div><div class="card-desc">Mount your key. Assemble the Supermodular Stack. Monitor live telemetry.</div></div>
-        <div class="card-arrow">→</div>
       </a>
       <a class="menu-card" href="market.html">
         <div class="card-icon cyan">📊</div>
         <div><div class="card-title">Market</div><div class="card-desc">Live crypto prices, charts &amp; top movers</div></div>
-        <div class="card-arrow">→</div>
       </a>
       <a class="menu-card" href="#about">
         <div class="card-icon purple">ℹ️</div>
         <div><div class="card-title">About</div><div class="card-desc">Learn about the Rialo Protocol and the team behind it</div></div>
-        <div class="card-arrow">→</div>
       </a>
     </div>
   </div>
@@ -172,22 +162,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <div class="how-card">
         <div class="how-num">01 / STANDBY</div>
         <h3>Node Disconnected</h3>
-        <p>Neural network active in the background. Status: NODE_DISCONNECTED. Engine not yet started.</p>
+        <p>Neural network active in the background. Status: NODE_DISCONNECTED.</p>
       </div>
       <div class="how-card">
         <div class="how-num">02 / IGNITION</div>
         <h3>Insert Validator Key</h3>
-        <p>Connect wallet to mount your validator key. One action, three layers ready to assemble.</p>
+        <p>Connect wallet to mount your validator key. One action, three layers ready.</p>
       </div>
       <div class="how-card">
         <div class="how-num">03 / ASSEMBLY</div>
         <h3>Modular Stack Loaded</h3>
-        <p>RISC-V Engine → Ethereum Settlement → DA Layer. All layers assembled automatically.</p>
+        <p>RISC-V Engine → Ethereum Settlement → DA Layer. Assembled automatically.</p>
       </div>
       <div class="how-card">
         <div class="how-num">04 / TELEMETRY</div>
         <h3>50ms Dashboard</h3>
-        <p>Engine live. Monitor gas, active VM, finality gauge, and layer stack in real-time.</p>
+        <p>Engine live. Monitor gas, active VM, and finality gauge in real-time.</p>
       </div>
     </div>
   </div>
@@ -196,31 +186,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <div class="footer-inner">
       <div class="footer-col">
         <div class="footer-logo"><div class="logo-dot"></div>RIALO</div>
-        <p class="footer-tagline">Supermodular L1 Blockchain Stack. Sovereignty, performance, composability — built for operators, not speculators.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Product</h4>
-        <div class="footer-links">
-          <a href="garage.html">Validator Garage</a>
-          <a href="wallet.html">Swap</a>
-          <a href="market.html">Markets</a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h4>Community</h4>
-        <div class="footer-links">
-          <a href="https://x.com/rialohq" target="_blank">Twitter / X</a>
-          <a href="https://discord.gg/rialoprotocol" target="_blank">Discord</a>
-        </div>
+        <p class="footer-tagline">Supermodular L1 Blockchain Stack. Built for operators.</p>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2026 Rialo Labs. All rights reserved.</p>
+      <p>&copy; 2026 Rialo Labs.</p>
       <div class="footer-builders">
-        Built by
-        <a class="builder-link" href="https://github.com/sheingelzs" target="_blank">Gelz</a>
-        &amp;
-        <a class="builder-link" href="#" target="_blank">Sheina</a>
+        Built by <a class="builder-link" href="https://github.com/sheingelzs">Gelz</a> &amp; Sheina
       </div>
     </div>
   </footer>
@@ -232,7 +204,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   const ctx = canvas.getContext('2d');
   
   let lines = [];
-  const lineCount = 20; // Ditambah sedikit biar lebih ramai
+  let bits = [];
+  const lineCount = 50; // Lebih padat
+  const bitCount = 35; // Biner rain
 
   function resize(){
     canvas.width = window.innerWidth;
@@ -242,15 +216,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   resize();
 
   class DataLine {
-    constructor(){
-      this.reset();
-    }
+    constructor(){ this.reset(); }
     reset(){
       this.x = Math.random() * canvas.width;
       this.y = Math.random() * canvas.height;
-      this.width = Math.random() * 200 + 100; // Garis lebih panjang
-      this.speed = Math.random() * 5 + 3; // Sedikit lebih cepat
-      this.opacity = Math.random() * 0.4 + 0.1;
+      this.width = Math.random() * 400 + 150;
+      this.speed = Math.random() * 10 + 5; // Sangat cepat
+      this.opacity = Math.random() * 0.5 + 0.1;
+      this.h = Math.random() > 0.85 ? 2.5 : 1.2;
     }
     update(){
       this.x += this.speed;
@@ -260,49 +233,72 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       }
     }
     draw(){
-      const gradient = ctx.createLinearGradient(this.x, 0, this.x + this.width, 0);
-      gradient.addColorStop(0, 'transparent');
-      gradient.addColorStop(0.5, `rgba(74, 222, 128, ${this.opacity})`); 
-      gradient.addColorStop(1, 'transparent');
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = 'rgba(74, 222, 128, 0.5)';
+      const g = ctx.createLinearGradient(this.x, 0, this.x + this.width, 0);
+      g.addColorStop(0, 'transparent');
+      g.addColorStop(0.5, `rgba(74, 222, 128, ${this.opacity})`);
+      g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g;
+      ctx.fillRect(this.x, this.y, this.width, this.h);
+    }
+  }
+
+  class BinaryBit {
+    constructor(){ this.reset(); }
+    reset(){
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.char = Math.random() > 0.5 ? "0" : "1";
+      this.opacity = 0;
+      this.maxOpacity = Math.random() * 0.3;
+      this.fadeSpeed = 0.005 + Math.random() * 0.015;
+    }
+    draw(){
+      this.opacity += this.fadeSpeed;
+      if(this.opacity > this.maxOpacity || this.opacity < 0) this.fadeSpeed *= -1;
+      if(this.opacity < -0.1) this.reset();
       
-      ctx.fillStyle = gradient;
-      ctx.fillRect(this.x, this.y, this.width, 1.2);
-      
-      // Glow effect di tengah garis
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = 'rgba(74, 222, 128, 0.4)';
+      ctx.font = "11px 'Space Mono'";
+      ctx.fillStyle = `rgba(74, 222, 128, ${this.opacity})`;
+      ctx.fillText(this.char, this.x, this.y);
+    }
+  }
+
+  function drawCircuitGrid() {
+    ctx.lineWidth = 0.5;
+    const time = Date.now() * 0.001;
+    // Dynamic Grid Lines
+    for(let i = 0; i < canvas.width; i += 100) {
+      let alpha = 0.02 + Math.sin(time + i*0.01) * 0.01;
+      ctx.strokeStyle = `rgba(74, 222, 128, ${alpha})`;
+      ctx.beginPath();
+      ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height);
+      ctx.stroke();
+    }
+    for(let i = 0; i < canvas.height; i += 100) {
+      let alpha = 0.02 + Math.cos(time + i*0.01) * 0.01;
+      ctx.strokeStyle = `rgba(74, 222, 128, ${alpha})`;
+      ctx.beginPath();
+      ctx.moveTo(0, i); ctx.lineTo(canvas.width, i);
+      ctx.stroke();
     }
   }
 
   function init(){
     for(let i = 0; i < lineCount; i++) lines.push(new DataLine());
-  }
-
-  function drawCircuitBackground() {
-    ctx.strokeStyle = 'rgba(74, 222, 128, 0.02)'; // Sangat samar
-    ctx.lineWidth = 0.5;
-    // Grid vertikal tipis
-    for(let i = 0; i < canvas.width; i += 120) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
-    }
-    // Grid horizontal tipis
-    for(let i = 0; i < canvas.height; i += 120) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
-      ctx.stroke();
-    }
+    for(let i = 0; i < bitCount; i++) bits.push(new BinaryBit());
   }
 
   function animate(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.shadowBlur = 0; 
+    // Menghasilkan efek motion blur dengan tidak membersihkan canvas 100%
+    ctx.fillStyle = 'rgba(5, 8, 16, 0.25)'; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    drawCircuitBackground();
+    ctx.shadowBlur = 0;
+    drawCircuitGrid();
     
+    bits.forEach(bit => bit.draw());
     lines.forEach(line => {
       line.update();
       line.draw();
@@ -315,5 +311,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   animate();
 })();
 </script>
+
 </body>
 </html>
