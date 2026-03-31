@@ -173,9 +173,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 <script type="module">
 
-/* ── FIREBASE CONFIG ── */
+/* ══════════════════════════════════════════════════════════
+   🔥 FIREBASE CONFIG — HARUS SAMA PERSIS dengan quest.html
+   Isi dengan nilai dari Firebase Console kamu.
+   ══════════════════════════════════════════════════════════ */
 const FB_CONFIG = {
-  apiKey:            "GANTI_API_KEY_KAMU",
+  apiKey:            "GANTI_API_KEY_KAMU",          // contoh: "AIzaSyXXXXXXXXXXXXXXXXX"
   authDomain:        "GANTI_PROJECT.firebaseapp.com",
   databaseURL:       "https://GANTI_PROJECT-default-rtdb.firebaseio.com",
   projectId:         "GANTI_PROJECT",
@@ -185,7 +188,7 @@ const FB_CONFIG = {
 };
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, query, orderByChild, limitToLast }
+import { getDatabase, ref, onValue }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const fbApp = initializeApp(FB_CONFIG);
@@ -270,36 +273,50 @@ function renderLeaderboard(entries){
   }).join('');
 }
 
-/* ── LISTEN LEADERBOARD — Firebase + localStorage fallback ── */
+/* ── LISTEN LEADERBOARD — Firebase real-time listener + localStorage fallback ──
+   Firebase menggunakan struktur: leaderboard/{walletKey} → {name, wallet, exp}
+   onValue() otomatis dipanggil setiap kali ada data baru → leaderboard langsung update
+   tanpa perlu refresh halaman.                                                       */
 function listenLeaderboard(){
   const lbBody = document.getElementById('lb-body');
-  lbBody.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem;font-family:var(--font-mono)">Loading leaderboard…</div>`;
+  lbBody.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem;font-family:var(--font-mono)">
+    <div style="display:inline-block;width:20px;height:20px;border:2px solid rgba(74,222,128,.3);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px"></div>
+    Memuat leaderboard…
+  </div>`;
 
   try {
-    const q = query(ref(db, 'leaderboard'), orderByChild('exp'), limitToLast(50));
-    onValue(q, snap => {
+    // Listener real-time — onValue() terpanggil otomatis setiap ada perubahan data
+    const lbRef = ref(db, 'leaderboard');
+    onValue(lbRef, snap => {
       const firebaseEntries = [];
-      snap.forEach(child => { firebaseEntries.push(child.val()); });
+      snap.forEach(child => {
+        const val = child.val();
+        if(val && val.wallet) firebaseEntries.push(val);
+      });
 
       // Merge Firebase + localStorage (deduplikasi by wallet, ambil exp tertinggi)
       const localEntries = getLBLocal();
       const merged = [...firebaseEntries];
       localEntries.forEach(le => {
-        const existIdx = merged.findIndex(fe => fe.wallet && le.wallet && fe.wallet.toLowerCase() === le.wallet.toLowerCase());
+        if(!le.wallet) return;
+        const existIdx = merged.findIndex(fe =>
+          fe.wallet && fe.wallet.toLowerCase() === le.wallet.toLowerCase());
         if(existIdx < 0) merged.push(le);
         else if((le.exp || 0) > (merged[existIdx].exp || 0)) merged[existIdx] = le;
       });
 
       merged.sort((a,b) => (b.exp||0) - (a.exp||0));
       renderLeaderboard(merged);
+      console.log('🔄 Leaderboard updated:', merged.length, 'entries (real-time)');
     }, err => {
-      console.warn('Firebase error, fallback to localStorage:', err);
+      // Firebase error — fallback ke localStorage
+      console.warn('⚠️ Firebase error, fallback ke localStorage:', err.message);
       const local = getLBLocal();
       local.sort((a,b) => (b.exp||0) - (a.exp||0));
       renderLeaderboard(local);
     });
   } catch(e){
-    console.warn('Firebase unavailable, using localStorage:', e);
+    console.warn('⚠️ Firebase tidak tersedia, menggunakan localStorage:', e.message);
     const local = getLBLocal();
     local.sort((a,b) => (b.exp||0) - (a.exp||0));
     renderLeaderboard(local);
