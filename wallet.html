@@ -268,7 +268,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
         <div class="tp-label">You Pay</div>
         <div class="tp-row">
           <div class="t-select">
-            <div class="t-icon t-eth">ETH</div>
+            <div class="t-icon t-eth"><img src="images/eth.png" alt="ETH" style="width:100%;height:100%;object-fit:contain;border-radius:50%;"/></div>
             <span class="t-sym">ETH</span>
           </div>
           <input class="t-input" id="from-amt" type="number" placeholder="0.0" min="0" step="0.001" oninput="calcSwap()"/>
@@ -285,7 +285,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
         <div class="tp-label">You Receive</div>
         <div class="tp-row">
           <div class="t-select">
-            <div class="t-icon t-rlo">RLO</div>
+            <div class="t-icon t-rlo"><img src="images/market.png" alt="RIALO" style="width:100%;height:100%;object-fit:contain;border-radius:50%;"/></div>
             <span class="t-sym">RIALO</span>
           </div>
           <input class="t-input" id="to-amt" type="number" placeholder="0.0" readonly style="color:var(--accent)"/>
@@ -360,178 +360,126 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 <script>
 /* ══════════════════════════════════════════════
-   LIQUID METABALL / BLOB BACKGROUND
-   — organic lava-lamp style blobs yang melayang
-   — warna selaras: hijau accent + cyan + indigo gelap
-   — teknik: Canvas 2D metaball field rendering
+   MOVE LANGUAGE DATA STREAM — Rialo Alpha Core
+   — Matrix-style vertical character rain
+   — Chars: binary 0/1 + Move lang keywords
+   — Color: --accent #4ade80 @ low opacity
+   — Font: 'Space Mono', monospace (sharp/Y2K)
+   — Glow: random per-char transfer effect
    ══════════════════════════════════════════════ */
 (function(){
   const canvas = document.getElementById('blob-canvas');
-  const ctx = canvas.getContext('2d');
+  const ctx    = canvas.getContext('2d');
 
-  function resize(){
-    canvas.width = window.innerWidth;
+  /* ── setupCanvas ── */
+  function setupCanvas() {
+    canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
   }
-  window.addEventListener('resize', resize);
-  resize();
+  window.addEventListener('resize', () => { setupCanvas(); initStreams(); });
+  setupCanvas();
 
-  // Definisi blob — warna selaras tema swap DeFi
-  const blobs = [
-    { x:0.15, y:0.25, r:0.28, vx:0.00008, vy:0.00005, color:'rgba(74,222,128,', baseOpacity:0.13 },
-    { x:0.82, y:0.15, r:0.22, vx:-0.00006, vy:0.00009, color:'rgba(34,211,238,', baseOpacity:0.10 },
-    { x:0.50, y:0.75, r:0.32, vx:0.00005, vy:-0.00007, color:'rgba(124,92,252,', baseOpacity:0.09 },
-    { x:0.88, y:0.72, r:0.20, vx:-0.00009, vy:-0.00004, color:'rgba(74,222,128,', baseOpacity:0.08 },
-    { x:0.30, y:0.60, r:0.18, vx:0.00007, vy:0.00006, color:'rgba(34,211,238,', baseOpacity:0.07 },
-    { x:0.65, y:0.40, r:0.15, vx:-0.00005, vy:0.00008, color:'rgba(124,92,252,', baseOpacity:0.06 },
+  /* ── Move Language character pool ── */
+  const CHARS = [
+    '0','1','0','1','0','1','0','1',   // binary heavy weight
+    'm','o','d','u','l','e',
+    'e','n','t','r','y',
+    'f','u','n',
+    'p','u','b','l','i','c',
+    's','t','r','u','c','t',
+    'u','s','e',
+    '{','}','(',')',':',';','<','>',
+    '=','_','&','|','!',
+    'a','c','q','i','r','e','s',
+    'h','a','s',
   ];
 
-  // Morph data per blob — tiap blob punya phase sendiri buat gerak organik
-  const morphPhases = blobs.map((_,i) => ({
-    t: Math.random() * Math.PI * 2,
-    speed: 0.0003 + Math.random() * 0.0004,
-    ampX: 0.06 + Math.random() * 0.08,
-    ampY: 0.05 + Math.random() * 0.07,
-    ampR: 0.03 + Math.random() * 0.04,
-    pulseSpeed: 0.001 + Math.random() * 0.001,
-    pulsePhase: Math.random() * Math.PI * 2,
-  }));
+  const FONT_SIZE  = 13;   // px — sharp, monospaced
+  const BASE_ALPHA = 0.07; // base opacity — subtle, won't obscure UI
+  const GLOW_PROB  = 0.018; // probability a char gets glow this frame
 
-  let frame = 0;
+  /* ── Stream state ── */
+  let streams = [];
 
-  function drawBlob(blob, phase, w, h) {
-    phase.t += phase.speed;
-    phase.pulsePhase += phase.pulseSpeed;
-
-    const cx = (blob.x + Math.sin(phase.t * 0.7) * phase.ampX) * w;
-    const cy = (blob.y + Math.cos(phase.t * 0.9) * phase.ampY) * h;
-    const baseR = blob.r * Math.min(w, h);
-    const r = baseR * (1 + Math.sin(phase.pulsePhase) * phase.ampR);
-    const opacity = blob.baseOpacity + Math.sin(phase.pulsePhase * 1.3) * 0.04;
-
-    // Radial gradient — soft glowing blob
-    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-    grad.addColorStop(0,   blob.color + Math.min(opacity * 2.2, 0.35) + ')');
-    grad.addColorStop(0.4, blob.color + Math.min(opacity * 1.2, 0.20) + ')');
-    grad.addColorStop(0.75,blob.color + Math.min(opacity * 0.5, 0.10) + ')');
-    grad.addColorStop(1,   blob.color + '0)');
-
-    ctx.beginPath();
-    // Organic blob shape pakai bezier — bukan lingkaran sempurna
-    const pts = 8;
-    const noiseAmp = r * 0.18;
-    for (let i = 0; i <= pts; i++) {
-      const angle = (i / pts) * Math.PI * 2;
-      const noise = Math.sin(angle * 3 + phase.t * 2) * noiseAmp * 0.5
-                  + Math.cos(angle * 5 - phase.t * 1.5) * noiseAmp * 0.3
-                  + Math.sin(angle * 7 + phase.t) * noiseAmp * 0.2;
-      const rx = cx + (r + noise) * Math.cos(angle);
-      const ry = cy + (r + noise) * Math.sin(angle);
-      if (i === 0) ctx.moveTo(rx, ry);
-      else ctx.lineTo(rx, ry);
-    }
-    ctx.closePath();
-    ctx.fillStyle = grad;
-    ctx.fill();
+  function initStreams() {
+    const cols = Math.floor(canvas.width / FONT_SIZE);
+    streams = Array.from({ length: cols }, (_, i) => ({
+      x:     i * FONT_SIZE,
+      y:     Math.random() * -canvas.height, // start above viewport randomly
+      speed: 0.6 + Math.random() * 1.4,      // px per frame
+      chars: Array.from({ length: Math.floor(8 + Math.random() * 20) },
+               () => CHARS[Math.floor(Math.random() * CHARS.length)]),
+      glowIdx: -1,
+      glowTimer: 0,
+    }));
   }
+  initStreams();
 
-  // Hex grid overlay — jarang dipakai, subtle banget, selaras tema crypto
-  function drawHexGrid(w, h, t) {
-    const size = 60;
-    const cols = Math.ceil(w / (size * 1.5)) + 2;
-    const rows = Math.ceil(h / (size * Math.sqrt(3))) + 2;
-    ctx.strokeStyle = 'rgba(74,222,128,0.025)';
-    ctx.lineWidth = 0.8;
-    for (let row = -1; row < rows; row++) {
-      for (let col = -1; col < cols; col++) {
-        const x = col * size * 1.5;
-        const y = row * size * Math.sqrt(3) + (col % 2 === 0 ? 0 : size * Math.sqrt(3) / 2);
-        const pulse = 0.8 + 0.2 * Math.sin(t * 0.0005 + (row + col) * 0.4);
-        ctx.globalAlpha = pulse * 0.6;
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = (Math.PI / 3) * i - Math.PI / 6;
-          const px = x + size * 0.5 * Math.cos(angle);
-          const py = y + size * 0.5 * Math.sin(angle);
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-        }
-        ctx.closePath();
-        ctx.stroke();
+  /* ── draw ── */
+  function draw() {
+    const w = canvas.width, h = canvas.height;
+
+    // Fade trail — semi-transparent clear creates motion blur feel
+    ctx.fillStyle = 'rgba(5,8,16,0.18)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.font = `${FONT_SIZE}px 'Space Mono', monospace`;
+    ctx.textBaseline = 'top';
+
+    streams.forEach(stream => {
+      // Advance position
+      stream.y += stream.speed;
+
+      // Reset stream when it fully exits bottom
+      const streamH = stream.chars.length * FONT_SIZE;
+      if (stream.y - streamH > h) {
+        stream.y     = -streamH - Math.random() * h * 0.5;
+        stream.speed = 0.6 + Math.random() * 1.4;
+        // Randomise chars on reset for variety
+        stream.chars = stream.chars.map(() =>
+          CHARS[Math.floor(Math.random() * CHARS.length)]
+        );
       }
-    }
-    ctx.globalAlpha = 1;
-  }
 
-  // Flow lines — seperti aliran liquidity di AMM
-  const flowLines = Array.from({length:12}, (_, i) => ({
-    x: Math.random(),
-    y: Math.random(),
-    angle: Math.random() * Math.PI * 2,
-    speed: 0.0001 + Math.random() * 0.0002,
-    len: 0.04 + Math.random() * 0.06,
-    opacity: 0.03 + Math.random() * 0.04,
-  }));
+      // Random glow trigger
+      if (Math.random() < GLOW_PROB) {
+        stream.glowIdx   = Math.floor(Math.random() * stream.chars.length);
+        stream.glowTimer = 6 + Math.floor(Math.random() * 12); // frames
+      }
+      if (stream.glowTimer > 0) stream.glowTimer--;
+      else stream.glowIdx = -1;
 
-  function drawFlowLines(w, h, t) {
-    flowLines.forEach(line => {
-      line.angle += line.speed;
-      const cx = (line.x + 0.5 + 0.3 * Math.sin(t * 0.0003 + line.angle)) * w % w;
-      const cy = (line.y + 0.5 + 0.2 * Math.cos(t * 0.0004 - line.angle * 0.7)) * h % h;
-      const len = line.len * Math.min(w, h);
-      const ex = cx + Math.cos(line.angle) * len;
-      const ey = cy + Math.sin(line.angle) * len;
-      const grad = ctx.createLinearGradient(cx, cy, ex, ey);
-      grad.addColorStop(0, `rgba(74,222,128,0)`);
-      grad.addColorStop(0.5, `rgba(74,222,128,${line.opacity})`);
-      grad.addColorStop(1, `rgba(34,211,238,0)`);
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.lineTo(ex, ey);
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = 1;
-      ctx.stroke();
+      // Draw each character in the stream
+      stream.chars.forEach((ch, ci) => {
+        const cy = stream.y + ci * FONT_SIZE;
+        if (cy < -FONT_SIZE || cy > h) return; // skip off-screen
+
+        const isGlow = (ci === stream.glowIdx && stream.glowTimer > 0);
+
+        if (isGlow) {
+          // Bright glow character — data transfer pulse
+          ctx.save();
+          ctx.shadowColor  = '#4ade80';
+          ctx.shadowBlur   = 8;
+          ctx.fillStyle    = 'rgba(74,222,128,0.55)';
+          ctx.fillText(ch, stream.x, cy);
+          ctx.restore();
+        } else {
+          // Normal dim character
+          // Head of stream slightly brighter
+          const headFade = ci === 0 ? 0.12 : BASE_ALPHA;
+          ctx.fillStyle = `rgba(74,222,128,${headFade})`;
+          ctx.fillText(ch, stream.x, cy);
+        }
+      });
     });
   }
 
-  function animate(t) {
-    const w = canvas.width, h = canvas.height;
-    ctx.clearRect(0, 0, w, h);
-
-    // Base very dark overlay gradient
-    const bg = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*0.8);
-    bg.addColorStop(0, 'rgba(10,18,35,0.0)');
-    bg.addColorStop(1, 'rgba(5,8,16,0.0)');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, w, h);
-
-    // Draw hex grid background
-    drawHexGrid(w, h, t);
-
-    // Draw flow lines (liquidity streams)
-    ctx.save();
-    drawFlowLines(w, h, t);
-    ctx.restore();
-
-    // Draw blobs with soft blending
-    ctx.save();
-    ctx.globalCompositeOperation = 'screen';
-    blobs.forEach((blob, i) => drawBlob(blob, morphPhases[i], w, h));
-    ctx.restore();
-
-    // Subtle scanline sweep — seperti data feed real-time
-    const scanY = ((t * 0.015) % (h + 200)) - 100;
-    const scanGrad = ctx.createLinearGradient(0, scanY - 60, 0, scanY + 60);
-    scanGrad.addColorStop(0, 'rgba(74,222,128,0)');
-    scanGrad.addColorStop(0.5, 'rgba(74,222,128,0.015)');
-    scanGrad.addColorStop(1, 'rgba(74,222,128,0)');
-    ctx.fillStyle = scanGrad;
-    ctx.fillRect(0, scanY - 60, w, 120);
-
-    frame = t;
+  /* ── animate ── */
+  function animate() {
+    draw();
     requestAnimationFrame(animate);
   }
-
   requestAnimationFrame(animate);
 })();
 
