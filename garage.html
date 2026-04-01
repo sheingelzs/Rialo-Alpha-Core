@@ -906,6 +906,29 @@ async function doApprove(){
   try{
     const tx=await prov.request({method:'eth_sendTransaction',params:[{from:walletAddress,to:token,data:encodeApprove(spender,MAX_UINT256),value:'0x0'}]});
     showToast('approve','success',`Approve successful! ✅<br><a href="https://sepolia.etherscan.io/tx/${tx}" target="_blank">${tx.slice(0,20)}… ↗</a>`);
+
+    // ── Sync ke Security Control Panel (panel coklat susu) setelah Approve WETH berhasil ──
+    const rialoBal = parseFloat(localStorage.getItem('rialo_balance') || localStorage.getItem('rialoBalance') || '0');
+    // 1. Tulis saldo ke #garage-rlo-display
+    const balDisplay = document.getElementById('garage-rlo-display');
+    if(balDisplay){
+      balDisplay.textContent = rialoBal.toFixed(4);
+      balDisplay.classList.remove('flash');
+      void balDisplay.offsetWidth;
+      balDisplay.classList.add('flash');
+      setTimeout(() => balDisplay.classList.remove('flash'), 950);
+    }
+    // 2. Tulis alamat wallet ke .sec-bal-suffix
+    const suffixEl = document.querySelector('.sec-bal-suffix');
+    if(suffixEl && walletAddress){
+      suffixEl.textContent = walletAddress.slice(0,10) + '...' + walletAddress.slice(-6) + ' · Sepolia Testnet';
+    }
+    // 3. Update status dot & text di Security Panel
+    const dot = document.getElementById('garage-approve-dot');
+    const txt = document.getElementById('garage-approve-txt');
+    if(dot){ dot.className = 'sec-status-dot approved'; }
+    if(txt){ txt.className = 'sec-status-txt approved'; txt.textContent = 'Approved ✅'; }
+
   }catch(e){showToast('approve','error',e.code===4001?'Rejected.':e.message||'Approve failed.');}
   finally{btn.disabled=false;btn.textContent='Approve →';}
 }
