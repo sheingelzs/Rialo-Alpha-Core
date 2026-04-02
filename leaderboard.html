@@ -55,6 +55,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .conn-state{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1.5rem 0;}
 .conn-spin{width:40px;height:40px;border:3px solid rgba(74,222,128,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
 .conn-lbl{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);}
+.mobile-open-btn{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:12px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;width:100%;max-width:380px;text-decoration:none;}
+.mobile-open-btn:hover{background:rgba(74,222,128,.12);}
 
 /* MAIN SCREEN */
 #main-screen{display:none;}
@@ -118,7 +120,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <a class="nav-link" href="wallet.html">Swap</a>
       <a class="nav-link" href="garage.html">Garage</a>
       <a class="nav-link" href="market.html">Market</a>
-      <a class="nav-link" href="quest.html">Quizs</a>
+      <a class="nav-link" href="quest.html">Quiz</a>
       <a class="nav-link" href="leaderboard.html">Leaderboard</a>
     </div>
     <button class="nav-btn" id="nav-btn" onclick="navClick()">Insert Validator Key</button>
@@ -191,7 +193,11 @@ function getLBLocal(){try{const raw=localStorage.getItem(LB_KEY);return raw?JSON
 
 function renderLeaderboard(entries){
   const lbBody=document.getElementById('lb-body');
-  if(!entries.length){lbBody.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem">No scores yet. Complete the quiz to be first!</div>`;if(wallet){document.getElementById('mr-num').textContent='—';document.getElementById('mr-addr').textContent=fmtAddr(wallet)+' — Complete the quiz!';document.getElementById('mr-rank').textContent='Rank: Recruit';document.getElementById('mr-xp').textContent='0';}return;}
+  if(!entries.length){
+    lbBody.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem">No scores yet. Complete the quiz to be first!</div>`;
+    if(wallet){document.getElementById('mr-num').textContent='—';document.getElementById('mr-addr').textContent=fmtAddr(wallet)+' — Complete the quiz!';document.getElementById('mr-rank').textContent='Rank: Recruit';document.getElementById('mr-xp').textContent='0';}
+    return;
+  }
   entries.sort((a,b)=>(b.exp||0)-(a.exp||0));
   const myIdx=wallet?entries.findIndex(e=>e.wallet&&e.wallet.toLowerCase()===wallet.toLowerCase()):-1;
   if(myIdx>=0){const me=entries[myIdx];document.getElementById('mr-num').textContent='#'+(myIdx+1);document.getElementById('mr-addr').textContent=(me.name||'Anonymous')+' · '+fmtAddr(me.wallet);document.getElementById('mr-rank').textContent='Rank: '+getRank(me.exp||0).name;document.getElementById('mr-xp').textContent=(me.exp||0)+' XP';}
@@ -218,19 +224,85 @@ function listenLeaderboard(){
   }catch(e){const local=getLBLocal();local.sort((a,b)=>(b.exp||0)-(a.exp||0));renderLeaderboard(local);}
 }
 
-function getProvList(){const e=window.ethereum;if(!e)return[];return e.providers||[e]}
-function findProv(key){const L=getProvList();if(key==='okx')return window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)||null;if(key==='metamask')return L.find(p=>p.isMetaMask&&!p.isPhantom)||null;if(key==='phantom')return L.find(p=>p.isPhantom)||null;if(key==='coinbase')return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;return window.ethereum||null;}
-function detectW(){const L=getProvList();return{metamask:!!(L.find(p=>p.isMetaMask&&!p.isPhantom)),phantom:!!(L.find(p=>p.isPhantom)),okx:!!(window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)),coinbase:!!(L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser))}}
-function setNavBtn(addr){const b=document.getElementById('nav-btn');b.innerHTML=addr?`<span class="wdot"></span>${addr.slice(0,6)}…${addr.slice(-4)}`:'Insert Validator Key';b.className=addr?'nav-btn on':'nav-btn';}
+/* Universal provider detection */
+function getProvList(){
+  const providers=[];
+  if(window.ethereum){
+    if(window.ethereum.providers&&Array.isArray(window.ethereum.providers))providers.push(...window.ethereum.providers);
+    else providers.push(window.ethereum);
+  }
+  if(window.okxwallet&&!providers.includes(window.okxwallet))providers.push(window.okxwallet);
+  if(window.phantom?.ethereum&&!providers.includes(window.phantom.ethereum))providers.push(window.phantom.ethereum);
+  return providers;
+}
 
+function findProv(key){
+  const L=getProvList();
+  if(key==='okx')return window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet||p.isOkxWallet)||null;
+  if(key==='metamask')return L.find(p=>p.isMetaMask&&!p.isPhantom&&!p.isCoinbaseWallet)||null;
+  if(key==='phantom')return window.phantom?.ethereum||L.find(p=>p.isPhantom)||null;
+  if(key==='coinbase')return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;
+  return window.ethereum||null;
+}
+
+function detectW(){
+  const L=getProvList();
+  return{
+    metamask:!!(L.find(p=>p.isMetaMask&&!p.isPhantom&&!p.isCoinbaseWallet)),
+    phantom:!!(window.phantom?.ethereum||L.find(p=>p.isPhantom)),
+    okx:!!(window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet||p.isOkxWallet)),
+    coinbase:!!(L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser))
+  };
+}
+
+function isMobile(){return/Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);}
+
+function setNavBtn(addr){const b=document.getElementById('nav-btn');b.innerHTML=addr?`<span class="wdot"></span>${addr.slice(0,6)}…${addr.slice(-4)}`:'Insert Validator Key';b.className=addr?'nav-btn on':'nav-btn';}
 function navClick(){wallet?doDisconnect():renderPicker();}
 function doDisconnect(){wallet=null;setNavBtn(null);document.getElementById('main-screen').style.display='none';document.getElementById('lock-screen').style.display='flex';renderPicker();}
 
 function renderPicker(){
-  const d=detectW();const isMob=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const wallets=[{key:'metamask',icon:'🦊',bg:'rgba(247,147,26,.1)',name:'MetaMask',sub:'Browser Extension',ok:d.metamask},{key:'phantom',icon:'👻',bg:'rgba(153,69,255,.1)',name:'Phantom',sub:'Solana & EVM',ok:d.phantom},{key:'okx',icon:'⬛',bg:'rgba(0,0,0,.3)',name:'OKX Wallet',sub:'Extension & Mobile',ok:d.okx},{key:'coinbase',icon:'🔵',bg:'rgba(22,82,240,.15)',name:'Coinbase Wallet',sub:'Extension & Mobile',ok:d.coinbase}];
   const area=document.getElementById('wallet-area');
-  if(isMob){const cur=encodeURIComponent(location.href);area.innerHTML=`<div class="wpicker"><div class="wpicker-note">📱 Mobile — open in wallet browser</div>${[{icon:'🦊',name:'MetaMask',href:`https://metamask.app.link/dapp/${location.host}${location.pathname}`},{icon:'👻',name:'Phantom',href:`https://phantom.app/ul/browse/${cur}?ref=${cur}`},{icon:'⬛',name:'OKX Wallet',href:`okx://wallet/dapp/url?dappUrl=${cur}`},{icon:'🔵',name:'Coinbase',href:`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(location.href)}`}].map(l=>`<div class="witem" onclick="location.href='${l.href}'"><div class="wlogo">${l.icon}</div><div class="winfo"><div class="wname">${l.name}</div></div><span class="wbadge ok">Open ↗</span></div>`).join('')}</div>`;return;}
+  const mob=isMobile();
+  const pageUrl=encodeURIComponent(location.href);
+  const host=location.host;
+  const path=location.pathname;
+
+  if(mob){
+    area.innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:.5rem;width:100%;max-width:380px;">
+        <div class="wpicker-note" style="margin-bottom:.25rem">📱 Open from your wallet's built-in browser</div>
+        <a class="mobile-open-btn" href="https://metamask.app.link/dapp/${host}${path}">
+          <div class="wlogo" style="background:rgba(247,147,26,.12)">🦊</div>
+          <div class="winfo"><div class="wname">MetaMask</div><div class="wsub">Open in MetaMask Browser</div></div>
+          <span class="wbadge ok">Open ↗</span>
+        </a>
+        <a class="mobile-open-btn" href="okx://wallet/dapp/url?dappUrl=${pageUrl}">
+          <div class="wlogo" style="background:rgba(0,0,0,.3)">⬛</div>
+          <div class="winfo"><div class="wname">OKX Wallet</div><div class="wsub">Open in OKX Browser</div></div>
+          <span class="wbadge ok">Open ↗</span>
+        </a>
+        <a class="mobile-open-btn" href="https://phantom.app/ul/browse/${pageUrl}?ref=${pageUrl}">
+          <div class="wlogo" style="background:rgba(153,69,255,.12)">👻</div>
+          <div class="winfo"><div class="wname">Phantom</div><div class="wsub">Open in Phantom Browser</div></div>
+          <span class="wbadge ok">Open ↗</span>
+        </a>
+        <a class="mobile-open-btn" href="https://go.cb-w.com/dapp?cb_url=${pageUrl}">
+          <div class="wlogo" style="background:rgba(22,82,240,.15)">🔵</div>
+          <div class="winfo"><div class="wname">Coinbase Wallet</div><div class="wsub">Open in Coinbase Browser</div></div>
+          <span class="wbadge ok">Open ↗</span>
+        </a>
+      </div>`;
+    return;
+  }
+
+  const d=detectW();
+  const wallets=[
+    {key:'metamask',icon:'🦊',bg:'rgba(247,147,26,.1)',name:'MetaMask',sub:'Browser Extension',ok:d.metamask},
+    {key:'phantom',icon:'👻',bg:'rgba(153,69,255,.1)',name:'Phantom',sub:'Solana & EVM',ok:d.phantom},
+    {key:'okx',icon:'⬛',bg:'rgba(0,0,0,.3)',name:'OKX Wallet',sub:'Extension & Mobile',ok:d.okx},
+    {key:'coinbase',icon:'🔵',bg:'rgba(22,82,240,.15)',name:'Coinbase Wallet',sub:'Extension & Mobile',ok:d.coinbase}
+  ];
   area.innerHTML=`<div class="wpicker"><div class="wpicker-note">🔒 Read-only · View global leaderboard</div>${wallets.map(w=>`<div class="witem" onclick="${w.ok?`connectWallet('${w.key}','${w.name}')`:''}" style="${w.ok?'':'opacity:.45;cursor:default'}"><div class="wlogo" style="background:${w.bg}">${w.icon}</div><div class="winfo"><div class="wname">${w.name}</div><div class="wsub">${w.sub}</div></div><span class="wbadge ${w.ok?'ok':'no'}">${w.ok?'● Detected':'Not Found'}</span></div>`).join('')}</div>`;
 }
 
@@ -238,14 +310,27 @@ async function connectWallet(key,name){
   const area=document.getElementById('wallet-area');
   area.innerHTML=`<div class="conn-state"><div class="conn-spin"></div><div class="conn-lbl">Connecting ${name}...</div></div>`;
   const p=findProv(key);if(!p){renderPicker();return;}
-  try{const accounts=await p.request({method:'eth_requestAccounts'});if(!accounts||!accounts.length)throw new Error('No accounts');wallet=accounts[0];setNavBtn(wallet);document.getElementById('lock-screen').style.display='none';document.getElementById('main-screen').style.display='block';listenLeaderboard();}
-  catch(e){console.warn('Connect failed:',e);renderPicker();}
+  try{
+    const accounts=await p.request({method:'eth_requestAccounts'});
+    if(!accounts||!accounts.length)throw new Error('No accounts');
+    wallet=accounts[0];setNavBtn(wallet);
+    document.getElementById('lock-screen').style.display='none';
+    document.getElementById('main-screen').style.display='block';
+    listenLeaderboard();
+  }catch(e){console.warn('Connect failed:',e);renderPicker();}
 }
 
 async function checkAutoConnect(){
   if(!window.ethereum)return false;
-  try{const accounts=await window.ethereum.request({method:'eth_accounts'});if(accounts&&accounts.length>0){wallet=accounts[0];setNavBtn(wallet);document.getElementById('lock-screen').style.display='none';document.getElementById('main-screen').style.display='block';listenLeaderboard();return true;}}
-  catch(e){console.warn('Auto-connect failed:',e);}
+  try{
+    const accounts=await window.ethereum.request({method:'eth_accounts'});
+    if(accounts&&accounts.length>0){
+      wallet=accounts[0];setNavBtn(wallet);
+      document.getElementById('lock-screen').style.display='none';
+      document.getElementById('main-screen').style.display='block';
+      listenLeaderboard();return true;
+    }
+  }catch(e){console.warn('Auto-connect failed:',e);}
   return false;
 }
 
@@ -253,7 +338,7 @@ window.navClick=navClick;window.doDisconnect=doDisconnect;window.connectWallet=c
 
 checkAutoConnect().then(connected=>{if(!connected)renderPicker();});
 
-/* ── MATRIX RAIN BACKGROUND ── */
+/* MATRIX RAIN BACKGROUND */
 (function(){
   const canvas=document.getElementById('blob-canvas');const ctx=canvas.getContext('2d');
   function setupCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
