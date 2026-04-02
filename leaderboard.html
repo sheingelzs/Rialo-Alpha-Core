@@ -14,7 +14,8 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
-#net-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+#blob-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+#blob-canvas{position:absolute;width:100%;height:100%;}
 @keyframes lpulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
 @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -33,7 +34,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .nav-btn{padding:.4rem .9rem;border-radius:8px;border:1px solid rgba(74,222,128,.35);background:rgba(74,222,128,.08);color:var(--accent);font-family:var(--font);font-size:.77rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
 .nav-btn.on{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.75);}
 .wdot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
-
 .page{position:relative;z-index:1;animation:fadein .25s ease;}
 
 /* LOCK SCREEN */
@@ -56,7 +56,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .conn-spin{width:40px;height:40px;border:3px solid rgba(74,222,128,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
 .conn-lbl{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);}
 
-/* MAIN SCREEN — hidden by default */
+/* MAIN SCREEN */
 #main-screen{display:none;}
 
 /* BOARD */
@@ -78,7 +78,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .lb-row{display:grid;grid-template-columns:50px 1fr 120px 100px;gap:.5rem;padding:.85rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;animation:rowIn .3s ease both;transition:background .2s;}
 .lb-row:last-child{border-bottom:none;}
 .lb-row:hover{background:rgba(255,255,255,.03);}
-/* highlight "You" */
 .lb-row.me{background:rgba(124,92,252,.08);border-left:3px solid var(--accent);box-shadow:inset 0 0 20px rgba(74,222,128,.04);}
 .lb-row.top1{background:rgba(250,204,21,.04);}
 .lb-row.top2{background:rgba(200,200,200,.03);}
@@ -107,7 +106,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </style>
 </head>
 <body>
-<canvas id="net-canvas"></canvas>
+<div id="blob-bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;">
+  <canvas id="blob-canvas" style="position:absolute;width:100%;height:100%;"></canvas>
+</div>
 
 <nav class="nav">
   <a class="nav-logo" href="menu.html"><div class="logo-dot"></div>RIALO</a>
@@ -125,16 +126,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </nav>
 
 <div class="page">
-
-  <!-- LOCK SCREEN — tampil default, disembunyikan setelah wallet connect -->
   <div id="lock-screen">
     <div class="lock-icon">🏆</div>
     <div class="lock-title">Validator Leaderboard</div>
     <div class="lock-sub">Connect your wallet to see your position among Alpha Operators on the Rialo testnet.</div>
     <div id="wallet-area"></div>
   </div>
-
-  <!-- MAIN SCREEN — tersembunyi sampai wallet connect -->
   <div id="main-screen">
     <div class="board-wrap">
       <div class="board-hdr">
@@ -168,311 +165,105 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       </div>
     </div>
   </div>
-
 </div>
 
 <script type="module">
 
-/* ══════════════════════════════════════════════════════════
-   🔥 FIREBASE CONFIG — HARUS SAMA PERSIS dengan quest.html
-   Isi dengan nilai dari Firebase Console kamu.
-   ══════════════════════════════════════════════════════════ */
-const FB_CONFIG = {
-  apiKey:            "AIzaSyBmoGJCQ4ybq4wkp42OUyuVMBgWSLQ-sLY",
-  authDomain:        "rialo-quiz-a84e3.firebaseapp.com",
-  databaseURL:       "https://rialo-quiz-a84e3-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:         "rialo-quiz-a84e3",
-  storageBucket:     "rialo-quiz-a84e3.firebasestorage.app",
-  messagingSenderId: "874302850440",
-  appId:             "1:874302850440:web:47d5c7102803c97ea9e63d"
-};
+const FB_CONFIG={apiKey:"AIzaSyBmoGJCQ4ybq4wkp42OUyuVMBgWSLQ-sLY",authDomain:"rialo-quiz-a84e3.firebaseapp.com",databaseURL:"https://rialo-quiz-a84e3-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"rialo-quiz-a84e3",storageBucket:"rialo-quiz-a84e3.firebasestorage.app",messagingSenderId:"874302850440",appId:"1:874302850440:web:47d5c7102803c97ea9e63d"};
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getDatabase,ref,onValue}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const fbApp=initializeApp(FB_CONFIG);const db=getDatabase(fbApp);
 
-const fbApp = initializeApp(FB_CONFIG);
-const db    = getDatabase(fbApp);
+const RANKS=[{min:0,name:'Recruit'},{min:200,name:'Operator'},{min:500,name:'Validator'},{min:900,name:'Core Builder'},{min:1125,name:'Alpha Operator'}];
+const AVATARS=['🧑‍💻','👾','🤖','🦾','⚡','🔮','🛸','🌐','🔬','🗡️'];
+const MEDALS=['🥇','🥈','🥉'];
+const LB_KEY='rialo_final_lb';
 
-/* ── CONSTANTS ── */
-const RANKS  = [{min:0,name:'Recruit'},{min:200,name:'Operator'},{min:500,name:'Validator'},{min:900,name:'Core Builder'},{min:1125,name:'Alpha Operator'}];
-const AVATARS= ['🧑‍💻','👾','🤖','🦾','⚡','🔮','🛸','🌐','🔬','🗡️'];
-const MEDALS = ['🥇','🥈','🥉'];
+function getRank(xp){let r=RANKS[0];RANKS.forEach(rk=>{if(xp>=rk.min)r=rk;});return r;}
+function getAvatar(addr){if(!addr)return'👤';const idx=parseInt(addr.slice(-2),16)%AVATARS.length;return AVATARS[idx];}
+function fmtAddr(addr){if(!addr)return'—';return addr.slice(0,6)+'...'+addr.slice(-4);}
+function escHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-/* ── KEY — harus sama dengan quest.html ── */
-const LB_KEY = 'rialo_final_lb';
+let wallet=null;
 
-function getRank(xp){ let r=RANKS[0]; RANKS.forEach(rk=>{ if(xp>=rk.min) r=rk; }); return r; }
-function getAvatar(addr){ if(!addr)return'👤'; const idx=parseInt(addr.slice(-2),16)%AVATARS.length; return AVATARS[idx]; }
-function fmtAddr(addr){ if(!addr)return'—'; return addr.slice(0,6)+'...'+addr.slice(-4); }
-function escHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function getLBLocal(){try{const raw=localStorage.getItem(LB_KEY);return raw?JSON.parse(raw):[]}catch(e){return[]}}
 
-let wallet = null;
-
-/* ── LOCALSTORAGE ── */
-function getLBLocal(){
-  try { const raw = localStorage.getItem(LB_KEY); return raw ? JSON.parse(raw) : []; }
-  catch(e){ console.error('Error reading leaderboard:', e); return []; }
-}
-
-/* ── RENDER LEADERBOARD ── */
 function renderLeaderboard(entries){
-  const lbBody = document.getElementById('lb-body');
-
-  if(!entries.length){
-    lbBody.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem">No scores yet. Complete the quiz to be first!</div>`;
-    if(wallet){
-      document.getElementById('mr-num').textContent  = '—';
-      document.getElementById('mr-addr').textContent = fmtAddr(wallet) + ' — Complete the quiz!';
-      document.getElementById('mr-rank').textContent = 'Rank: Recruit';
-      document.getElementById('mr-xp').textContent   = '0';
-    }
-    return;
-  }
-
-  entries.sort((a,b) => (b.exp||0) - (a.exp||0));
-
-  // Update "Your Position" card
-  const myIdx = wallet ? entries.findIndex(e => e.wallet && e.wallet.toLowerCase() === wallet.toLowerCase()) : -1;
-  if(myIdx >= 0){
-    const me = entries[myIdx];
-    document.getElementById('mr-num').textContent  = '#' + (myIdx + 1);
-    document.getElementById('mr-addr').textContent = (me.name || 'Anonymous') + ' · ' + fmtAddr(me.wallet);
-    document.getElementById('mr-rank').textContent = 'Rank: ' + getRank(me.exp || 0).name;
-    document.getElementById('mr-xp').textContent   = (me.exp || 0) + ' XP';
-  } else if(wallet){
-    document.getElementById('mr-num').textContent  = '—';
-    document.getElementById('mr-addr').textContent = fmtAddr(wallet) + ' — Complete the quiz!';
-    document.getElementById('mr-rank').textContent = 'Rank: Recruit';
-    document.getElementById('mr-xp').textContent   = '0';
-  }
-
-  // Render tabel
-  lbBody.innerHTML = entries.map((e, i) => {
-    const pos   = i + 1;
-    const medal = pos <= 3 ? MEDALS[pos-1] : '';
-    const isMe  = wallet && e.wallet && e.wallet.toLowerCase() === wallet.toLowerCase();
-    // cls: prioritaskan "me" agar row kamu selalu menyala
-    const cls   = isMe ? 'me' : pos === 1 ? 'top1' : pos === 2 ? 'top2' : pos === 3 ? 'top3' : '';
-    const rankColor = e.exp >= 1125 ? '#c4b5fd' : e.exp >= 900 ? '#22d3ee' : e.exp >= 500 ? '#4ade80' : '#64748b';
-    return `<div class="lb-row ${cls}" style="animation-delay:${i * 0.04}s">
-      <div class="rank-num">${medal || pos}</div>
-      <div class="lb-addr-cell">
-        <div class="lb-avatar">${getAvatar(e.wallet || '')}</div>
-        <div>
-          <div style="font-size:.82rem;font-weight:600">
-            ${escHtml(e.name || 'Anonymous')}
-            ${isMe ? ' <span style="color:var(--accent);font-size:.65rem;font-weight:700">(You)</span>' : ''}
-          </div>
-          <div class="lb-addr ${isMe ? 'me' : ''}">${fmtAddr(e.wallet)}</div>
-        </div>
-      </div>
-      <div class="lb-rank-cell"><div class="lb-rank-dot" style="background:${rankColor}"></div>${getRank(e.exp || 0).name}</div>
-      <div class="lb-xp ${isMe ? 'me' : ''}">${e.exp || 0} XP</div>
-    </div>`;
+  const lbBody=document.getElementById('lb-body');
+  if(!entries.length){lbBody.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem">No scores yet. Complete the quiz to be first!</div>`;if(wallet){document.getElementById('mr-num').textContent='—';document.getElementById('mr-addr').textContent=fmtAddr(wallet)+' — Complete the quiz!';document.getElementById('mr-rank').textContent='Rank: Recruit';document.getElementById('mr-xp').textContent='0';}return;}
+  entries.sort((a,b)=>(b.exp||0)-(a.exp||0));
+  const myIdx=wallet?entries.findIndex(e=>e.wallet&&e.wallet.toLowerCase()===wallet.toLowerCase()):-1;
+  if(myIdx>=0){const me=entries[myIdx];document.getElementById('mr-num').textContent='#'+(myIdx+1);document.getElementById('mr-addr').textContent=(me.name||'Anonymous')+' · '+fmtAddr(me.wallet);document.getElementById('mr-rank').textContent='Rank: '+getRank(me.exp||0).name;document.getElementById('mr-xp').textContent=(me.exp||0)+' XP';}
+  else if(wallet){document.getElementById('mr-num').textContent='—';document.getElementById('mr-addr').textContent=fmtAddr(wallet)+' — Complete the quiz!';document.getElementById('mr-rank').textContent='Rank: Recruit';document.getElementById('mr-xp').textContent='0';}
+  lbBody.innerHTML=entries.map((e,i)=>{
+    const pos=i+1,medal=pos<=3?MEDALS[pos-1]:'',isMe=wallet&&e.wallet&&e.wallet.toLowerCase()===wallet.toLowerCase();
+    const cls=isMe?'me':pos===1?'top1':pos===2?'top2':pos===3?'top3':'';
+    const rankColor=e.exp>=1125?'#c4b5fd':e.exp>=900?'#22d3ee':e.exp>=500?'#4ade80':'#64748b';
+    return `<div class="lb-row ${cls}" style="animation-delay:${i*0.04}s"><div class="rank-num">${medal||pos}</div><div class="lb-addr-cell"><div class="lb-avatar">${getAvatar(e.wallet||'')}</div><div><div style="font-size:.82rem;font-weight:600">${escHtml(e.name||'Anonymous')}${isMe?' <span style="color:var(--accent);font-size:.65rem;font-weight:700">(You)</span>':''}</div><div class="lb-addr ${isMe?'me':''}">${fmtAddr(e.wallet)}</div></div></div><div class="lb-rank-cell"><div class="lb-rank-dot" style="background:${rankColor}"></div>${getRank(e.exp||0).name}</div><div class="lb-xp ${isMe?'me':''}">${e.exp||0} XP</div></div>`;
   }).join('');
 }
 
-/* ── LISTEN LEADERBOARD — Firebase real-time listener + localStorage fallback ──
-   Firebase menggunakan struktur: leaderboard/{walletKey} → {name, wallet, exp}
-   onValue() otomatis dipanggil setiap kali ada data baru → leaderboard langsung update
-   tanpa perlu refresh halaman.                                                       */
 function listenLeaderboard(){
-  const lbBody = document.getElementById('lb-body');
-  lbBody.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem;font-family:var(--font-mono)">
-    <div style="display:inline-block;width:20px;height:20px;border:2px solid rgba(74,222,128,.3);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px"></div>
-    Memuat leaderboard…
-  </div>`;
-
-  try {
-    // Listener real-time — onValue() terpanggil otomatis setiap ada perubahan data
-    const lbRef = ref(db, 'leaderboard');
-    onValue(lbRef, snap => {
-      const firebaseEntries = [];
-      snap.forEach(child => {
-        const val = child.val();
-        if(val && val.wallet) firebaseEntries.push(val);
-      });
-
-      // Merge Firebase + localStorage (deduplikasi by wallet, ambil exp tertinggi)
-      const localEntries = getLBLocal();
-      const merged = [...firebaseEntries];
-      localEntries.forEach(le => {
-        if(!le.wallet) return;
-        const existIdx = merged.findIndex(fe =>
-          fe.wallet && fe.wallet.toLowerCase() === le.wallet.toLowerCase());
-        if(existIdx < 0) merged.push(le);
-        else if((le.exp || 0) > (merged[existIdx].exp || 0)) merged[existIdx] = le;
-      });
-
-      merged.sort((a,b) => (b.exp||0) - (a.exp||0));
-      renderLeaderboard(merged);
-      console.log('🔄 Leaderboard updated:', merged.length, 'entries (real-time)');
-    }, err => {
-      // Firebase error — fallback ke localStorage
-      console.warn('⚠️ Firebase error, fallback ke localStorage:', err.message);
-      const local = getLBLocal();
-      local.sort((a,b) => (b.exp||0) - (a.exp||0));
-      renderLeaderboard(local);
-    });
-  } catch(e){
-    console.warn('⚠️ Firebase tidak tersedia, menggunakan localStorage:', e.message);
-    const local = getLBLocal();
-    local.sort((a,b) => (b.exp||0) - (a.exp||0));
-    renderLeaderboard(local);
-  }
+  const lbBody=document.getElementById('lb-body');
+  lbBody.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.8rem;font-family:var(--font-mono)"><div style="display:inline-block;width:20px;height:20px;border:2px solid rgba(74,222,128,.3);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px"></div>Loading leaderboard…</div>`;
+  try{
+    const lbRef=ref(db,'leaderboard');
+    onValue(lbRef,snap=>{
+      const firebaseEntries=[];snap.forEach(child=>{const val=child.val();if(val&&val.wallet)firebaseEntries.push(val);});
+      const localEntries=getLBLocal();const merged=[...firebaseEntries];
+      localEntries.forEach(le=>{if(!le.wallet)return;const existIdx=merged.findIndex(fe=>fe.wallet&&fe.wallet.toLowerCase()===le.wallet.toLowerCase());if(existIdx<0)merged.push(le);else if((le.exp||0)>(merged[existIdx].exp||0))merged[existIdx]=le;});
+      merged.sort((a,b)=>(b.exp||0)-(a.exp||0));renderLeaderboard(merged);
+    },err=>{const local=getLBLocal();local.sort((a,b)=>(b.exp||0)-(a.exp||0));renderLeaderboard(local);});
+  }catch(e){const local=getLBLocal();local.sort((a,b)=>(b.exp||0)-(a.exp||0));renderLeaderboard(local);}
 }
 
-/* ── WALLET HELPERS ── */
-function getProvList(){ const e=window.ethereum; if(!e)return[]; return e.providers||[e]; }
-function findProv(key){
-  const L=getProvList();
-  if(key==='okx')      return window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)||null;
-  if(key==='metamask') return L.find(p=>p.isMetaMask&&!p.isPhantom)||null;
-  if(key==='phantom')  return L.find(p=>p.isPhantom)||null;
-  if(key==='coinbase') return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;
-  return window.ethereum||null;
-}
-function detectW(){
-  const L=getProvList();
-  return{
-    metamask:!!(L.find(p=>p.isMetaMask&&!p.isPhantom)),
-    phantom:!!(L.find(p=>p.isPhantom)),
-    okx:!!(window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)),
-    coinbase:!!(L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser))
-  };
-}
-function setNavBtn(addr){
-  const b = document.getElementById('nav-btn');
-  b.innerHTML = addr ? `<span class="wdot"></span>${addr.slice(0,6)}…${addr.slice(-4)}` : 'Insert Validator Key';
-  b.className = addr ? 'nav-btn on' : 'nav-btn';
-}
+function getProvList(){const e=window.ethereum;if(!e)return[];return e.providers||[e]}
+function findProv(key){const L=getProvList();if(key==='okx')return window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)||null;if(key==='metamask')return L.find(p=>p.isMetaMask&&!p.isPhantom)||null;if(key==='phantom')return L.find(p=>p.isPhantom)||null;if(key==='coinbase')return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;return window.ethereum||null;}
+function detectW(){const L=getProvList();return{metamask:!!(L.find(p=>p.isMetaMask&&!p.isPhantom)),phantom:!!(L.find(p=>p.isPhantom)),okx:!!(window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)),coinbase:!!(L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser))}}
+function setNavBtn(addr){const b=document.getElementById('nav-btn');b.innerHTML=addr?`<span class="wdot"></span>${addr.slice(0,6)}…${addr.slice(-4)}`:'Insert Validator Key';b.className=addr?'nav-btn on':'nav-btn';}
 
-/* ── NAV + DISCONNECT ── */
-function navClick(){ wallet ? doDisconnect() : renderPicker(); }
-function doDisconnect(){
-  wallet = null;
-  setNavBtn(null);
-  document.getElementById('main-screen').style.display = 'none';
-  document.getElementById('lock-screen').style.display = 'flex';
-  renderPicker();
-}
+function navClick(){wallet?doDisconnect():renderPicker();}
+function doDisconnect(){wallet=null;setNavBtn(null);document.getElementById('main-screen').style.display='none';document.getElementById('lock-screen').style.display='flex';renderPicker();}
 
-/* ── RENDER WALLET PICKER ── */
 function renderPicker(){
-  const d = detectW();
-  const isMob = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const wallets = [
-    {key:'metamask',icon:'🦊',bg:'rgba(247,147,26,.1)', name:'MetaMask',     sub:'Browser Extension',ok:d.metamask},
-    {key:'phantom', icon:'👻',bg:'rgba(153,69,255,.1)', name:'Phantom',      sub:'Solana & EVM',     ok:d.phantom},
-    {key:'okx',     icon:'⬛',bg:'rgba(0,0,0,.3)',      name:'OKX Wallet',   sub:'Extension & Mobile',ok:d.okx},
-    {key:'coinbase',icon:'🔵',bg:'rgba(22,82,240,.15)', name:'Coinbase Wallet',sub:'Extension & Mobile',ok:d.coinbase}
-  ];
-  const area = document.getElementById('wallet-area');
-
-  if(isMob){
-    const cur = encodeURIComponent(location.href);
-    area.innerHTML = `<div class="wpicker">
-      <div class="wpicker-note">📱 Mobile — open in wallet browser</div>
-      ${[{icon:'🦊',name:'MetaMask',href:`https://metamask.app.link/dapp/${location.host}${location.pathname}`},
-         {icon:'👻',name:'Phantom', href:`https://phantom.app/ul/browse/${cur}?ref=${cur}`},
-         {icon:'⬛',name:'OKX Wallet',href:`okx://wallet/dapp/url?dappUrl=${cur}`},
-         {icon:'🔵',name:'Coinbase',href:`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(location.href)}`}]
-        .map(l=>`<div class="witem" onclick="location.href='${l.href}'">
-          <div class="wlogo">${l.icon}</div>
-          <div class="winfo"><div class="wname">${l.name}</div></div>
-          <span class="wbadge ok">Open ↗</span>
-        </div>`).join('')}
-    </div>`;
-    return;
-  }
-
-  area.innerHTML = `<div class="wpicker">
-    <div class="wpicker-note">🔒 Read-only · View global leaderboard</div>
-    ${wallets.map(w=>`
-      <div class="witem" onclick="${w.ok ? `connectWallet('${w.key}','${w.name}')` : ''}" style="${w.ok ? '' : 'opacity:.45;cursor:default'}">
-        <div class="wlogo" style="background:${w.bg}">${w.icon}</div>
-        <div class="winfo"><div class="wname">${w.name}</div><div class="wsub">${w.sub}</div></div>
-        <span class="wbadge ${w.ok ? 'ok' : 'no'}">${w.ok ? '● Detected' : 'Not Found'}</span>
-      </div>`).join('')}
-  </div>`;
+  const d=detectW();const isMob=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const wallets=[{key:'metamask',icon:'🦊',bg:'rgba(247,147,26,.1)',name:'MetaMask',sub:'Browser Extension',ok:d.metamask},{key:'phantom',icon:'👻',bg:'rgba(153,69,255,.1)',name:'Phantom',sub:'Solana & EVM',ok:d.phantom},{key:'okx',icon:'⬛',bg:'rgba(0,0,0,.3)',name:'OKX Wallet',sub:'Extension & Mobile',ok:d.okx},{key:'coinbase',icon:'🔵',bg:'rgba(22,82,240,.15)',name:'Coinbase Wallet',sub:'Extension & Mobile',ok:d.coinbase}];
+  const area=document.getElementById('wallet-area');
+  if(isMob){const cur=encodeURIComponent(location.href);area.innerHTML=`<div class="wpicker"><div class="wpicker-note">📱 Mobile — open in wallet browser</div>${[{icon:'🦊',name:'MetaMask',href:`https://metamask.app.link/dapp/${location.host}${location.pathname}`},{icon:'👻',name:'Phantom',href:`https://phantom.app/ul/browse/${cur}?ref=${cur}`},{icon:'⬛',name:'OKX Wallet',href:`okx://wallet/dapp/url?dappUrl=${cur}`},{icon:'🔵',name:'Coinbase',href:`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(location.href)}`}].map(l=>`<div class="witem" onclick="location.href='${l.href}'"><div class="wlogo">${l.icon}</div><div class="winfo"><div class="wname">${l.name}</div></div><span class="wbadge ok">Open ↗</span></div>`).join('')}</div>`;return;}
+  area.innerHTML=`<div class="wpicker"><div class="wpicker-note">🔒 Read-only · View global leaderboard</div>${wallets.map(w=>`<div class="witem" onclick="${w.ok?`connectWallet('${w.key}','${w.name}')`:''}" style="${w.ok?'':'opacity:.45;cursor:default'}"><div class="wlogo" style="background:${w.bg}">${w.icon}</div><div class="winfo"><div class="wname">${w.name}</div><div class="wsub">${w.sub}</div></div><span class="wbadge ${w.ok?'ok':'no'}">${w.ok?'● Detected':'Not Found'}</span></div>`).join('')}</div>`;
 }
 
-/* ── CONNECT WALLET ── */
-async function connectWallet(key, name){
-  const area = document.getElementById('wallet-area');
-  area.innerHTML = `<div class="conn-state"><div class="conn-spin"></div><div class="conn-lbl">Connecting ${name}...</div></div>`;
-  const p = findProv(key);
-  if(!p){ renderPicker(); return; }
-  try {
-    const accounts = await p.request({method:'eth_requestAccounts'});
-    if(!accounts || !accounts.length) throw new Error('No accounts');
-    wallet = accounts[0];
-    setNavBtn(wallet);
-    document.getElementById('lock-screen').style.display = 'none';
-    document.getElementById('main-screen').style.display = 'block';
-    listenLeaderboard();
-  } catch(e){
-    console.warn('Connect failed:', e);
-    renderPicker();
-  }
+async function connectWallet(key,name){
+  const area=document.getElementById('wallet-area');
+  area.innerHTML=`<div class="conn-state"><div class="conn-spin"></div><div class="conn-lbl">Connecting ${name}...</div></div>`;
+  const p=findProv(key);if(!p){renderPicker();return;}
+  try{const accounts=await p.request({method:'eth_requestAccounts'});if(!accounts||!accounts.length)throw new Error('No accounts');wallet=accounts[0];setNavBtn(wallet);document.getElementById('lock-screen').style.display='none';document.getElementById('main-screen').style.display='block';listenLeaderboard();}
+  catch(e){console.warn('Connect failed:',e);renderPicker();}
 }
 
-/* ── AUTO-CONNECT — cek apakah wallet sudah pernah authorize ── */
 async function checkAutoConnect(){
-  if(!window.ethereum) return false;
-  try {
-    const accounts = await window.ethereum.request({method:'eth_accounts'});
-    if(accounts && accounts.length > 0){
-      wallet = accounts[0];
-      setNavBtn(wallet);
-      document.getElementById('lock-screen').style.display = 'none';
-      document.getElementById('main-screen').style.display = 'block';
-      listenLeaderboard();
-      return true;
-    }
-  } catch(e){
-    console.warn('Auto-connect failed:', e);
-  }
+  if(!window.ethereum)return false;
+  try{const accounts=await window.ethereum.request({method:'eth_accounts'});if(accounts&&accounts.length>0){wallet=accounts[0];setNavBtn(wallet);document.getElementById('lock-screen').style.display='none';document.getElementById('main-screen').style.display='block';listenLeaderboard();return true;}}
+  catch(e){console.warn('Auto-connect failed:',e);}
   return false;
 }
 
-/* ── EXPOSE KE GLOBAL ── */
-window.navClick      = navClick;
-window.doDisconnect  = doDisconnect;
-window.connectWallet = connectWallet;
+window.navClick=navClick;window.doDisconnect=doDisconnect;window.connectWallet=connectWallet;
 
-/* ── INIT ── */
-checkAutoConnect().then(connected => {
-  if(!connected) renderPicker();
-});
+checkAutoConnect().then(connected=>{if(!connected)renderPicker();});
 
-/* ── CANVAS BACKGROUND ── */
+/* ── MATRIX RAIN BACKGROUND ── */
 (function(){
-  const canvas = document.getElementById('net-canvas');
-  const ctx = canvas.getContext('2d');
-  const particleCount = 110, connectionDistance = 150;
-  let particles = [];
-  function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
-  window.addEventListener('resize', resize); resize();
-  class Particle{
-    constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vx=(Math.random()-.5)*.4; this.vy=(Math.random()-.5)*.4; this.radius=1.2; }
-    update(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
-    draw(){ ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fillStyle='rgba(0,255,150,0.4)'; ctx.fill(); }
-  }
-  function init(){ particles=[]; for(let i=0;i<particleCount;i++) particles.push(new Particle()); }
-  function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for(let i=0;i<particles.length;i++){
-      particles[i].update(); particles[i].draw();
-      for(let j=i+1;j<particles.length;j++){
-        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y, dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<connectionDistance){ ctx.beginPath(); ctx.strokeStyle=`rgba(0,255,150,${1-dist/connectionDistance})`; ctx.lineWidth=.6; ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.stroke(); }
-      }
-    }
-    requestAnimationFrame(animate);
-  }
-  init(); animate();
+  const canvas=document.getElementById('blob-canvas');const ctx=canvas.getContext('2d');
+  function setupCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+  window.addEventListener('resize',()=>{setupCanvas();initStreams();});setupCanvas();
+  const CHARS=['0','1','0','1','0','1','0','1','m','o','d','u','l','e','e','n','t','r','y','f','u','n','p','u','b','l','i','c','s','t','r','u','c','t','u','s','e','{','}','(',')',':',';','<','>','=','_','&','|','!','a','c','q','i','r','e','s','h','a','s'];
+  const FONT_SIZE=13,BASE_ALPHA=0.07,GLOW_PROB=0.018;let streams=[];
+  function initStreams(){const cols=Math.floor(canvas.width/FONT_SIZE);streams=Array.from({length:cols},(_,i)=>({x:i*FONT_SIZE,y:Math.random()*-canvas.height,speed:0.6+Math.random()*1.4,chars:Array.from({length:Math.floor(8+Math.random()*20)},()=>CHARS[Math.floor(Math.random()*CHARS.length)]),glowIdx:-1,glowTimer:0}));}
+  initStreams();
+  function draw(){const w=canvas.width,h=canvas.height;ctx.fillStyle='rgba(5,8,16,0.18)';ctx.fillRect(0,0,w,h);ctx.font=`${FONT_SIZE}px 'Space Mono',monospace`;ctx.textBaseline='top';streams.forEach(stream=>{stream.y+=stream.speed;const streamH=stream.chars.length*FONT_SIZE;if(stream.y-streamH>h){stream.y=-streamH-Math.random()*h*0.5;stream.speed=0.6+Math.random()*1.4;stream.chars=stream.chars.map(()=>CHARS[Math.floor(Math.random()*CHARS.length)]);}if(Math.random()<GLOW_PROB){stream.glowIdx=Math.floor(Math.random()*stream.chars.length);stream.glowTimer=6+Math.floor(Math.random()*12);}if(stream.glowTimer>0)stream.glowTimer--;else stream.glowIdx=-1;stream.chars.forEach((ch,ci)=>{const cy=stream.y+ci*FONT_SIZE;if(cy<-FONT_SIZE||cy>h)return;const isGlow=(ci===stream.glowIdx&&stream.glowTimer>0);if(isGlow){ctx.save();ctx.shadowColor='#4ade80';ctx.shadowBlur=8;ctx.fillStyle='rgba(74,222,128,0.55)';ctx.fillText(ch,stream.x,cy);ctx.restore();}else{ctx.fillStyle=`rgba(74,222,128,${ci===0?0.12:BASE_ALPHA})`;ctx.fillText(ch,stream.x,cy);}});});}
+  function animate(){draw();requestAnimationFrame(animate);}requestAnimationFrame(animate);
 })();
 
 </script>
