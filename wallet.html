@@ -15,7 +15,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
 
-/* ── LIQUID BLOB BACKGROUND ── */
 #blob-bg{
   position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;
   filter:blur(0px);
@@ -29,55 +28,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes slideup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-/* blob morph animations */
-@keyframes morph1{
-  0%{d:path("M 300,200 C 400,100 500,150 520,280 C 540,410 450,480 320,460 C 190,440 120,360 140,240 C 160,120 200,300 300,200 Z");}
-  33%{d:path("M 280,180 C 420,80 560,160 540,310 C 520,460 400,500 270,480 C 140,460 80,350 110,220 C 140,90 140,280 280,180 Z");}
-  66%{d:path("M 320,220 C 440,120 520,180 500,320 C 480,460 380,490 260,460 C 140,430 90,330 130,210 C 170,90 200,320 320,220 Z");}
-  100%{d:path("M 300,200 C 400,100 500,150 520,280 C 540,410 450,480 320,460 C 190,440 120,360 140,240 C 160,120 200,300 300,200 Z");}
-}
-@keyframes morph2{
-  0%{d:path("M 200,150 C 320,60 480,100 500,230 C 520,360 420,440 280,420 C 140,400 70,310 90,190 C 110,70 80,240 200,150 Z");}
-  50%{d:path("M 240,130 C 380,40 520,120 510,270 C 500,420 380,470 240,440 C 100,410 40,300 70,170 C 100,40 100,220 240,130 Z");}
-  100%{d:path("M 200,150 C 320,60 480,100 500,230 C 520,360 420,440 280,420 C 140,400 70,310 90,190 C 110,70 80,240 200,150 Z");}
-}
-@keyframes morph3{
-  0%{d:path("M 250,180 C 370,80 510,140 490,290 C 470,440 350,490 210,460 C 70,430 20,320 60,190 C 100,60 130,280 250,180 Z");}
-  40%{d:path("M 270,160 C 410,60 540,150 510,310 C 480,470 350,510 200,470 C 50,430 10,300 60,170 C 110,40 130,260 270,160 Z");}
-  80%{d:path("M 230,200 C 360,90 500,160 470,310 C 440,460 320,500 180,460 C 40,420 0,310 50,190 C 100,70 100,310 230,200 Z");}
-  100%{d:path("M 250,180 C 370,80 510,140 490,290 C 470,440 350,490 210,460 C 70,430 20,320 60,190 C 100,60 130,280 250,180 Z");}
-}
-@keyframes blobDrift1{
-  0%,100%{transform:translate(0%,0%) scale(1);}
-  25%{transform:translate(8%,-6%) scale(1.08);}
-  50%{transform:translate(-5%,10%) scale(0.94);}
-  75%{transform:translate(12%,4%) scale(1.04);}
-}
-@keyframes blobDrift2{
-  0%,100%{transform:translate(0%,0%) scale(1);}
-  30%{transform:translate(-10%,8%) scale(1.1);}
-  60%{transform:translate(6%,-12%) scale(0.92);}
-  85%{transform:translate(-4%,5%) scale(1.05);}
-}
-@keyframes blobDrift3{
-  0%,100%{transform:translate(0%,0%) scale(1);}
-  20%{transform:translate(5%,10%) scale(0.96);}
-  55%{transform:translate(-8%,-8%) scale(1.12);}
-  80%{transform:translate(10%,2%) scale(0.98);}
-}
-@keyframes blobPulse{
-  0%,100%{opacity:.18;}
-  50%{opacity:.28;}
-}
-@keyframes scanline{
-  0%{transform:translateY(-100%);}
-  100%{transform:translateY(100vh);}
-}
-@keyframes hexFloat{
-  0%,100%{transform:translateY(0) rotate(0deg);opacity:.06;}
-  50%{transform:translateY(-20px) rotate(15deg);opacity:.12;}
-}
 
 /* NAV */
 .nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:100;background:rgba(5,8,16,.95);backdrop-filter:blur(16px);}
@@ -163,6 +113,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .toast-ico{font-size:1rem;flex-shrink:0;margin-top:1px;}
 .toast-msg{flex:1;line-height:1.6;}
 .toast-msg a{color:inherit;opacity:.7;font-family:var(--font-mono);font-size:.65rem;word-break:break-all;}
+
+/* WALLET PICKER */
 .wpicker-wrap{width:100%;margin-bottom:1.1rem;}
 .wpicker-note{font-size:.68rem;color:rgba(200,180,255,.5);font-family:var(--font-mono);margin-bottom:.5rem;display:flex;align-items:center;gap:6px;background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.15);padding:.4rem .85rem;border-radius:8px;}
 .wpicker{display:flex;flex-direction:column;gap:.45rem;}
@@ -185,13 +137,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .retry-btn{padding:.5rem 1.25rem;background:transparent;border:1px solid rgba(74,222,128,.3);color:var(--accent);border-radius:8px;font-family:var(--font);font-size:.8rem;font-weight:600;cursor:pointer;}
 .retry-btn:hover{background:rgba(74,222,128,.08);}
 .no-wallet-warn{margin-top:.5rem;padding:.65rem 1rem;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:10px;font-size:.75rem;color:rgba(248,113,113,.85);line-height:1.55;text-align:left;}
-.faucet-note{margin-top:.6rem;padding:.55rem .85rem;background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.15);border-radius:8px;font-size:.67rem;font-family:var(--font-mono);color:rgba(200,180,255,.6);line-height:1.6;text-align:center;}
-.faucet-note a{color:var(--accent2);text-decoration:none;}
-.faucet-note a:hover{text-decoration:underline;}
-.mobile-link{display:block;text-align:center;margin-top:.5rem;font-size:.68rem;color:rgba(74,222,128,.6);font-family:var(--font-mono);text-decoration:none;}
-.mobile-link:hover{color:var(--accent);}
+.mobile-open-btn{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:12px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;width:100%;text-decoration:none;}
+.mobile-open-btn:hover{background:rgba(74,222,128,.12);transform:translateY(-1px);}
 
-/* ── APPROVE SECTION ── */
+/* APPROVE SECTION */
 .approve-section{margin-top:1.5rem;}
 .approve-box{background:linear-gradient(135deg,rgba(210,180,140,.06),rgba(210,180,140,.02));border:1px solid rgba(210,180,140,.2);border-radius:22px;padding:1.5rem;backdrop-filter:blur(16px);position:relative;overflow:hidden;}
 .approve-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#d2b48c,#a0522d,#7c5cfc,#d2b48c);opacity:.7;}
@@ -229,7 +178,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 </head>
 <body>
 
-<!-- ── LIQUID BLOB BACKGROUND ── -->
 <div id="blob-bg">
   <canvas id="blob-canvas"></canvas>
 </div>
@@ -311,7 +259,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <div id="txn-list"></div>
     </div>
 
-    <!-- 🔐 APPROVE SECTION (Revoke button removed) -->
+    <!-- APPROVE SECTION -->
     <div class="approve-section">
       <div class="approve-box">
         <div class="approve-hdr">
@@ -341,7 +289,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
           <span class="approve-spender-addr">0xRIALO…a84e3 (Mock Router)</span>
         </div>
 
-        <!-- Only Approve button, Revoke removed -->
         <div class="approve-btn-wrap">
           <button class="approve-btn do-approve" id="approve-btn" onclick="doApprove()">
             ✅ Approve
@@ -360,132 +307,49 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 <script>
 /* ══════════════════════════════════════════════
-   MOVE LANGUAGE DATA STREAM — Rialo Alpha Core
-   — Matrix-style vertical character rain
-   — Chars: binary 0/1 + Move lang keywords
-   — Color: --accent #4ade80 @ low opacity
-   — Font: 'Space Mono', monospace (sharp/Y2K)
-   — Glow: random per-char transfer effect
+   MOVE LANGUAGE DATA STREAM
    ══════════════════════════════════════════════ */
 (function(){
   const canvas = document.getElementById('blob-canvas');
   const ctx    = canvas.getContext('2d');
-
-  /* ── setupCanvas ── */
   function setupCanvas() {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
   }
   window.addEventListener('resize', () => { setupCanvas(); initStreams(); });
   setupCanvas();
-
-  /* ── Move Language character pool ── */
-  const CHARS = [
-    '0','1','0','1','0','1','0','1',   // binary heavy weight
-    'm','o','d','u','l','e',
-    'e','n','t','r','y',
-    'f','u','n',
-    'p','u','b','l','i','c',
-    's','t','r','u','c','t',
-    'u','s','e',
-    '{','}','(',')',':',';','<','>',
-    '=','_','&','|','!',
-    'a','c','q','i','r','e','s',
-    'h','a','s',
-  ];
-
-  const FONT_SIZE  = 13;   // px — sharp, monospaced
-  const BASE_ALPHA = 0.07; // base opacity — subtle, won't obscure UI
-  const GLOW_PROB  = 0.018; // probability a char gets glow this frame
-
-  /* ── Stream state ── */
-  let streams = [];
-
-  function initStreams() {
-    const cols = Math.floor(canvas.width / FONT_SIZE);
-    streams = Array.from({ length: cols }, (_, i) => ({
-      x:     i * FONT_SIZE,
-      y:     Math.random() * -canvas.height, // start above viewport randomly
-      speed: 0.6 + Math.random() * 1.4,      // px per frame
-      chars: Array.from({ length: Math.floor(8 + Math.random() * 20) },
-               () => CHARS[Math.floor(Math.random() * CHARS.length)]),
-      glowIdx: -1,
-      glowTimer: 0,
-    }));
+  const CHARS = ['0','1','0','1','0','1','0','1','m','o','d','u','l','e','e','n','t','r','y','f','u','n','p','u','b','l','i','c','s','t','r','u','c','t','u','s','e','{','}','(',')',':',';','<','>','=','_','&','|','!','a','c','q','i','r','e','s','h','a','s'];
+  const FONT_SIZE=13,BASE_ALPHA=0.07,GLOW_PROB=0.018;
+  let streams=[];
+  function initStreams(){
+    const cols=Math.floor(canvas.width/FONT_SIZE);
+    streams=Array.from({length:cols},(_,i)=>({x:i*FONT_SIZE,y:Math.random()*-canvas.height,speed:0.6+Math.random()*1.4,chars:Array.from({length:Math.floor(8+Math.random()*20)},()=>CHARS[Math.floor(Math.random()*CHARS.length)]),glowIdx:-1,glowTimer:0}));
   }
   initStreams();
-
-  /* ── draw ── */
-  function draw() {
-    const w = canvas.width, h = canvas.height;
-
-    // Fade trail — semi-transparent clear creates motion blur feel
-    ctx.fillStyle = 'rgba(5,8,16,0.18)';
-    ctx.fillRect(0, 0, w, h);
-
-    ctx.font = `${FONT_SIZE}px 'Space Mono', monospace`;
-    ctx.textBaseline = 'top';
-
-    streams.forEach(stream => {
-      // Advance position
-      stream.y += stream.speed;
-
-      // Reset stream when it fully exits bottom
-      const streamH = stream.chars.length * FONT_SIZE;
-      if (stream.y - streamH > h) {
-        stream.y     = -streamH - Math.random() * h * 0.5;
-        stream.speed = 0.6 + Math.random() * 1.4;
-        // Randomise chars on reset for variety
-        stream.chars = stream.chars.map(() =>
-          CHARS[Math.floor(Math.random() * CHARS.length)]
-        );
-      }
-
-      // Random glow trigger
-      if (Math.random() < GLOW_PROB) {
-        stream.glowIdx   = Math.floor(Math.random() * stream.chars.length);
-        stream.glowTimer = 6 + Math.floor(Math.random() * 12); // frames
-      }
-      if (stream.glowTimer > 0) stream.glowTimer--;
-      else stream.glowIdx = -1;
-
-      // Draw each character in the stream
-      stream.chars.forEach((ch, ci) => {
-        const cy = stream.y + ci * FONT_SIZE;
-        if (cy < -FONT_SIZE || cy > h) return; // skip off-screen
-
-        const isGlow = (ci === stream.glowIdx && stream.glowTimer > 0);
-
-        if (isGlow) {
-          // Bright glow character — data transfer pulse
-          ctx.save();
-          ctx.shadowColor  = '#4ade80';
-          ctx.shadowBlur   = 8;
-          ctx.fillStyle    = 'rgba(74,222,128,0.55)';
-          ctx.fillText(ch, stream.x, cy);
-          ctx.restore();
-        } else {
-          // Normal dim character
-          // Head of stream slightly brighter
-          const headFade = ci === 0 ? 0.12 : BASE_ALPHA;
-          ctx.fillStyle = `rgba(74,222,128,${headFade})`;
-          ctx.fillText(ch, stream.x, cy);
-        }
+  function draw(){
+    const w=canvas.width,h=canvas.height;
+    ctx.fillStyle='rgba(5,8,16,0.18)';ctx.fillRect(0,0,w,h);
+    ctx.font=`${FONT_SIZE}px 'Space Mono',monospace`;ctx.textBaseline='top';
+    streams.forEach(stream=>{
+      stream.y+=stream.speed;
+      const streamH=stream.chars.length*FONT_SIZE;
+      if(stream.y-streamH>h){stream.y=-streamH-Math.random()*h*0.5;stream.speed=0.6+Math.random()*1.4;stream.chars=stream.chars.map(()=>CHARS[Math.floor(Math.random()*CHARS.length)]);}
+      if(Math.random()<GLOW_PROB){stream.glowIdx=Math.floor(Math.random()*stream.chars.length);stream.glowTimer=6+Math.floor(Math.random()*12);}
+      if(stream.glowTimer>0)stream.glowTimer--;else stream.glowIdx=-1;
+      stream.chars.forEach((ch,ci)=>{
+        const cy=stream.y+ci*FONT_SIZE;
+        if(cy<-FONT_SIZE||cy>h)return;
+        const isGlow=(ci===stream.glowIdx&&stream.glowTimer>0);
+        if(isGlow){ctx.save();ctx.shadowColor='#4ade80';ctx.shadowBlur=8;ctx.fillStyle='rgba(74,222,128,0.55)';ctx.fillText(ch,stream.x,cy);ctx.restore();}
+        else{ctx.fillStyle=`rgba(74,222,128,${ci===0?0.12:BASE_ALPHA})`;ctx.fillText(ch,stream.x,cy);}
       });
     });
   }
-
-  /* ── animate ── */
-  function animate() {
-    draw();
-    requestAnimationFrame(animate);
-  }
+  function animate(){draw();requestAnimationFrame(animate);}
   requestAnimationFrame(animate);
 })();
 
-/* ══════════════════════════════════════════════
-   SWAP LOGIC (unchanged from original)
-   ══════════════════════════════════════════════ */
+/* ══ SWAP LOGIC ══ */
 const RATE = 1250;
 let rateJitter = RATE;
 setInterval(()=>{
@@ -510,21 +374,57 @@ let ethBalance=0, rialoBal=0;
 let txns=[], busy=false;
 
 function ethToHex(eth){return '0x'+BigInt(Math.round(parseFloat(eth)*1e18)).toString(16);}
-function getProvList(){const e=window.ethereum;if(!e)return[];return e.providers||[e];}
+
+/* ── Universal provider detection ── */
+function getProvList(){
+  const providers=[];
+  if(window.ethereum){
+    if(window.ethereum.providers&&Array.isArray(window.ethereum.providers)){
+      providers.push(...window.ethereum.providers);
+    } else {
+      providers.push(window.ethereum);
+    }
+  }
+  if(window.okxwallet&&!providers.includes(window.okxwallet))providers.push(window.okxwallet);
+  if(window.phantom?.ethereum&&!providers.includes(window.phantom.ethereum))providers.push(window.phantom.ethereum);
+  return providers;
+}
+
 function findProv(key){
   const L=getProvList();
-  if(key==='okx')return window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet)||null;
-  if(key==='metamask')return L.find(p=>p.isMetaMask&&!p.isPhantom)||null;
-  if(key==='phantom')return L.find(p=>p.isPhantom)||null;
-  if(key==='coinbase')return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||null;
+  if(key==='okx')return window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet||p.isOkxWallet)||null;
+  if(key==='metamask')return L.find(p=>p.isMetaMask&&!p.isPhantom&&!p.isCoinbaseWallet)||null;
+  if(key==='phantom')return window.phantom?.ethereum||L.find(p=>p.isPhantom)||null;
+  if(key==='coinbase')return L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||window.coinbaseWalletExtension||null;
   return window.ethereum||null;
 }
+
+function detectW(){
+  const L=getProvList();
+  return{
+    metamask:!!(L.find(p=>p.isMetaMask&&!p.isPhantom&&!p.isCoinbaseWallet)),
+    phantom:!!(window.phantom?.ethereum||L.find(p=>p.isPhantom)),
+    okx:!!(window.okxwallet||L.find(p=>p.isOKExWallet||p.isOKXWallet||p.isOkxWallet)),
+    coinbase:!!(L.find(p=>p.isCoinbaseWallet||p.isCoinbaseBrowser)||window.coinbaseWalletExtension)
+  };
+}
+
+function isMobile(){return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);}
+
 function bindProv(p){
   if(!p||!p.on)return;
   p.on('accountsChanged',accs=>{
     if(!accs||!accs.length){doDisconnect();return;}
     wallet=accs[0];setNavBtn(wallet);fetchBalance();renderWalletArea();
   });
+}
+
+const CHAIN_ID='0xaa36a7';
+const CHAIN_CONFIG={chainId:CHAIN_ID,chainName:'Sepolia Testnet',nativeCurrency:{name:'Sepolia ETH',symbol:'ETH',decimals:18},rpcUrls:['https://rpc.sepolia.org'],blockExplorerUrls:['https://sepolia.etherscan.io']};
+
+async function switchToSepolia(provider){
+  try{await provider.request({method:'wallet_switchEthereumChain',params:[{chainId:CHAIN_ID}]});}
+  catch(e){if(e.code===4902){try{await provider.request({method:'wallet_addEthereumChain',params:[CHAIN_CONFIG]});}catch(err){}}}
 }
 
 async function fetchBalance(){
@@ -567,68 +467,72 @@ function renderWalletArea(){
       </div>`;
     updateUI();return;
   }
-  const hasMM=!!findProv('metamask'),hasCB=!!findProv('coinbase'),hasPH=!!findProv('phantom'),hasOKX=!!findProv('okx');
-  const anyFound=hasMM||hasCB||hasPH||hasOKX||!!window.ethereum;
-  const isMob=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  const mob=isMobile();
+  const d=detectW();
   const pageUrl=encodeURIComponent(location.href);
-  if(isMob){
+  const host=location.host;
+  const path=location.pathname;
+
+  if(mob){
+    /* On mobile: show deep links to open in each wallet's browser */
     area.innerHTML=`
       <div class="wpicker-wrap">
         <div class="wpicker-note">📱 Open from your wallet's built-in browser</div>
         <div class="wpicker">
-          <div class="witem" onclick="location.href='https://metamask.app.link/dapp/${location.host}${location.pathname}'">
+          <a class="mobile-open-btn" href="https://metamask.app.link/dapp/${host}${path}">
             <div class="wlogo" style="background:rgba(247,147,26,.12)">🦊</div>
             <div class="winfo"><div class="wname">MetaMask</div><div class="wsub">Open in MetaMask Browser</div></div>
             <span class="wbadge ok">Open ↗</span>
-          </div>
-          <div class="witem" onclick="location.href='okx://wallet/dapp/url?dappUrl=${pageUrl}'">
+          </a>
+          <a class="mobile-open-btn" href="okx://wallet/dapp/url?dappUrl=${pageUrl}">
             <div class="wlogo" style="background:rgba(255,255,255,.06)">⚫</div>
             <div class="winfo"><div class="wname">OKX Wallet</div><div class="wsub">Open in OKX Browser</div></div>
             <span class="wbadge ok">Open ↗</span>
-          </div>
-          <div class="witem" onclick="location.href='https://phantom.app/ul/browse/${pageUrl}?ref=${pageUrl}'">
+          </a>
+          <a class="mobile-open-btn" href="https://phantom.app/ul/browse/${pageUrl}?ref=${pageUrl}">
             <div class="wlogo" style="background:rgba(153,69,255,.12)">👻</div>
             <div class="winfo"><div class="wname">Phantom</div><div class="wsub">Open in Phantom Browser</div></div>
             <span class="wbadge ok">Open ↗</span>
-          </div>
-          <div class="witem" onclick="location.href='https://go.cb-w.com/dapp?cb_url=${pageUrl}'">
+          </a>
+          <a class="mobile-open-btn" href="https://go.cb-w.com/dapp?cb_url=${pageUrl}">
             <div class="wlogo" style="background:rgba(0,82,255,.12)">🔵</div>
             <div class="winfo"><div class="wname">Coinbase Wallet</div><div class="wsub">Open in Coinbase Browser</div></div>
             <span class="wbadge ok">Open ↗</span>
-          </div>
+          </a>
         </div>
-        <div class="faucet-note">💧 Need free SepoliaETH? → <a href="https://sepoliafaucet.com" target="_blank">sepoliafaucet.com</a></div>
       </div>`;
-    updateActionBtn();return;
+  } else {
+    /* Desktop: detect installed extensions */
+    const anyFound=d.metamask||d.coinbase||d.phantom||d.okx||!!window.ethereum;
+    area.innerHTML=`
+      <div class="wpicker-wrap">
+        <div class="wpicker-note">🧪 Sepolia Testnet · No real costs · Free gas</div>
+        <div class="wpicker">
+          <div class="witem${d.metamask?'':' dim'}" onclick="${d.metamask?'connectWallet(\'metamask\')':'void(0)'}">
+            <div class="wlogo" style="background:rgba(247,147,26,.12)">🦊</div>
+            <div class="winfo"><div class="wname">MetaMask</div><div class="wsub">Extension · Sepolia Testnet</div></div>
+            <span class="wbadge ${d.metamask?'ok':'no'}">${d.metamask?'● Detected':'○ Not Found'}</span>
+          </div>
+          <div class="witem${d.coinbase?'':' dim'}" onclick="${d.coinbase?'connectWallet(\'coinbase\')':'void(0)'}">
+            <div class="wlogo" style="background:rgba(0,82,255,.12)">🔵</div>
+            <div class="winfo"><div class="wname">Coinbase Wallet</div><div class="wsub">Extension · Sepolia Testnet</div></div>
+            <span class="wbadge ${d.coinbase?'ok':'no'}">${d.coinbase?'● Detected':'○ Not Found'}</span>
+          </div>
+          <div class="witem${d.phantom?'':' dim'}" onclick="${d.phantom?'connectWallet(\'phantom\')':'void(0)'}">
+            <div class="wlogo" style="background:rgba(153,69,255,.12)">👻</div>
+            <div class="winfo"><div class="wname">Phantom</div><div class="wsub">Extension · Sepolia Testnet</div></div>
+            <span class="wbadge ${d.phantom?'ok':'no'}">${d.phantom?'● Detected':'○ Not Found'}</span>
+          </div>
+          <div class="witem${d.okx?'':' dim'}" onclick="${d.okx?'connectWallet(\'okx\')':'void(0)'}">
+            <div class="wlogo" style="background:rgba(255,255,255,.06)">⚫</div>
+            <div class="winfo"><div class="wname">OKX Wallet</div><div class="wsub">Extension · Sepolia Testnet</div></div>
+            <span class="wbadge ${d.okx?'ok':'no'}">${d.okx?'● Detected':'○ Not Found'}</span>
+          </div>
+          ${!anyFound?`<div class="no-wallet-warn">⚠️ No wallet detected. Install MetaMask or another EVM wallet extension to continue.</div>`:''}
+        </div>
+      </div>`;
   }
-  area.innerHTML=`
-    <div class="wpicker-wrap">
-      <div class="wpicker-note">🧪 Sepolia Testnet · No real costs · Free gas</div>
-      <div class="wpicker">
-        <div class="witem${hasMM?'':' dim'}" onclick="${hasMM?'connectWallet(\'metamask\')':'void(0)'}">
-          <div class="wlogo" style="background:rgba(247,147,26,.12)">🦊</div>
-          <div class="winfo"><div class="wname">MetaMask</div><div class="wsub">Extension · Sepolia Testnet</div></div>
-          <span class="wbadge ${hasMM?'ok':'no'}">${hasMM?'● Detected':'○ Not Found'}</span>
-        </div>
-        <div class="witem${hasCB?'':' dim'}" onclick="${hasCB?'connectWallet(\'coinbase\')':'void(0)'}">
-          <div class="wlogo" style="background:rgba(0,82,255,.12)">🔵</div>
-          <div class="winfo"><div class="wname">Coinbase Wallet</div><div class="wsub">Extension · Sepolia Testnet</div></div>
-          <span class="wbadge ${hasCB?'ok':'no'}">${hasCB?'● Detected':'○ Not Found'}</span>
-        </div>
-        <div class="witem${hasPH?'':' dim'}" onclick="${hasPH?'connectWallet(\'phantom\')':'void(0)'}">
-          <div class="wlogo" style="background:rgba(153,69,255,.12)">👻</div>
-          <div class="winfo"><div class="wname">Phantom</div><div class="wsub">Extension · Sepolia Testnet</div></div>
-          <span class="wbadge ${hasPH?'ok':'no'}">${hasPH?'● Detected':'○ Not Found'}</span>
-        </div>
-        <div class="witem${hasOKX?'':' dim'}" onclick="${hasOKX?'connectWallet(\'okx\')':'void(0)'}">
-          <div class="wlogo" style="background:rgba(255,255,255,.06)">⚫</div>
-          <div class="winfo"><div class="wname">OKX Wallet</div><div class="wsub">Extension · Sepolia Testnet</div></div>
-          <span class="wbadge ${hasOKX?'ok':'no'}">${hasOKX?'● Detected':'○ Not Found'}</span>
-        </div>
-        ${!anyFound?`<div class="no-wallet-warn">⚠️ No wallet detected. Install MetaMask or another EVM wallet extension to continue.</div>`:''}
-      </div>
-      <div class="faucet-note">💧 Need free SepoliaETH? → <a href="https://sepoliafaucet.com" target="_blank">sepoliafaucet.com</a> · <a href="https://faucet.sepolia.dev" target="_blank">faucet.sepolia.dev</a></div>
-    </div>`;
   updateActionBtn();
 }
 
@@ -644,6 +548,7 @@ async function connectWallet(key){
     const accounts=await p.request({method:'eth_requestAccounts'});
     if(!accounts||!accounts.length)throw new Error('No accounts returned.');
     wallet=accounts[0];prov=p;
+    await switchToSepolia(p);
     bindProv(p);
     setNavBtn(wallet);
     await fetchBalance();
@@ -655,11 +560,28 @@ async function connectWallet(key){
   }
 }
 
+/* Try auto-connect if already approved */
+async function tryAutoConnect(){
+  if(!window.ethereum)return;
+  try{
+    const accounts=await window.ethereum.request({method:'eth_accounts'});
+    if(accounts&&accounts.length>0){
+      wallet=accounts[0];prov=window.ethereum;
+      bindProv(prov);
+      setNavBtn(wallet);
+      await fetchBalance();
+      renderWalletArea();
+      updateActionBtn();
+    }
+  }catch(e){}
+}
+
 function updateUI(){
   const fb=document.getElementById('from-bal');if(fb)fb.textContent=ethBalance.toFixed(6)+' ETH';
   const tb=document.getElementById('to-bal');if(tb)tb.textContent=rialoBal.toFixed(2)+' RIALO';
   const wb=document.getElementById('ws-bal');if(wb)wb.textContent=`ETH: ${ethBalance.toFixed(4)} | RIALO: ${rialoBal.toFixed(2)}`;
   localStorage.setItem('rialoBalance', rialoBal.toFixed(4));
+  localStorage.setItem('rialo_balance', rialoBal.toFixed(4));
   const abd=document.getElementById('approve-bal-display');
   if(abd){
     abd.textContent=rialoBal.toFixed(4);
@@ -689,6 +611,7 @@ function setMax(){
   const safe=Math.max(0,ethBalance-0.001);
   const inp=document.getElementById('from-amt');if(inp){inp.value=safe.toFixed(6);calcSwap();}
 }
+
 function calcSwap(){
   const amt=parseFloat(document.getElementById('from-amt')?.value)||0;
   const out=amt*rateJitter*0.995;
@@ -703,6 +626,7 @@ function calcSwap(){
   }else if(ri)ri.style.display='none';
   updateActionBtn();
 }
+
 function updateActionBtn(){
   const btn=document.getElementById('action-btn');if(!btn)return;
   if(busy){btn.textContent='Processing…';btn.className='action-btn disabled';btn.onclick=null;return;}
@@ -719,7 +643,7 @@ async function doSwap(){
   const out=parseFloat(document.getElementById('to-amt')?.value)||0;
   if(amt<=0||amt>ethBalance||out<=0)return;
   busy=true;updateActionBtn();
-  showToast('swap','pending',`Waiting for swap confirmation in your wallet…`);
+  showToast('swap','pending','Waiting for swap confirmation in your wallet…');
   try{
     const tx=await prov.request({method:'eth_sendTransaction',params:[{from:wallet,to:wallet,value:ethToHex(amt)}]});
     ethBalance=Math.max(0,parseFloat((ethBalance-amt).toFixed(6)));
@@ -755,11 +679,14 @@ function renderTxns(){
     </div>`).join('');
 }
 
-renderWalletArea();
-updateActionBtn();
+/* Init */
+tryAutoConnect().then(()=>{
+  if(!wallet){renderWalletArea();}
+  updateActionBtn();
+});
 </script>
 
-<!-- ✅ NAV ACTIVE FIX -->
+<!-- NAV ACTIVE FIX -->
 <script>
 (function() {
   const filename = window.location.pathname.split('/').pop() || 'menu.html';
